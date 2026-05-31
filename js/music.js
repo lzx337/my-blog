@@ -1,19 +1,20 @@
 (function() {
 
   const STORAGE_KEY = 'ryuchan_music_state';
-  const MUSIC_BASE_URL = 'https://raw.githubusercontent.com/lzx337/my-blog/main/music/';
+  var path = window.location.pathname;
+  var MUSIC_BASE_URL = (path.indexOf('/pages/') !== -1 || path.indexOf('/indextxt/') !== -1) ? '../assets/music/' : 'assets/music/';
 
-  const DEFAULT_SONGS = [
-    { title: '晴天', artist: '周杰伦', album: '周杰伦经典', duration: 270, file: '晴天-周杰伦.mp3' },
+  var DEFAULT_SONGS = [
+    { title: '晴天', artist: '周杰伦', album: '周杰伦经典', duration: 270, file: '晴天 - 周杰伦.mp3' },
+    { title: '告白气球', artist: '周杰伦', album: '周杰伦经典', duration: 210, file: '告白气球 - 周杰伦.mp3' },
     { title: '稻香', artist: '周杰伦', album: '周杰伦经典', duration: 240, file: '稻香 - 周杰伦.mp3' },
-    { title: '花海', artist: '周杰伦', album: '周杰伦经典', duration: 260, file: '花海-周杰伦.mp3' },
-    { title: '青花瓷', artist: '周杰伦', album: '周杰伦经典', duration: 240, file: '青花瓷 - 周杰伦.mp3' },
-    { title: '夜曲', artist: '周杰伦', album: '周杰伦经典', duration: 210, file: '夜曲 - 周杰伦.mp3' },
-    { title: '告白气球', artist: '周杰伦', album: '周杰伦经典', duration: 210, file: '告白气球-周杰伦.mp3' },
-    { title: '兰亭序', artist: '周杰伦', album: '周杰伦经典', duration: 240, file: '兰亭序-周杰伦.mp3' },
-    { title: '蒲公英的约定', artist: '周杰伦', album: '周杰伦经典', duration: 260, file: '蒲公英的约定-周杰伦.mp3' },
-    { title: '星炬不熄', artist: '鸣潮先约电台', album: '鸣潮先约电台', duration: 300, file: '星炬不熄-鸣潮先约电台_飞行雪绒_星炬学院毕业生.mp3' },
-    { title: '远航星的告别', artist: '鸣潮先约电台', album: '鸣潮先约电台', duration: 300, file: '远航星的告别-鸣潮先约电台_jixwang_Tarokiki_Emi-Evans.mp3' }
+    { title: '星炬不熄', artist: '鸣潮先约电台&飞行雪绒&星炬学院毕业生', album: '鸣潮先约电台', duration: 300, file: '星炬不熄 - 鸣潮先约电台&飞行雪绒&星炬学院毕业生.mp3' },
+    { title: '远航星的告别', artist: '鸣潮先约电台&jixwang&Tarokiki&Emi Evans', album: '鸣潮先约电台', duration: 300, file: '远航星的告别 - 鸣潮先约电台&jixwang&Tarokiki&Emi Evans.mp3' },
+    { title: 'Childhood Memory', artist: 'Bandari', album: '轻音乐', duration: 300, file: 'Childhood Memory - Bandari.mp3' },
+    { title: '松烟叩扉', artist: '轻松频率&朱懿婷', album: '轻音乐', duration: 300, file: '松烟叩扉（古琴散音释放积压情绪） - 轻松频率&朱懿婷.mp3' },
+    { title: '猫咪和阳光都懒洋洋', artist: '春山轻音', album: '轻音乐', duration: 300, file: '猫咪和阳光都懒洋洋（夏日蝉鸣治愈钢琴曲） - 春山轻音.mp3' },
+    { title: 'Perhaps Love', artist: '全秀妍', album: '轻音乐', duration: 300, file: 'Perhaps Love (John Denver) - 全秀妍.mp3' },
+    { title: '秘密', artist: '卡洛儿', album: '轻音乐', duration: 300, file: '秘密 - 卡洛儿.mp3' }
   ];
 
   function getSongs() {

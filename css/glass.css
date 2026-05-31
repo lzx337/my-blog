@@ -985,7 +985,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .ai-dlg-chat-bubble-bot {
-  background: oklch(var(--b2) / 0.5);
+  background: oklch(var(--b2));
   color: oklch(var(--bc));
   border-bottom-left-radius: 0.25rem;
   border: var(--glass-border);
@@ -1382,6 +1382,45 @@ body:has(#ai-music-popup.open) .ai-dlg-bottom-music {
   50% { transform: scale(1.06); box-shadow: 0 3px 20px rgba(232,121,168,0.5); }
 }
 
+/* ---- 快捷提示按钮组 ---- */
+.ai-dlg-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  max-width: 85%;
+}
+
+.ai-dlg-suggestions button {
+  background: #f5f5f5;
+  color: #999;
+  border: none;
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  line-height: 1.4;
+  width: fit-content;
+}
+
+.ai-dlg-suggestions button:hover {
+  color: #666;
+  background: #ececec;
+}
+
+/* ---- 聊天图片 ---- */
+.ai-dlg-chat-img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  border-radius: 0.5rem;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
 /* ---- 滚动条 ---- */
 .ai-dlg-body::-webkit-scrollbar { width: 4px; }
 .ai-dlg-body::-webkit-scrollbar-track { background: transparent; }
@@ -1392,4 +1431,161 @@ body:has(#ai-music-popup.open) .ai-dlg-bottom-music {
   #ai-assistant-container { bottom: 16px; left: 12px; }
   .ai-floating-btn { width: 2.6rem; height: 2.6rem; }
   .ai-dialog-box { left: 8px; bottom: 70px; width: calc(100vw - 16px); max-height: 80vh; border-radius: 0.85rem; }
+}
+
+/* ---- Footer 优化 ---- */
+footer.glass-footer {
+  background: rgba(249, 250, 251, 0.92) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid #e5e7eb !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 1.25rem 2rem !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  width: 100%;
+}
+
+footer.glass-footer aside {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+footer.glass-footer aside svg {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+footer.glass-footer aside p {
+  color: #333;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+}
+
+footer.glass-footer aside a.gradient-link,
+footer.glass-footer aside a {
+  color: #8b5cf6;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  background: none;
+  -webkit-text-fill-color: #8b5cf6;
+  background-clip: unset;
+}
+
+footer.glass-footer aside a:hover {
+  color: #ec4899;
+}
+
+footer.glass-footer aside a.gradient-link::after {
+  display: none;
+}
+
+footer.glass-footer > nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0;
+}
+
+footer.glass-footer .footer-title {
+  display: none;
+}
+
+.footer-social-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.footer-social-icons a,
+.footer-social-icons .social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  font-size: 1.15rem;
+}
+
+.footer-social-icons a:hover,
+.footer-social-icons .social-link:hover {
+  color: #8b5cf6;
+  transform: scale(1.1);
+}
+
+.footer-meta-links {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+  color: #666;
+}
+
+.footer-meta-links a,
+.footer-meta-links .footer-link {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-meta-links a:hover,
+.footer-meta-links .footer-link:hover {
+  color: #8b5cf6;
+  text-decoration: underline;
+}
+
+.footer-meta-links .footer-sep {
+  color: #ccc;
+  user-select: none;
+}
+
+.sitemap-btn {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: inherit !important;
+  font-family: inherit !important;
+  cursor: pointer;
+  display: inline;
+}
+
+@media (max-width: 768px) {
+  footer.glass-footer {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem 0.75rem !important;
+    gap: 0.75rem;
+  }
+  footer.glass-footer aside {
+    flex-direction: column;
+    text-align: center;
+  }
+  footer.glass-footer aside p {
+    text-align: center;
+  }
+  footer.glass-footer > nav {
+    align-items: center;
+  }
+  .footer-social-icons {
+    justify-content: center;
+  }
+  .footer-meta-links {
+    justify-content: center;
+  }
 }

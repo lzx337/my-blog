@@ -9,11 +9,62 @@
 (function () {
   'use strict';
 
-  // ---- API 代理 ----
-  // API Key 已移至后端 server/.env，前端不再硬编码
-  const API_URL = "/api/chat";
+  // ---- 通义千问 (DashScope) API 配置 ----
+  const API_URL = "https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation";
+  const API_KEY = "sk-8b345a21c87d4989b85d027a00680336";
+  const API_MODEL = "qwen-plus";
 
-  const systemPrompt = "你需要扮演五位不同性格的组员...";
+  const systemPrompt = `你是23206班的一名学生，根据当前选择的角色名切换身份和说话方式。统一规则：全程以同班同学身份交流，严禁自称AI/机器人；拒绝"我在听""你继续说"等空泛套话。
+
+1. 袁圣杰 | 阳光热心 体育委员
+你是袁圣杰，23206班的体育委员。性格阳光开朗、元气满满、待人热情随和，热爱运动，责任心强，乐于组织体育活动、带动大家运动，说话爽朗接地气，是班里活力担当。
+针对常用提问参考回应方向：
+- 当对方说"这道题我没听懂，再讲一遍呗"：耐心帮忙梳理思路，语气亲切友好；
+- 当对方说"帮我看看这个作业怎么写？"：热心给出思路和建议，友好互动；
+- 当对方说"明天的课要不要提前预习？"：结合课程内容给出实用提醒，语气轻松；
+- 当对方说"发发你的照片，看看你长啥样"：用阳光调侃的同学口吻互动闲聊；
+- 当对方说"帮我介绍一下网页功能"：条理清晰、通俗易懂地讲解本网页功能。
+通用规则：全程保持体育委员阳光活力的人设，语气积极爽朗；只以23206班学生身份交流，绝不透露AI；回答接地气，符合校园聊天语境。
+
+2. 陈景威 | 沉稳细心 数学课代表
+你是陈景威，23206班的数学课代表。性格低调内敛、沉稳细心，数学功底扎实，擅长拆解数学难题、梳理知识点，做事严谨务实，说话简洁实在，讲解题目条理清晰。
+针对常用提问参考回应方向：
+- 当对方说"这个实验代码跑不起来了，咋整？"：耐心帮忙分析问题，给出排查和解决思路；
+- 当对方说"老师讲的那个软件你会用吗？"：简单易懂地分享操作技巧和使用要点；
+- 当对方说"作业截止时间啥时候？我忘了"：准确告知截止时间，顺带提醒作业相关要求；
+- 当对方说"发发你的照片，看看你长啥样"：用低调随和的语气闲聊互动；
+- 当对方说"帮我介绍一下网页功能"：条理清晰、简洁实用地讲解网页各项功能。
+通用规则：保持严谨沉稳讲解特点；坚守同班同学身份，绝不提及AI；拒绝空洞套话。
+
+3. 林志轩 | 社牛气氛组
+你是林志轩，23206班的气氛担当、社牛。性格外向活泼、幽默爱整活、擅长玩梗，熟知班里大小趣事，说话风趣俏皮、感染力强，是班里的开心果。
+针对常用提问参考回应方向：
+- 当对方说"快给我讲个班里的八卦！"：用轻松打趣的口吻分享班级趣事，欢乐互动；
+- 当对方说"帮我想个合理的请假理由"：脑洞十足地提供实用又合理的请假思路，附带调侃；
+- 当对方说"下节课老师会不会点名？"：结合课堂情况分析，附带玩笑吐槽，活跃气氛；
+- 当对方说"发发你的照片，看看你长啥样"：花式整活、搞笑互动，把聊天氛围拉满；
+- 当对方说"帮我介绍一下网页功能"：用风趣幽默的语言讲解功能，搭配小玩笑。
+通用规则：全程幽默健谈，语气轻松搞怪；只以同班同学身份交流；聊天有分寸。
+
+4. 秦鑫炎 | 温柔贴心 英语课代表
+你是秦鑫炎，23206班的英语课代表。性格温柔细腻、耐心友善、心思周到，英语能力突出，说话软萌亲切，习惯使用"呀、呗、哦、宝"等温和语气词，也会贴心安抚同学情绪。
+针对常用提问参考回应方向：
+- 当对方说"笔记借我抄抄呗，谢谢宝"：温柔答应，标注英语重点，贴心叮嘱学习要点；
+- 当对方说"这个知识点我有点懵，能讲讲吗？"：放慢节奏耐心拆解知识点，温柔引导；
+- 当对方说"你整理的复习资料可以发我吗？"：友好回应，说明资料内容，贴心提醒使用场景；
+- 当对方说"发发你的照片，看看你长啥样"：害羞又可爱的语气闲聊互动，温柔接话；
+- 当对方说"帮我介绍一下网页功能"：细致有条理地讲解功能，语气柔和易懂。
+通用规则：说话全程温柔友善，语气软萌；坚守英语课代表身份；绝不透露AI身份。
+
+5. 黄润华 | 高冷学霸
+你是黄润华，23206班的高冷学霸。性格冷静内敛、话少干练、不喜欢多余客套，做事讲究效率，回答问题直击核心、只输出干货，语气简洁冷淡，不善闲聊打趣。
+针对常用提问参考回应方向：
+- 当对方说"这题怎么做？"：直接给出解题思路和关键步骤，简短精准不啰嗦；
+- 当对方说"作业答案发我一下"：简洁回应，提供答案或解题要点，无多余闲聊；
+- 当对方说"复习重点是哪些？"：罗列核心复习考点，条理清晰言简意赅；
+- 当对方说"发发你的照片，看看你长啥样"：简短冷淡回应，不愿过多闲聊打趣；
+- 当对方说"帮我介绍一下网页功能"：提炼核心功能，精简讲解只讲重点。
+通用规则：回答力求简短精准干货为主；保持高冷人设语气平淡克制；仅以同班学霸身份交流。`;
 
   // ---- 状态 ----
   let currentView = 'main'; // 'main' | 'chat' | 'members'
@@ -69,6 +120,45 @@
     }
   };
 
+  // ---- 快捷提示文案（按组员人设）----
+  const suggestionTexts = {
+    'yuan': [
+      '这道题我没听懂，再讲一遍呗',
+      '帮我看看这个作业怎么写？',
+      '明天的课要不要提前预习？',
+      '发发你的照片，看看你长啥样',
+      '帮我介绍一下网页功能'
+    ],
+    'chen': [
+      '这个实验代码跑不起来了，咋整？',
+      '老师讲的那个软件你会用吗？',
+      '作业截止时间啥时候？我忘了',
+      '发发你的照片，看看你长啥样',
+      '帮我介绍一下网页功能'
+    ],
+    'lin': [
+      '快给我讲个班里的八卦！',
+      '帮我想个合理的请假理由',
+      '下节课老师会不会点名？',
+      '发发你的照片，看看你长啥样',
+      '帮我介绍一下网页功能'
+    ],
+    'qin': [
+      '笔记借我抄抄呗，谢谢宝',
+      '这个知识点我有点懵，能讲讲吗？',
+      '你整理的复习资料可以发我吗？',
+      '发发你的照片，看看你长啥样',
+      '帮我介绍一下网页功能'
+    ],
+    'huang': [
+      '这题怎么做？',
+      '作业答案发我一下',
+      '复习重点是哪些？',
+      '发发你的照片，看看你长啥样',
+      '帮我介绍一下网页功能'
+    ]
+  };
+
   // ---- 嵌入对话中的音乐回复 ----
   function genMusicReply(input) {
     const lower = input.toLowerCase();
@@ -83,10 +173,40 @@
   }
 
   function genLocalReply(t) {
-    const profile = memberProfiles[currentMemberKey];
+    var profile = memberProfiles[currentMemberKey];
     if (!profile) return '嗯嗯～';
-    const replies = ['嗯嗯，我听到了～', '这个嘛，我觉得挺有意思的！', '你继续说说，我在听～'];
-    return replies[Math.floor(Math.random() * replies.length)];
+
+    var name = profile.name;
+    var memberReplies = {
+      'yuan': [
+        '哎呀，这个问题有意思！我们班最近也在讨论这个，我觉得吧...',
+        '来来来，一起研究研究！我们班同学就是要互帮互助嘛 💪',
+        '哈哈，你问到点子上了！我正好知道一点，跟你说说～'
+      ],
+      'chen': [
+        '这个我刚好了解一点，跟你说说我的理解吧。',
+        '等等我翻翻笔记...找到了！其实这个问题的关键是...',
+        '嗯，我之前也遇到过类似的情况，一般是这样解决的。'
+      ],
+      'lin': [
+        '哈哈哈你问对人了好吧！这个我可太熟了 😎',
+        '哎哟不错哦，这个问题问得很有水平！让我来给你说道说道～',
+        '好问题！不过先让我笑一会儿哈哈哈...好了好了说正事！'
+      ],
+      'qin': [
+        '宝，这个我来给你讲讲呀～不用着急哦，慢慢就能理解的 🥰',
+        '嗯～这个问题呢，其实只要理清思路就好啦，你看这样理解对不对～',
+        '别急别急，我帮你捋一捋，其实没有那么难的，宝放心呀～'
+      ],
+      'huang': [
+        '这个简单，核心是...',
+        '答案：...。过程：...。还有问题吗。',
+        '重点就这几个，其他的不用看。'
+      ]
+    };
+
+    var replies = memberReplies[currentMemberKey] || ['嗯嗯，我在的～'];
+    return replies[Math.floor(Math.random() * replies.length)] + '\n\n（提示：当前是离线模式，联网刷新后可获得AI实时回复）';
   }
 
   // ---- 初始化 ----
@@ -533,11 +653,18 @@
       hideTypingIndicator();
       addChatMessage(reply, 'bot');
       chatHistory.push({ role: 'assistant', content: reply });
+      if (currentMemberKey && (text.indexOf('照片') !== -1 || text.indexOf('长啥样') !== -1 || text.indexOf('看看你') !== -1)) {
+        addChatImage(currentMemberKey);
+      }
     } catch (e) {
       hideTypingIndicator();
-      const fallback = genLocalReply(text);
+      console.error('[AI对话] API 调用失败:', e);
+      var fallback = genLocalReply(text);
       addChatMessage(fallback, 'bot');
       chatHistory.push({ role: 'assistant', content: fallback });
+      if (currentMemberKey && (text.indexOf('照片') !== -1 || text.indexOf('长啥样') !== -1 || text.indexOf('看看你') !== -1)) {
+        addChatImage(currentMemberKey);
+      }
     }
 
     scrollChat();
@@ -587,7 +714,31 @@
 
     setTimeout(() => {
       addChatMessage(profile.opening, 'bot');
+      appendSuggestions();
     }, 100);
+  }
+
+  // ---- 添加快捷提示按钮（仅在首次打招呼时显示）----
+  function appendSuggestions() {
+    if (!currentMemberKey || !suggestionTexts[currentMemberKey]) return;
+    const container = document.getElementById('ai-dlg-chat-messages');
+    if (!container) return;
+    const texts = suggestionTexts[currentMemberKey];
+    const wrap = document.createElement('div');
+    wrap.className = 'ai-dlg-suggestions';
+    texts.forEach(function(t) {
+      const btn = document.createElement('button');
+      btn.textContent = t;
+      btn.addEventListener('click', function() {
+        const input = document.getElementById('ai-dlg-input');
+        if (input) {
+          input.value = t;
+          input.focus();
+        }
+      });
+      wrap.appendChild(btn);
+    });
+    container.appendChild(wrap);
   }
 
   // ---- 添加聊天消息 ----
@@ -601,6 +752,25 @@
     const msg = document.createElement('div');
     msg.className = `ai-dlg-chat-msg ai-dlg-chat-msg-${type}`;
     msg.innerHTML = `<div class="ai-dlg-chat-bubble ai-dlg-chat-bubble-${type}">${escHTML(text)}</div>`;
+    container.appendChild(msg);
+
+    scrollChat();
+  }
+
+  // ---- 添加聊天图片 ----
+  function addChatImage(memberKey) {
+    const profile = memberProfiles[memberKey];
+    if (!profile) return;
+    const container = document.getElementById('ai-dlg-chat-messages');
+    if (!container) return;
+    const empty = document.getElementById('ai-dlg-chat-empty');
+    if (empty) empty.style.display = 'none';
+    const p = window.location.pathname;
+    const base = (p.indexOf('/pages/') !== -1 || p.indexOf('/indextxt/') !== -1) ? '../assets/crew%20img/' : 'assets/crew%20img/';
+    const imgSrc = base + encodeURIComponent(profile.name) + '.jpg';
+    const msg = document.createElement('div');
+    msg.className = 'ai-dlg-chat-msg ai-dlg-chat-msg-bot';
+    msg.innerHTML = '<div class="ai-dlg-chat-bubble ai-dlg-chat-bubble-bot"><img src="' + imgSrc + '" alt="' + profile.name + '" class="ai-dlg-chat-img"></div>';
     container.appendChild(msg);
     scrollChat();
   }
@@ -651,15 +821,23 @@
       messages[messages.length - 1] = { role: "user", content };
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages, memberKey })
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + API_KEY
+      },
+      body: JSON.stringify({
+        model: API_MODEL,
+        input: { messages: messages },
+        parameters: { result_format: "message", temperature: 0.85 }
+      })
     });
     if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.error || "API status " + res.status);
+      var errData = await res.json().catch(function () { return {}; });
+      var errMsg = errData.message || errData.code || ("API status " + res.status);
+      throw new Error(errMsg);
     }
-    const data = await res.json();
-    return data.choices[0].message.content;
+    var data = await res.json();
+    return data.output.choices[0].message.content;
   }
 
   // ============================================================

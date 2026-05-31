@@ -692,6 +692,14 @@ label[style*="oklch"] { color: var(--text-secondary) !important; }
   padding: 4rem 0;
   font-size: 0.9rem;
 }
+.editor-tool-btn:hover {
+  background: var(--primary-bg) !important;
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+.editor-tool-btn:active {
+  transform: scale(0.95);
+}
 /* Editor Stats Bar */
 .editor-stats {
   display: flex;
@@ -1178,6 +1186,17 @@ select.glass-input {
                 <span><span class="stat-label">阅读时长</span><span class="stat-value" id="stat-readtime">0 分钟</span></span>
                 <span class="stat-autosave" id="stat-autosave">未保存</span>
               </div>
+              <div class="editor-toolbar" style="display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid var(--border-light);margin-bottom:0.5rem;flex-wrap:wrap">
+                <span class="text-xs" style="color:var(--text-muted)">插入：</span>
+                <button type="button" class="editor-tool-btn" id="tool-bold" title="粗体" style="background:none;border:1px solid var(--border-input);border-radius:var(--radius-xs);padding:0.25rem 0.5rem;cursor:pointer;font-size:0.8rem;color:var(--text-secondary);transition:all 0.15s"><b>B</b></button>
+                <button type="button" class="editor-tool-btn" id="tool-italic" title="斜体" style="background:none;border:1px solid var(--border-input);border-radius:var(--radius-xs);padding:0.25rem 0.5rem;cursor:pointer;font-size:0.8rem;color:var(--text-secondary);transition:all 0.15s"><i>I</i></button>
+                <button type="button" class="editor-tool-btn" id="tool-link" title="链接" style="background:none;border:1px solid var(--border-input);border-radius:var(--radius-xs);padding:0.25rem 0.5rem;cursor:pointer;font-size:0.8rem;color:var(--text-secondary);transition:all 0.15s">🔗</button>
+                <button type="button" class="editor-tool-btn" id="tool-code" title="代码块" style="background:none;border:1px solid var(--border-input);border-radius:var(--radius-xs);padding:0.25rem 0.5rem;cursor:pointer;font-size:0.8rem;color:var(--text-secondary);transition:all 0.15s">&lt;/&gt;</button>
+                <span style="width:1px;height:1.25rem;background:var(--border-light);margin:0 0.25rem"></span>
+                <button type="button" class="editor-tool-btn" id="tool-image" title="上传图片" style="background:none;border:1px solid var(--border-input);border-radius:var(--radius-xs);padding:0.25rem 0.5rem;cursor:pointer;font-size:0.8rem;color:var(--primary);transition:all 0.15s;font-weight:600">🖼 上传图片</button>
+                <input type="file" id="image-upload-input" accept="image/*" style="display:none">
+                <span class="text-xs" style="color:var(--text-muted);margin-left:auto" id="upload-status"></span>
+              </div>
               <div class="editor-split">
                 <div class="editor-source">
                   <textarea name="content-body" id="post-content" class="glass-textarea editor-textarea" placeholder="在此输入 Markdown 正文…"></textarea>
@@ -1367,16 +1386,16 @@ var DEFAULT_POSTS = [
 ];
 
 var DEFAULT_SONGS = [
-  {title:"晴天",artist:"周杰伦",album:"周杰伦经典",duration:270,file:"晴天-周杰伦.mp3"},
+  {title:"晴天",artist:"周杰伦",album:"周杰伦经典",duration:270,file:"晴天 - 周杰伦.mp3"},
+  {title:"告白气球",artist:"周杰伦",album:"周杰伦经典",duration:210,file:"告白气球 - 周杰伦.mp3"},
   {title:"稻香",artist:"周杰伦",album:"周杰伦经典",duration:240,file:"稻香 - 周杰伦.mp3"},
-  {title:"花海",artist:"周杰伦",album:"周杰伦经典",duration:260,file:"花海-周杰伦.mp3"},
-  {title:"青花瓷",artist:"周杰伦",album:"周杰伦经典",duration:240,file:"青花瓷 - 周杰伦.mp3"},
-  {title:"夜曲",artist:"周杰伦",album:"周杰伦经典",duration:210,file:"夜曲 - 周杰伦.mp3"},
-  {title:"告白气球",artist:"周杰伦",album:"周杰伦经典",duration:210,file:"告白气球-周杰伦.mp3"},
-  {title:"兰亭序",artist:"周杰伦",album:"周杰伦经典",duration:240,file:"兰亭序-周杰伦.mp3"},
-  {title:"蒲公英的约定",artist:"周杰伦",album:"周杰伦经典",duration:260,file:"蒲公英的约定-周杰伦.mp3"},
-  {title:"星炬不熄",artist:"鸣潮先约电台",album:"鸣潮先约电台",duration:300,file:"星炬不熄-鸣潮先约电台_飞行雪绒_星炬学院毕业生.mp3"},
-  {title:"远航星的告别",artist:"鸣潮先约电台",album:"鸣潮先约电台",duration:300,file:"远航星的告别-鸣潮先约电台_jixwang_Tarokiki_Emi-Evans.mp3"}
+  {title:"星炬不熄",artist:"鸣潮先约电台&飞行雪绒&星炬学院毕业生",album:"鸣潮先约电台",duration:300,file:"星炬不熄 - 鸣潮先约电台&飞行雪绒&星炬学院毕业生.mp3"},
+  {title:"远航星的告别",artist:"鸣潮先约电台&jixwang&Tarokiki&Emi Evans",album:"鸣潮先约电台",duration:300,file:"远航星的告别 - 鸣潮先约电台&jixwang&Tarokiki&Emi Evans.mp3"},
+  {title:"Childhood Memory",artist:"Bandari",album:"轻音乐",duration:300,file:"Childhood Memory - Bandari.mp3"},
+  {title:"松烟叩扉",artist:"轻松频率&朱懿婷",album:"轻音乐",duration:300,file:"松烟叩扉（古琴散音释放积压情绪） - 轻松频率&朱懿婷.mp3"},
+  {title:"猫咪和阳光都懒洋洋",artist:"春山轻音",album:"轻音乐",duration:300,file:"猫咪和阳光都懒洋洋（夏日蝉鸣治愈钢琴曲） - 春山轻音.mp3"},
+  {title:"Perhaps Love",artist:"全秀妍",album:"轻音乐",duration:300,file:"Perhaps Love (John Denver) - 全秀妍.mp3"},
+  {title:"秘密",artist:"卡洛儿",album:"轻音乐",duration:300,file:"秘密 - 卡洛儿.mp3"}
 ];
 
 var SESSION_KEY = 'admin_session_v2';
@@ -3084,11 +3103,78 @@ function initMarkdownEditor() {
   if (typeof marked !== 'undefined') {
     marked.setOptions({ mangle: false, headerIds: false, breaks: true, gfm: true });
   }
-  document.getElementById('post-content').addEventListener('input', function() {
+  var textarea = document.getElementById('post-content');
+  textarea.addEventListener('input', function() {
     updateEditorPreview();
   });
   updateEditorPreview();
-  // Start 30s draft auto-save
+
+  function insertAtCursor(before, after) {
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var text = textarea.value;
+    var selected = text.substring(start, end);
+    var replacement = before + selected + (after || '');
+    textarea.value = text.substring(0, start) + replacement + text.substring(end);
+    textarea.focus();
+    var newPos = start + before.length + selected.length + (after ? after.length : 0);
+    textarea.setSelectionRange(newPos, newPos);
+    updateEditorPreview();
+  }
+
+  var toolBold = document.getElementById('tool-bold');
+  var toolItalic = document.getElementById('tool-italic');
+  var toolLink = document.getElementById('tool-link');
+  var toolCode = document.getElementById('tool-code');
+  var toolImage = document.getElementById('tool-image');
+  var imageInput = document.getElementById('image-upload-input');
+  var uploadStatus = document.getElementById('upload-status');
+
+  if (toolBold) toolBold.addEventListener('click', function() { insertAtCursor('**', '**'); });
+  if (toolItalic) toolItalic.addEventListener('click', function() { insertAtCursor('*', '*'); });
+  if (toolLink) toolLink.addEventListener('click', function() {
+    var url = prompt('请输入链接地址：', 'https://');
+    if (url) insertAtCursor('[', '](' + url + ')');
+  });
+  if (toolCode) toolCode.addEventListener('click', function() { insertAtCursor('\n```\n', '\n```\n'); });
+
+  if (toolImage && imageInput) {
+    toolImage.addEventListener('click', function() { imageInput.click(); });
+    imageInput.addEventListener('change', function() {
+      var file = imageInput.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        if (uploadStatus) { uploadStatus.textContent = '请选择图片文件'; uploadStatus.style.color = '#ef4444'; }
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        if (uploadStatus) { uploadStatus.textContent = '图片不能超过10MB'; uploadStatus.style.color = '#ef4444'; }
+        return;
+      }
+      if (uploadStatus) { uploadStatus.textContent = '上传中…'; uploadStatus.style.color = 'var(--text-muted)'; }
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var dataUrl = e.target.result;
+        var alt = file.name.replace(/\.[^.]+$/, '');
+        insertAtCursor('![' + alt + '](', ')');
+        var start = textarea.selectionStart;
+        var text = textarea.value;
+        textarea.value = text.substring(0, start) + dataUrl + text.substring(start);
+        textarea.focus();
+        textarea.setSelectionRange(start + dataUrl.length, start + dataUrl.length);
+        updateEditorPreview();
+        if (uploadStatus) { uploadStatus.textContent = '已上传'; uploadStatus.style.color = '#22c55e'; }
+        setTimeout(function() { if (uploadStatus) uploadStatus.textContent = ''; }, 2000);
+        imageInput.value = '';
+      };
+      reader.onerror = function() {
+        if (uploadStatus) { uploadStatus.textContent = '读取失败'; uploadStatus.style.color = '#ef4444'; }
+        imageInput.value = '';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   if (window.draftInterval) clearInterval(window.draftInterval);
   window.draftInterval = setInterval(saveDraft, 30000);
 }
