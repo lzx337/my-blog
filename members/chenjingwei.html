@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>陈景威 · 后端开发 | 技术成长记录</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#DC2626',
+            'primary-dark': '#B91C1C',
+            'primary-light': '#EF4444',
+            secondary: '#F59E0B',
+            dark: '#0A0A0F',
+            'dark-card': '#141420',
+            'dark-border': '#2A2A3A',
+          },
+          fontFamily: {
+            display: ['"Noto Serif SC"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          animation: {
+            'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'drift': 'drift 8s ease-in-out infinite',
+            'counter': 'counter 2s ease-out forwards',
+          },
+          keyframes: {
+            pulseGlow: {
+              '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+              '50%': { opacity: '0.8', transform: 'scale(1.1)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+              '50%': { transform: 'translateY(-20px) rotate(2deg)' },
+            },
+            drift: {
+              '0%, 100%': { transform: 'translate(0, 0)' },
+              '33%': { transform: 'translate(30px, -30px)' },
+              '66%': { transform: 'translate(-20px, 20px)' },
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0F; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #DC2626, #F59E0B); border-radius: 3px; }
+    html { scroll-behavior: smooth; }
+
+    body.dark { background: #0A0A0F; color: #E5E7EB; }
+    body.dark .bg-white { background: #141420 !important; }
+    body.dark .text-gray-600 { color: #9CA3AF !important; }
+    body.dark .text-gray-500 { color: #6B7280 !important; }
+    body.dark .border-gray-100, body.dark .border-gray-200 { border-color: #2A2A3A !important; }
+    body.dark .bg-gray-50 { background: #141420 !important; }
+
+    .hero-gradient {
+      background: linear-gradient(135deg, #0A0A0F 0%, #1A0A0A 40%, #0A0A0F 100%);
+    }
+    .glow-red {
+      box-shadow: 0 0 60px rgba(220, 38, 38, 0.15), 0 0 120px rgba(220, 38, 38, 0.05);
+    }
+    .glow-gold {
+      box-shadow: 0 0 40px rgba(245, 158, 11, 0.1), 0 0 80px rgba(245, 158, 11, 0.05);
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #EF4444, #DC2626, #F59E0B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #FCD34D, #F59E0B);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-label {
+      writing-mode: vertical-lr;
+      text-orientation: mixed;
+      letter-spacing: 0.5em;
+    }
+    @media (max-width: 768px) {
+      .section-label { writing-mode: horizontal-tb; letter-spacing: 0.3em; }
+    }
+
+    .card-edge {
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+    }
+    .card-edge-inner {
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+    }
+
+    .skill-ring {
+      transform: rotate(-90deg);
+    }
+    .skill-ring circle {
+      transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .counter-num {
+      display: inline-block;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .project-card {
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .project-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      z-index: 10;
+    }
+    .project-card:nth-child(even) {
+      margin-top: 2rem;
+    }
+    @media (max-width: 768px) {
+      .project-card:nth-child(even) { margin-top: 0; }
+    }
+
+    .bg-noise {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+      animation: shimmer 8s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%, 100% { transform: translate(-30%, -30%) rotate(0deg); }
+      50% { transform: translate(30%, 30%) rotate(180deg); }
+    }
+
+    .geo-shape {
+      position: absolute;
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    body:not(.dark) .hero-gradient {
+      background: linear-gradient(135deg, #FEF2F2 0%, #FFF7ED 40%, #FEF2F2 100%);
+    }
+    body:not(.dark) { background: #FEF2F2; color: #1F2937; }
+    body:not(.dark) .bg-dark-card { background: #FFFFFF !important; }
+    body:not(.dark) .border-dark-border { border-color: #FEE2E2 !important; }
+    body:not(.dark) ::-webkit-scrollbar-track { background: #FEF2F2; }
+    body:not(.dark) .bg-noise { opacity: 0.5; }
+    body:not(.dark) .text-gray-400 { color: #9CA3AF !important; }
+    body:not(.dark) section { background: #FFFFFF; }
+    body:not(.dark) .bg-dark-card-alt { background: #FFF7ED !important; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .scale-in { animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+  </style>
+  <link href="../css/glass-standalone.css" rel="stylesheet">
+  <link href="../css/glass.css" rel="stylesheet">
+</head>
+<body class="dark">
+
+  <div class="glass-bg-orbs" style="opacity:0.3">
+    <div class="glass-bg-orb" style="background:rgba(220,38,38,0.08)"></div>
+    <div class="glass-bg-orb" style="background:rgba(245,158,11,0.06)"></div>
+    <div class="glass-bg-orb" style="background:rgba(220,38,38,0.04)"></div>
+  </div>
+
+  <!-- ========== NAVBAR ========== -->
+  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-amber-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+          <span class="text-white font-bold font-mono text-sm">C</span>
+        </div>
+        <span class="font-bold text-lg tracking-tight text-white/90 font-mono">cjw<span class="text-red-500">.dev</span></span>
+      </a>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="#home" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all nav-link">首页</a>
+        <a href="#about" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all nav-link">关于</a>
+        <a href="#skills" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all nav-link">技能</a>
+        <a href="#projects" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all nav-link">作品</a>
+        <a href="#contact" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all nav-link">联系</a>
+        <button id="theme-toggle" class="ml-3 w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-red-400 transition-all">
+          <i class="fa fa-moon-o text-sm"></i>
+        </button>
+      </nav>
+      <button class="md:hidden text-gray-400" id="menu-toggle">
+        <i class="fa fa-bars text-xl"></i>
+      </button>
+    </div>
+    <div class="md:hidden hidden bg-dark-card/95 backdrop-blur-xl border-b border-dark-border" id="mobile-menu">
+      <div class="px-6 py-4 flex flex-col gap-2">
+        <a href="#home" class="py-2 text-sm font-medium text-gray-400 hover:text-red-400 transition-colors">首页</a>
+        <a href="#about" class="py-2 text-sm font-medium text-gray-400 hover:text-red-400 transition-colors">关于</a>
+        <a href="#skills" class="py-2 text-sm font-medium text-gray-400 hover:text-red-400 transition-colors">技能</a>
+        <a href="#projects" class="py-2 text-sm font-medium text-gray-400 hover:text-red-400 transition-colors">作品</a>
+        <a href="#contact" class="py-2 text-sm font-medium text-gray-400 hover:text-red-400 transition-colors">联系</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section id="home" class="min-h-screen hero-gradient flex items-center relative overflow-hidden">
+    <div class="absolute inset-0 bg-noise"></div>
+    <div class="absolute inset-0 shimmer"></div>
+
+    <!-- 装饰几何形状 -->
+    <div class="geo-shape w-96 h-96 -top-20 -right-20 border-red-500/5" style="animation: drift 12s ease-in-out infinite;"></div>
+    <div class="geo-shape w-72 h-72 -bottom-32 -left-16 border-amber-500/5" style="animation: drift 10s ease-in-out infinite reverse;"></div>
+    <div class="geo-shape w-48 h-48 top-1/3 right-1/4 border-red-500/5" style="animation: float 8s ease-in-out infinite;"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center min-h-[80vh]">
+
+        <div class="lg:col-span-7 order-2 lg:order-1">
+          <div class="fade-up" style="animation-delay:0.1s">
+            <div class="flex items-center gap-2 mb-6">
+              <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+              <span class="text-xs font-mono text-gray-500 tracking-widest uppercase">Backend Developer</span>
+            </div>
+            <h1 class="text-[clamp(3rem,8vw,6rem)] font-bold leading-none mb-4 tracking-tight">
+              <span class="text-white">陈景威</span>
+              <br>
+              <span class="text-gradient text-[clamp(1.5rem,4vw,3rem)] font-light">构建可靠的数字基础</span>
+            </h1>
+            <p class="text-gray-400 text-lg max-w-xl mb-8 leading-relaxed">
+              广州市信息技术职业学校 · 软件与信息服务专业在校生。<br>
+              热爱后端开发，专注于服务端架构、数据库设计与 API 开发。
+            </p>
+            <div class="flex flex-wrap gap-4">
+              <a href="#projects" class="px-8 py-3.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-red-500/25 transition-all inline-flex items-center gap-2 glow-red">
+                <i class="fa fa-code"></i> 查看作品
+              </a>
+              <a href="#about" class="px-8 py-3.5 bg-white/5 border border-white/10 text-gray-300 rounded-xl font-semibold hover:bg-white/10 hover:border-red-500/30 transition-all inline-flex items-center gap-2">
+                <i class="fa fa-user"></i> 了解更多
+              </a>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-8 mt-12 fade-up" style="animation-delay:0.3s">
+            <div><div class="text-2xl font-bold text-white">3+</div><div class="text-xs text-gray-500 mt-1">项目经验</div></div>
+            <div><div class="text-2xl font-bold text-white">3</div><div class="text-xs text-gray-500 mt-1">技术证书</div></div>
+            <div><div class="text-2xl font-bold text-white">2</div><div class="text-xs text-gray-500 mt-1">学年深耕</div></div>
+            <div><div class="text-2xl font-bold text-white">5+</div><div class="text-xs text-gray-500 mt-1">技能掌握</div></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 order-1 lg:order-2 flex justify-center lg:justify-end fade-up" style="animation-delay:0.2s">
+          <div class="relative group">
+            <div class="w-56 h-56 lg:w-72 lg:h-72 relative">
+              <div class="absolute inset-0 bg-gradient-to-br from-red-600/30 to-amber-500/20 rounded-3xl blur-2xl animate-pulse-glow"></div>
+              <div class="absolute inset-0 bg-gradient-to-br from-red-600 to-amber-500 rounded-3xl p-[3px]">
+                <div class="w-full h-full rounded-[calc(1.5rem-3px)] overflow-hidden bg-dark-card">
+                  <div class="w-full h-full bg-gradient-to-br from-dark-card to-dark-card flex items-center justify-center">
+                    <span class="text-7xl font-bold text-gradient" style="-webkit-text-stroke:2px rgba(220,38,38,0.3)">威</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -bottom-3 -right-3 bg-dark-card/90 backdrop-blur-md rounded-xl px-4 py-2.5 border border-dark-border glow-gold flex items-center gap-2">
+              <i class="fa fa-database text-amber-400 text-sm"></i>
+              <span class="text-xs font-mono text-gray-400">专注后端</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <a href="#about" class="text-gray-500 hover:text-red-400 transition-colors"><i class="fa fa-angle-down text-2xl"></i></a>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section id="about" class="py-24 relative bg-dark-card/30">
+    <div class="container mx-auto px-6">
+      <div class="flex gap-8 lg:gap-16 flex-col lg:flex-row">
+
+        <div class="lg:w-20 flex-shrink-0 hidden lg:block">
+          <div class="section-label text-xs tracking-[0.5em] text-gray-500 font-mono mt-2">ABOUT</div>
+        </div>
+
+        <div class="flex-1">
+          <span class="lg:hidden inline-block px-4 py-1.5 bg-red-900/30 text-red-400 rounded-full text-xs font-bold mb-6 tracking-wider">ABOUT</span>
+
+          <div class="grid lg:grid-cols-2 gap-10 lg:gap-16">
+            <div class="fade-up">
+              <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6">
+                关于<span class="text-gradient">陈景威</span>
+              </h2>
+              <div class="text-gray-400 leading-relaxed space-y-4">
+                <p>我是陈景威，就读于广州市信息技术职业学校软件与信息服务专业。从一开始接触编程，我就被后端开发的"幕后力量"所吸引——那些用户看不见却至关重要的数据流转与逻辑处理。</p>
+                <p>相比于华丽的前端界面，我更享受设计稳定的 API 接口、优化数据库查询效率、搭建可靠的服务端架构。每一个精心设计的接口都是一座桥梁，连接着用户与数据的世界。</p>
+                <p>在校期间，我系统学习了 Java、Python、MySQL 以及 RESTful API 设计。我坚信，好的后端是好的产品的基础。</p>
+              </div>
+              <div class="flex flex-wrap gap-3 mt-8">
+                <div class="flex items-center gap-2 px-4 py-2 bg-red-900/20 rounded-lg text-sm text-red-400 border border-red-900/30">
+                  <i class="fa fa-server"></i><span>后端开发</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-amber-900/20 rounded-lg text-sm text-amber-400 border border-amber-900/30">
+                  <i class="fa fa-database"></i><span>数据库设计</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-red-900/20 rounded-lg text-sm text-red-400 border border-red-900/30">
+                  <i class="fa fa-cogs"></i><span>API 开发</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 fade-up" style="animation-delay:0.1s">
+              <div class="bg-dark-card border border-dark-border rounded-2xl p-6 card-edge hover:border-red-900/30 transition-all group">
+                <div class="w-10 h-10 rounded-xl bg-red-900/20 flex items-center justify-center mb-4 group-hover:bg-red-900/40 transition-colors">
+                  <i class="fa fa-graduation-cap text-red-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-white counter-num" data-target="3">0</div>
+                <div class="text-sm text-gray-500 mt-1">专业课程</div>
+                <div class="text-xs text-gray-600 mt-2">Java/Python/数据库</div>
+              </div>
+              <div class="bg-dark-card border border-dark-border rounded-2xl p-6 card-edge hover:border-amber-900/30 transition-all group" style="margin-top:1rem">
+                <div class="w-10 h-10 rounded-xl bg-amber-900/20 flex items-center justify-center mb-4 group-hover:bg-amber-900/40 transition-colors">
+                  <i class="fa fa-code-fork text-amber-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-white counter-num" data-target="5">0</div>
+                <div class="text-sm text-gray-500 mt-1">项目实战</div>
+                <div class="text-xs text-gray-600 mt-2">独立 + 团队项目</div>
+              </div>
+              <div class="bg-dark-card border border-dark-border rounded-2xl p-6 card-edge hover:border-red-900/30 transition-all group" style="margin-top:-1rem">
+                <div class="w-10 h-10 rounded-xl bg-red-900/20 flex items-center justify-center mb-4 group-hover:bg-red-900/40 transition-colors">
+                  <i class="fa fa-certificate text-red-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-white counter-num" data-target="3">0</div>
+                <div class="text-sm text-gray-500 mt-1">技能证书</div>
+                <div class="text-xs text-gray-600 mt-2">1+X / 计算机等级</div>
+              </div>
+              <div class="bg-dark-card border border-dark-border rounded-2xl p-6 card-edge hover:border-amber-900/30 transition-all group" style="margin-top:1rem">
+                <div class="w-10 h-10 rounded-xl bg-amber-900/20 flex items-center justify-center mb-4 group-hover:bg-amber-900/40 transition-colors">
+                  <i class="fa fa-clock-o text-amber-400"></i>
+                </div>
+                <div class="text-2xl font-bold text-white counter-num" data-target="2">0</div>
+                <div class="text-sm text-gray-500 mt-1">学习时长</div>
+                <div class="text-xs text-gray-600 mt-2">持续精进中</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SKILLS ========== -->
+  <section id="skills" class="py-24 relative bg-dark-card/10">
+    <div class="container mx-auto px-6">
+      <div class="flex gap-8 lg:gap-16 flex-col lg:flex-row">
+        <div class="lg:w-20 flex-shrink-0 hidden lg:block">
+          <div class="section-label text-xs tracking-[0.5em] text-gray-500 font-mono mt-2">SKILLS</div>
+        </div>
+        <div class="flex-1">
+          <span class="lg:hidden inline-block px-4 py-1.5 bg-red-900/30 text-red-400 rounded-full text-xs font-bold mb-6 tracking-wider">SKILLS</span>
+          <div class="text-center lg:text-left mb-14 fade-up">
+            <h2 class="text-3xl lg:text-4xl font-bold text-white">技术栈</h2>
+            <p class="text-gray-500 mt-3 max-w-lg">后端开发核心技术，持续学习中</p>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+            <div class="text-center fade-up">
+              <div class="relative w-28 h-28 mx-auto mb-4">
+                <svg class="skill-ring w-full h-full" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(220,38,38,0.1)" stroke-width="8"></circle>
+                  <circle class="skill-progress" cx="60" cy="60" r="50" fill="none" stroke="url(#grad1)" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="314.16" stroke-dashoffset="314.16" data-percent="85"></circle>
+                  <defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#DC2626"/><stop offset="100%" stop-color="#EF4444"/></linearGradient></defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span class="text-xl font-bold text-white font-mono">85%</span>
+                </div>
+              </div>
+              <h3 class="text-base font-bold text-white">Java</h3>
+              <p class="text-xs text-gray-500 mt-1">Spring Boot / MyBatis</p>
+            </div>
+            <div class="text-center fade-up" style="animation-delay:0.05s">
+              <div class="relative w-28 h-28 mx-auto mb-4">
+                <svg class="skill-ring w-full h-full" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(245,158,11,0.1)" stroke-width="8"></circle>
+                  <circle class="skill-progress" cx="60" cy="60" r="50" fill="none" stroke="url(#grad2)" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="314.16" stroke-dashoffset="314.16" data-percent="80"></circle>
+                  <defs><linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#FCD34D"/></linearGradient></defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span class="text-xl font-bold text-white font-mono">80%</span>
+                </div>
+              </div>
+              <h3 class="text-base font-bold text-white">Python</h3>
+              <p class="text-xs text-gray-500 mt-1">Flask / FastAPI</p>
+            </div>
+            <div class="text-center fade-up" style="animation-delay:0.1s">
+              <div class="relative w-28 h-28 mx-auto mb-4">
+                <svg class="skill-ring w-full h-full" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(220,38,38,0.1)" stroke-width="8"></circle>
+                  <circle class="skill-progress" cx="60" cy="60" r="50" fill="none" stroke="url(#grad3)" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="314.16" stroke-dashoffset="314.16" data-percent="75"></circle>
+                  <defs><linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#DC2626"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient></defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span class="text-xl font-bold text-white font-mono">75%</span>
+                </div>
+              </div>
+              <h3 class="text-base font-bold text-white">MySQL</h3>
+              <p class="text-xs text-gray-500 mt-1">SQL / 数据库设计</p>
+            </div>
+            <div class="text-center fade-up" style="animation-delay:0.15s">
+              <div class="relative w-28 h-28 mx-auto mb-4">
+                <svg class="skill-ring w-full h-full" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(245,158,11,0.1)" stroke-width="8"></circle>
+                  <circle class="skill-progress" cx="60" cy="60" r="50" fill="none" stroke="url(#grad4)" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="314.16" stroke-dashoffset="314.16" data-percent="70"></circle>
+                  <defs><linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#DC2626"/></linearGradient></defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span class="text-xl font-bold text-white font-mono">70%</span>
+                </div>
+              </div>
+              <h3 class="text-base font-bold text-white">Node.js</h3>
+              <p class="text-xs text-gray-500 mt-1">Express / REST API</p>
+            </div>
+            <div class="text-center fade-up" style="animation-delay:0.2s">
+              <div class="relative w-28 h-28 mx-auto mb-4">
+                <svg class="skill-ring w-full h-full" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(220,38,38,0.1)" stroke-width="8"></circle>
+                  <circle class="skill-progress" cx="60" cy="60" r="50" fill="none" stroke="url(#grad5)" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="314.16" stroke-dashoffset="314.16" data-percent="82"></circle>
+                  <defs><linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#EF4444"/><stop offset="100%" stop-color="#DC2626"/></linearGradient></defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span class="text-xl font-bold text-white font-mono">82%</span>
+                </div>
+              </div>
+              <h3 class="text-base font-bold text-white">Git</h3>
+              <p class="text-xs text-gray-500 mt-1">版本控制 / 协作</p>
+            </div>
+            <div class="text-center fade-up" style="animation-delay:0.25s">
+              <div class="relative w-28 h-28 mx-auto mb-4">
+                <svg class="skill-ring w-full h-full" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(245,158,11,0.1)" stroke-width="8"></circle>
+                  <circle class="skill-progress" cx="60" cy="60" r="50" fill="none" stroke="url(#grad6)" stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="314.16" stroke-dashoffset="314.16" data-percent="65"></circle>
+                  <defs><linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#DC2626"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient></defs>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span class="text-xl font-bold text-white font-mono">65%</span>
+                </div>
+              </div>
+              <h3 class="text-base font-bold text-white">Linux</h3>
+              <p class="text-xs text-gray-500 mt-1">基础运维 / Shell</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap justify-center gap-3 mt-12 fade-up">
+            <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-gray-400 hover:border-red-900/40 transition-all"><i class="fa fa-bolt text-red-500 mr-1"></i> Docker</span>
+            <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-gray-400 hover:border-red-900/40 transition-all"><i class="fa fa-bolt text-red-500 mr-1"></i> Redis</span>
+            <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-gray-400 hover:border-red-900/40 transition-all"><i class="fa fa-bolt text-red-500 mr-1"></i> Nginx</span>
+            <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-gray-400 hover:border-red-900/40 transition-all"><i class="fa fa-bolt text-red-500 mr-1"></i> RESTful</span>
+            <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-sm text-gray-400 hover:border-red-900/40 transition-all"><i class="fa fa-bolt text-red-500 mr-1"></i> Postman</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROJECTS ========== -->
+  <section id="projects" class="py-24 relative bg-dark-card/30">
+    <div class="container mx-auto px-6">
+      <div class="flex gap-8 lg:gap-16 flex-col lg:flex-row">
+        <div class="lg:w-20 flex-shrink-0 hidden lg:block">
+          <div class="section-label text-xs tracking-[0.5em] text-gray-500 font-mono mt-2">PROJECTS</div>
+        </div>
+        <div class="flex-1">
+          <span class="lg:hidden inline-block px-4 py-1.5 bg-amber-900/30 text-amber-400 rounded-full text-xs font-bold mb-6 tracking-wider">PROJECTS</span>
+          <div class="text-center lg:text-left mb-14 fade-up">
+            <h2 class="text-3xl lg:text-4xl font-bold text-white">项目作品</h2>
+            <p class="text-gray-500 mt-3 max-w-lg">课程设计与个人项目，每一行代码都是积累</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 max-w-5xl">
+            <div class="project-card bg-dark-card border border-dark-border rounded-2xl overflow-hidden group fade-up">
+              <div class="h-44 bg-gradient-to-br from-red-900/40 to-red-800/20 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-noise opacity-20"></div>
+                <i class="fa fa-cloud text-5xl text-red-500/30 group-hover:scale-125 transition-transform duration-500"></i>
+                <div class="absolute top-3 left-3 flex gap-2">
+                  <span class="px-3 py-1 bg-dark-card/80 rounded-lg text-xs text-gray-400 border border-dark-border">课程设计</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-white mb-2">在线学习平台后端</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">基于 Spring Boot + MyBatis + MySQL 构建的 RESTful API 服务，实现了用户认证、课程管理、学习进度追踪等核心功能模块。</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="text-xs px-2 py-1 bg-red-900/20 border border-red-900/30 rounded text-red-400">Spring Boot</span>
+                  <span class="text-xs px-2 py-1 bg-red-900/20 border border-red-900/30 rounded text-red-400">MyBatis</span>
+                  <span class="text-xs px-2 py-1 bg-amber-900/20 border border-amber-900/30 rounded text-amber-400">MySQL</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-card bg-dark-card border border-dark-border rounded-2xl overflow-hidden group fade-up" style="animation-delay:0.1s">
+              <div class="h-44 bg-gradient-to-br from-amber-900/40 to-amber-800/20 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-noise opacity-20"></div>
+                <i class="fa fa-comments text-5xl text-amber-500/30 group-hover:scale-125 transition-transform duration-500"></i>
+                <div class="absolute top-3 left-3 flex gap-2">
+                  <span class="px-3 py-1 bg-dark-card/80 rounded-lg text-xs text-gray-400 border border-dark-border">团队项目</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-white mb-2">即时通讯 API 服务</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">使用 Python FastAPI + WebSocket + Redis 开发的轻量级即时通讯后端，支持消息推送、在线状态、历史记录查询等功能。</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="text-xs px-2 py-1 bg-red-900/20 border border-red-900/30 rounded text-red-400">FastAPI</span>
+                  <span class="text-xs px-2 py-1 bg-amber-900/20 border border-amber-900/30 rounded text-amber-400">WebSocket</span>
+                  <span class="text-xs px-2 py-1 bg-red-900/20 border border-red-900/30 rounded text-red-400">Redis</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-card bg-dark-card border border-dark-border rounded-2xl overflow-hidden group fade-up" style="animation-delay:0.2s">
+              <div class="h-44 bg-gradient-to-br from-red-900/40 to-amber-900/20 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-noise opacity-20"></div>
+                <i class="fa fa-line-chart text-5xl text-red-500/30 group-hover:scale-125 transition-transform duration-500"></i>
+                <div class="absolute top-3 left-3 flex gap-2">
+                  <span class="px-3 py-1 bg-dark-card/80 rounded-lg text-xs text-gray-400 border border-dark-border">个人项目</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-white mb-2">数据可视化仪表盘</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">Node.js + ECharts + MySQL 实现的数据分析可视化工具，支持多维度数据筛选、图表联动、报表导出等功能。</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="text-xs px-2 py-1 bg-red-900/20 border border-red-900/30 rounded text-red-400">Node.js</span>
+                  <span class="text-xs px-2 py-1 bg-amber-900/20 border border-amber-900/30 rounded text-amber-400">ECharts</span>
+                  <span class="text-xs px-2 py-1 bg-red-900/20 border border-red-900/30 rounded text-red-400">MySQL</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-card bg-dark-card border border-dark-border rounded-2xl overflow-hidden group fade-up" style="animation-delay:0.3s">
+              <div class="h-44 bg-gradient-to-br from-amber-900/40 to-red-800/20 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-noise opacity-20"></div>
+                <i class="fa fa-shield text-5xl text-amber-500/30 group-hover:scale-125 transition-transform duration-500"></i>
+                <div class="absolute top-3 left-3 flex gap-2">
+                  <span class="px-3 py-1 bg-dark-card/80 rounded-lg text-xs text-gray-400 border border-dark-border">实训项目</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-white mb-2">权限管理系统</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">基于 RBAC 模型的用户权限管理系统，实现了用户管理、角色分配、资源权限控制、审计日志等企业级功能。</p>
+                <div class="flex flex-wrap gap-2">
+                  <span class="text-xs px-2 py-1 bg-red-900/20 border border-red-900/30 rounded text-red-400">Spring Boot</span>
+                  <span class="text-xs px-2 py-1 bg-amber-900/20 border border-amber-900/30 rounded text-amber-400">JWT</span>
+                  <span class="text-xs px-2 py-1 bg-red-900/20 border border-red-900/30 rounded text-red-400">MySQL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section id="contact" class="py-24 relative bg-dark-card/10">
+    <div class="container mx-auto px-6">
+      <div class="flex gap-8 lg:gap-16 flex-col lg:flex-row">
+        <div class="lg:w-20 flex-shrink-0 hidden lg:block">
+          <div class="section-label text-xs tracking-[0.5em] text-gray-500 font-mono mt-2">CONTACT</div>
+        </div>
+        <div class="flex-1">
+          <span class="lg:hidden inline-block px-4 py-1.5 bg-red-900/30 text-red-400 rounded-full text-xs font-bold mb-6 tracking-wider">CONTACT</span>
+          <div class="text-center lg:text-left mb-14 fade-up">
+            <h2 class="text-3xl lg:text-4xl font-bold text-white">联系我</h2>
+            <p class="text-gray-500 mt-3 max-w-lg">欢迎交流技术，一起成长</p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 max-w-4xl fade-up">
+            <div class="bg-dark-card border border-dark-border rounded-2xl p-8 card-edge glow-red">
+              <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                <i class="fa fa-paper-plane text-red-400"></i> 发送消息
+              </h3>
+              <form id="contactForm">
+                <div class="mb-4">
+                  <input type="text" id="name" class="w-full px-4 py-3 bg-dark-card border border-dark-border rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500/50 transition text-gray-300 placeholder-gray-600" placeholder="你的名字">
+                </div>
+                <div class="mb-4">
+                  <input type="email" id="email" class="w-full px-4 py-3 bg-dark-card border border-dark-border rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500/50 transition text-gray-300 placeholder-gray-600" placeholder="your@email.com">
+                </div>
+                <div class="mb-6">
+                  <textarea id="message" rows="4" class="w-full px-4 py-3 bg-dark-card border border-dark-border rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500/50 transition text-gray-300 placeholder-gray-600" placeholder="你想说什么..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-red-500/20 transition-all flex items-center justify-center gap-2">
+                  <i class="fa fa-send"></i> 发送消息
+                </button>
+              </form>
+            </div>
+
+            <div class="flex flex-col justify-between gap-6">
+              <div class="bg-dark-card border border-dark-border rounded-2xl p-8 card-edge">
+                <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                  <i class="fa fa-address-card text-amber-400"></i> 联系方式
+                </h3>
+                <div class="space-y-5">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-red-900/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <i class="fa fa-envelope text-red-400"></i>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500">邮箱</div>
+                      <div class="text-sm text-gray-300">chenjingwei@example.com</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-amber-900/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <i class="fa fa-map-marker text-amber-400"></i>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500">学校</div>
+                      <div class="text-sm text-gray-300">广州市信息技术职业学校</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-red-900/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <i class="fa fa-graduation-cap text-red-400"></i>
+                    </div>
+                    <div>
+                      <div class="text-xs text-gray-500">专业班级</div>
+                      <div class="text-sm text-gray-300">软件与信息服务 2023级6班</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-dark-card border border-dark-border rounded-2xl p-8 card-edge">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <i class="fa fa-share-alt text-red-400"></i> 关注我
+                </h3>
+                <div class="flex gap-4">
+                  <a href="https://github.com" target="_blank" class="w-11 h-11 bg-dark-card border border-dark-border rounded-xl flex items-center justify-center text-gray-500 hover:text-red-400 hover:border-red-500/30 transition-all hover:-translate-y-1"><i class="fa fa-github text-lg"></i></a>
+                  <a href="https://gitee.com" target="_blank" class="w-11 h-11 bg-dark-card border border-dark-border rounded-xl flex items-center justify-center text-gray-500 hover:text-red-400 hover:border-red-500/30 transition-all hover:-translate-y-1"><i class="fa fa-code-fork text-lg"></i></a>
+                  <a href="https://bilibili.com" target="_blank" class="w-11 h-11 bg-dark-card border border-dark-border rounded-xl flex items-center justify-center text-gray-500 hover:text-red-400 hover:border-red-500/30 transition-all hover:-translate-y-1"><i class="fa fa-tv text-lg"></i></a>
+                  <a href="mailto:chenjingwei@example.com" class="w-11 h-11 bg-dark-card border border-dark-border rounded-xl flex items-center justify-center text-gray-500 hover:text-amber-400 hover:border-amber-500/30 transition-all hover:-translate-y-1"><i class="fa fa-envelope text-lg"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="bg-dark-card/50 border-t border-dark-border py-12">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600 to-amber-500 flex items-center justify-center">
+            <span class="text-white font-bold font-mono text-xs">C</span>
+          </div>
+          <span class="font-bold font-mono text-gray-300">cjw<span class="text-red-500">.dev</span></span>
+        </div>
+        <div class="flex gap-6 text-sm text-gray-500">
+          <a href="#home" class="hover:text-red-400 transition-colors">首页</a>
+          <a href="#about" class="hover:text-red-400 transition-colors">关于</a>
+          <a href="#skills" class="hover:text-red-400 transition-colors">技能</a>
+          <a href="#projects" class="hover:text-red-400 transition-colors">作品</a>
+          <a href="#contact" class="hover:text-red-400 transition-colors">联系</a>
+        </div>
+        <div class="text-sm text-gray-600">&copy; 2026 陈景威 · 用代码构建世界</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 回到顶部 -->
+  <button id="back-top" class="fixed bottom-6 right-6 w-11 h-11 bg-gradient-to-br from-red-600 to-red-500 text-white rounded-xl shadow-lg flex items-center justify-center opacity-0 invisible transition-all z-50 hover:shadow-xl hover:shadow-red-500/20 hover:scale-110">
+    <i class="fa fa-arrow-up"></i>
+  </button>
+
+  <!-- 成功模态框 -->
+  <div id="successModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[200] opacity-0 invisible transition-all duration-300">
+    <div class="bg-dark-card/95 border border-dark-border rounded-2xl max-w-md w-full mx-4 p-8 shadow-2xl card-edge">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fa fa-check-circle text-red-400 text-4xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-2">发送成功！</h3>
+        <p class="text-gray-500 mb-6">感谢你的留言，我会尽快回复</p>
+        <button id="closeModalBtn" class="px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl font-medium hover:shadow-lg transition w-full">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 40) {
+          navbar.classList.add('bg-dark-card/90', 'backdrop-blur-xl', 'border-b', 'border-dark-border');
+          navbar.classList.remove('bg-transparent', 'border-transparent');
+        } else {
+          navbar.classList.remove('bg-dark-card/90', 'backdrop-blur-xl', 'border-b', 'border-dark-border');
+          navbar.classList.add('bg-transparent', 'border-transparent');
+        }
+      });
+
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+
+      document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+              mobileMenu.classList.add('hidden');
+            }
+          }
+        });
+      });
+
+      var backTop = document.getElementById('back-top');
+      if (backTop) {
+        window.addEventListener('scroll', function() {
+          backTop.classList.toggle('opacity-100', window.scrollY > 500);
+          backTop.classList.toggle('opacity-0', window.scrollY <= 500);
+          backTop.classList.toggle('visible', window.scrollY > 500);
+          backTop.classList.toggle('invisible', window.scrollY <= 500);
+        });
+        backTop.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      }
+
+      var body = document.body;
+      var toggleBtn = document.getElementById('theme-toggle');
+      function updateThemeIcon() {
+        var isDark = body.classList.contains('dark');
+        if (toggleBtn) toggleBtn.innerHTML = isDark ? '<i class="fa fa-sun-o text-sm"></i>' : '<i class="fa fa-moon-o text-sm"></i>';
+      }
+      function applyTheme(theme) {
+        if (theme === 'dark') body.classList.add('dark');
+        else body.classList.remove('dark');
+        localStorage.setItem('theme', theme);
+        updateThemeIcon();
+      }
+      applyTheme(localStorage.getItem('theme') || 'dark');
+      if (toggleBtn) toggleBtn.addEventListener('click', function() {
+        applyTheme(body.classList.contains('dark') ? 'light' : 'dark');
+      });
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.fade-up').forEach(function(el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'all 0.7s cubic-bezier(0.22, 1, 0.36, 1)';
+        observer.observe(el);
+      });
+
+      var ringObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var circle = entry.target;
+            var percent = parseInt(circle.getAttribute('data-percent'));
+            var circumference = 314.16;
+            var offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            ringObserver.unobserve(circle);
+          }
+        });
+      }, { threshold: 0.3 });
+      document.querySelectorAll('.skill-progress').forEach(function(circle) {
+        ringObserver.observe(circle);
+      });
+
+      var counterObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var el = entry.target;
+            var target = parseInt(el.getAttribute('data-target'));
+            var current = 0;
+            var step = Math.ceil(target / 40);
+            var timer = setInterval(function() {
+              current += step;
+              if (current >= target) { current = target; clearInterval(timer); }
+              el.textContent = current + (el.getAttribute('data-target') >= 5 ? '+' : '');
+            }, 40);
+            counterObserver.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('.counter-num').forEach(function(el) {
+        counterObserver.observe(el);
+      });
+
+      var navLinks = document.querySelectorAll('.nav-link');
+      var sections = document.querySelectorAll('section[id]');
+      window.addEventListener('scroll', function() {
+        var current = '';
+        sections.forEach(function(section) {
+          if (window.scrollY >= section.offsetTop - 120) current = section.id;
+        });
+        navLinks.forEach(function(link) {
+          link.classList.remove('text-red-400', 'bg-red-500/10');
+          if (link.getAttribute('href') === '#' + current) {
+            link.classList.add('text-red-400', 'bg-red-500/10');
+          }
+        });
+      });
+
+      var contactForm = document.getElementById('contactForm');
+      var modal = document.getElementById('successModal');
+      var closeBtn = document.getElementById('closeModalBtn');
+      if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          modal.classList.remove('opacity-0', 'invisible');
+          modal.classList.add('opacity-100', 'visible');
+          contactForm.reset();
+        });
+      }
+      if (closeBtn) closeBtn.addEventListener('click', function() {
+        modal.classList.add('opacity-0', 'invisible');
+        modal.classList.remove('opacity-100', 'visible');
+      });
+      if (modal) modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          modal.classList.add('opacity-0', 'invisible');
+          modal.classList.remove('opacity-100', 'visible');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

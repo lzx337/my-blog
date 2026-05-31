@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html data-theme="garden" data-theme-type="light" lang="zh" style="background-color:var(--custom-page-bg)">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width,initial-scale=1" name="viewport">
+  <link href="../assets/favicon.png" rel="icon" type="image/x-icon">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Nunito:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['M PLUS Rounded 1c','Nunito','Noto Sans SC','sans-serif'],banner:['ZCOOL KuaiLe','cursive'],mono:['JetBrains Mono','monospace']}}}}</script>
+  <!-- MathJax 3 用于渲染公式示例 -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+  <title>LaTeX 数学公式语法指南 · Markdown 中的书写方法 - YQLCH</title>
+  <style>
+    .max-w-blog{max-width:72rem}
+        [data-theme-type="light"]{color-scheme:light;--shadow-neu-out:8px 8px 16px 0 rgba(0,0,0,0.05),-8px -8px 16px 0 rgba(255,255,255,0.6)!important;--shadow-neu-in:inset 8px 8px 16px 0 rgba(0,0,0,0.05),inset -8px -8px 16px 0 rgba(255,255,255,0.6)!important}
+        [data-theme-type="dark"]{color-scheme:dark;--neu-base:oklch(var(--b1));--neu-text:oklch(var(--bc));--neu-border:oklch(var(--bc)/0.1);--neu-btn-text:oklch(var(--bc));--neu-btn-bg:oklch(var(--b2));--neu-text-muted:oklch(var(--bc)/0.5);--neu-accent:oklch(var(--p));--shadow-neu-out:8px 8px 16px 0 rgba(0,0,0,0.4),-8px -8px 16px 0 rgba(255,255,255,0.02)!important;--shadow-neu-in:inset 8px 8px 16px 0 rgba(0,0,0,0.4),inset -8px -8px 16px 0 rgba(255,255,255,0.02)!important}
+        .glass-card{background-color:oklch(var(--b1));border-radius:1rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);border:1px solid oklch(var(--bc)/0.1)}
+        h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.3;letter-spacing:0.02em}
+        .btn-category{background-color:oklch(var(--p)/0.05);color:oklch(var(--p));border:none}.btn-category:hover{background-color:oklch(var(--p));color:oklch(var(--pc));transform:scale(1.1)}
+        .btn-tag{background-color:oklch(var(--s)/0.05);color:oklch(var(--s));border:none}.btn-tag:hover{background-color:oklch(var(--s));color:oklch(var(--sc));transform:scale(1.1)}
+        @keyframes fade-in-up{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+        }
+        :root,[data-theme]{--rounded-box:1rem!important;--rounded-btn:0.5rem!important;--rounded-badge:1.9rem!important}
+        .banner{position:relative;height:var(--bannerHeight,60vh);overflow:hidden}
+        @media(max-width:768px){.banner{height:40vh!important}}
+        .banner .title{font-family:'ZCOOL KuaiLe',cursive;font-size:2.25rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        @media(min-width:768px){.banner .title{font-size:3.75rem}}
+        @media(min-width:1024px){.banner .title{font-size:6rem}}
+        .banner .subtitle{font-family:'ZCOOL KuaiLe',cursive;font-size:1.25rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        @media(min-width:768px){.banner .subtitle{font-size:1.5rem}}
+        @media(min-width:1024px){.banner .subtitle{font-size:2.25rem}}
+        .waves{position:absolute;bottom:0;left:0;width:100%;overflow:hidden;line-height:0}
+        .waves svg{position:relative;display:block;width:calc(100% + 1.3px);height:60px}
+        .waves .parallax>use{animation:wave 25s cubic-bezier(0.55,0.5,0.45,0.5) infinite}
+        .waves .parallax>use:nth-child(1){animation-delay:-2s;animation-duration:7s}
+        .waves .parallax>use:nth-child(2){animation-delay:-3s;animation-duration:10s}
+        .waves .parallax>use:nth-child(3){animation-delay:-4s;animation-duration:13s}
+        .waves .parallax>use:nth-child(4){animation-delay:-5s;animation-duration:20s}
+        @keyframes wave{0%{transform:translate3d(-90px,0,0)}100%{transform:translate3d(85px,0,0)}}
+        .back-to-top:hover{transform:scale(1.1)}
+        .scrollbar-none::-webkit-scrollbar{display:none}
+        .code-block-copy{position:relative;}
+        .latex-demo{margin:1.5rem 0;padding:1rem;background:oklch(var(--b2)/0.4);border-radius:1rem;}
+        .latex-source{margin-top:0.75rem;background:oklch(var(--b3)/0.6);border-radius:0.75rem;padding:0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;overflow-x:auto;}
+  </style>
+  <link href="../css/glass.css" rel="stylesheet">
+  </head>
+<body class="flex flex-col bg-[var(--banner-wave-bg)] min-h-screen" style="background:linear-gradient(135deg,oklch(var(--b2)),oklch(var(--b3)/0.6),oklch(var(--b2)));background-attachment:fixed">
+
+<div class="glass-bg-orbs">
+  <div class="glass-bg-orb"></div>
+  <div class="glass-bg-orb"></div>
+  <div class="glass-bg-orb"></div>
+</div>
+<!-- Banner 数学风格 -->
+<div class="banner" id="banner" style="--bannerHeight:60vh">
+  <div class="w-full h-full banner-inner overflow-hidden relative" style="--bannerHeight:60vh">
+    <div class="w-full h-full absolute left-0 top-0 bg-center bg-cover bg-no-repeat duration-1000 transition-opacity z-0" style="background-image:url(https://images.pexels.com/photos/4164418/pexels-photo-4164418.jpeg?auto=compress&cs=tinysrgb&w=1600);--bannerHeight:60vh" id="banner-bg-current"></div>
+    <div class="w-full h-full absolute left-0 top-0 bg-black/50 duration-300 transition-colors z-10" style="--bannerHeight:60vh"></div>
+    <div class="w-full relative h-[95%] pointer-events-none z-20" style="--bannerHeight:60vh">
+      <div class="-translate-y-1/2 absolute top-1/2 -translate-x-1/2 left-1/2 lg:w-3/4 w-4/5" style="--bannerHeight:60vh">
+        <div class="flex flex-col pointer-events-auto" style="--bannerHeight:60vh">
+          <div class="font-banner lg:text-8xl md:text-6xl text-4xl title" style="--bannerHeight:60vh">📐 LaTeX 数学语法指南</div>
+          <div class="text-xl font-banner lg:text-4xl md:text-2xl subtitle" style="--bannerHeight:60vh">
+            <span style="--bannerHeight:60vh">在 Markdown 中优雅地书写数学公式</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="waves" style="--bannerHeight:60vh">
+    <svg class="waves" viewBox="0 24 150 28" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" shape-rendering="auto">
+      <defs><path d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" id="gentle-wave"></path></defs>
+      <g class="parallax">
+        <use style="animation-delay:-2s;animation-duration:7s" x="48" xlink:href="#gentle-wave" y="0" class="opacity-25 fill-current text-base-100"></use>
+        <use style="animation-delay:-3s;animation-duration:10s" x="48" xlink:href="#gentle-wave" y="3" class="opacity-50 fill-current text-base-100"></use>
+        <use style="animation-delay:-4s;animation-duration:13s" x="48" xlink:href="#gentle-wave" y="5" class="opacity-75 fill-current text-base-100"></use>
+        <use style="animation-delay:-5s;animation-duration:20s" x="48" xlink:href="#gentle-wave" y="7" class="fill-current text-base-100"></use>
+      </g>
+    </svg>
+  </div>
+</div>
+<!-- 桌面端导航栏（简化但保持风格一致） -->
+<nav class="hidden md:block duration-500 fixed left-0 opacity-100 pointer-events-auto right-0 top-0 transition-opacity z-50" id="navbar-desktop">
+  <div class="max-w-[95rem] mx-auto px-4">
+    <div class="rounded-full border border-white/20 backdrop-blur-xl glass-nav-inner py-3 shadow-2xl duration-300 px-6 transition-colors" id="navbar-bg">
+      <div class="flex items-center justify-center space-x-2">
+        <a href="../index.html" class="flex items-center duration-300 hover:scale-105 space-x-2 transition-transform">
+          <span class="text-3xl font-bold text-primary tracking-tight">YQLCH</span>
+        </a>
+        <a href="../index.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:home-outline-rounded" style="font-size:1.25rem"></span> 首页
+        </a>
+        <a href="../pages/search.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg ripple-link">
+          <span class="iconify" data-icon="material-symbols:edit-note-outline" style="font-size:1.25rem"></span> 写作
+        </a>
+        <a href="../pages/navigation.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg ripple-link">
+          <span class="iconify" data-icon="material-symbols:explore-outline" style="font-size:1.25rem"></span> 导航
+        </a>
+        <div class="dropdown dropdown-hover">
+          <div class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg" role="button" tabindex="0">
+            <span class="iconify" data-icon="material-symbols:play-circle-outline-rounded" style="font-size:1.25rem"></span> <span>娱乐</span>
+          </div>
+          <ul class="dropdown-content menu p-2 z-[1] w-52 glass-dropdown mt-2 text-base-content" tabindex="0">
+            <li><a href="../pages/anime.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all hover:bg-base-200 text-base ripple-link"><span class="iconify" data-icon="material-symbols:movie-outline" style="font-size:1rem"></span> 追番</a></li>
+            <li><a href="../pages/music.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all hover:bg-base-200 text-base ripple-link"><span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:1rem"></span> 音乐</a></li>
+          </ul>
+        </div>
+        <a href="../pages/project.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg ripple-link">
+          <span class="iconify" data-icon="material-symbols:code-blocks-outline" style="font-size:1.25rem"></span> 项目
+        </a>
+        <a href="../pages/friend.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg ripple-link">
+          <span class="iconify" data-icon="material-symbols:supervisor-account-outline-rounded" style="font-size:1.25rem"></span> 组员介绍
+        </a>
+        <a href="../pages/about.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg ripple-link">
+          <span class="iconify" data-icon="material-symbols:info-outline-rounded" style="font-size:1.25rem"></span> 关于
+        </a>
+        <div class="dropdown dropdown-hover">
+          <div class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg" role="button" tabindex="0">
+            <span class="iconify" data-icon="material-symbols:tune-outline" style="font-size:1.25rem"></span> 设置
+          </div>
+          <div class="dropdown-content z-[1] w-72 glass-dropdown mt-2 p-4 text-base-content" tabindex="0">
+            <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:photo"></span> 背景模式</h3>
+            <div class="grid grid-cols-2 gap-2 mb-4">
+              <button id="bg-banner" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:photo" style="font-size:1rem"></span>
+                <span>Banner</span>
+              </button>
+              <button id="bg-fullscreen" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:monitor-fullscreen" style="font-size:1rem"></span>
+                <span>全屏</span>
+              </button>
+              <button id="bg-background" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:image" style="font-size:1rem"></span>
+                <span>背景</span>
+              </button>
+              <button id="bg-hide" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:hide-image" style="font-size:1rem"></span>
+                <span>隐藏</span>
+              </button>
+            </div>
+            
+            <div class="border-t border-base-200 pt-3 mb-3">
+              <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:palette-outline"></span> 颜色主题</h3>
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-base-content/60">☀️ 白天</span>
+                </div>
+                <button id="theme-toggle" class="btn btn-ghost btn-sm btn-circle" aria-label="切换白天/夜晚">
+                  <span class="iconify text-yellow-400" id="sun-icon" data-icon="material-symbols:sunny" style="font-size:1rem"></span>
+                  <span class="iconify text-indigo-400 hidden" id="moon-icon" data-icon="material-symbols:moon-stars" style="font-size:1rem"></span>
+                </button>
+              </div>
+              <div id="theme-light-section" class="grid grid-cols-4 gap-3 mb-3"></div>
+              <h3 class="text-xs font-semibold text-base-content/60 mb-2 flex items-center gap-1"><span>🌙</span> 夜晚主题</h3>
+              <div id="theme-dark-section" class="grid grid-cols-4 gap-3"></div>
+            </div>
+            
+            
+          </div>
+        </div>
+        <a href="../pages/admin.html" id="nav-login-btn" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg"><span class="iconify" data-icon="material-symbols:login" style="font-size:1.25rem"></span> 登录</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- 移动端导航栏 -->
+<nav class="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50" id="navbar-mobile">
+  <div class="flex items-center gap-2 glass-nav-inner rounded-full px-4 py-3 shadow-2xl">
+    <a href="../index.html" class="btn btn-ghost btn-circle"><img src="../assets/profile.png" class="w-8 h-8 rounded-full" alt="首页"></a>
+    <a href="../pages/navigation.html" class="btn btn-ghost btn-circle text-base-content ripple-link"><span class="iconify" data-icon="material-symbols:explore-outline" style="font-size:1.25rem"></span></a>
+    <a href="../pages/project.html" class="btn btn-ghost btn-circle text-base-content ripple-link"><span class="iconify" data-icon="material-symbols:code-blocks-outline" style="font-size:1.25rem"></span></a>
+    <a href="../pages/friend.html" class="btn btn-ghost btn-circle text-base-content ripple-link"><span class="iconify" data-icon="material-symbols:supervisor-account-outline-rounded" style="font-size:1.25rem"></span></a>
+    <a href="../pages/about.html" class="btn btn-ghost btn-circle text-base-content ripple-link"><span class="iconify" data-icon="material-symbols:info-outline-rounded" style="font-size:1.25rem"></span></a>
+    <button id="theme-toggle-mobile" class="btn btn-ghost btn-circle text-primary"><span class="iconify" data-icon="material-symbols:dark-mode-outline" style="font-size:1.25rem"></span></button>
+  </div>
+</nav>
+<main class="flex-1 w-full max-w-blog mx-auto px-4 mt-8 mb-24 page-content-animate">
+  <div class="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 gap-6">
+    <!-- 左侧侧边栏（简化版） -->
+    <aside class="md:col-span-1 order-2 md:order-1">
+      <div class="glass-card p-3 mb-4">
+        <a href="../pages/about.html" class="group block relative mx-auto mt-1 lg:mx-0 lg:mt-0 mb-3 max-w-[12rem] lg:max-w-none overflow-hidden rounded-2xl active:scale-95 ripple-link">
+          <div class="absolute transition pointer-events-none group-hover:bg-black/30 group-active:bg-black/50 w-full h-full z-50 flex items-center justify-center"><span class="iconify transition opacity-0 scale-90 group-hover:scale-100 group-hover:opacity-100 text-white text-5xl" data-icon="material-symbols:person-outline"></span></div>
+          <div class="mx-auto lg:w-full overflow-hidden relative"><div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div><img src="../assets/profile.png" alt="YQLCH" class="w-full h-full object-cover"></div>
+        </a>
+        <div class="px-2"><div class="font-bold text-xl text-center mb-1">YQLCH</div><div class="h-1 w-5 bg-primary mx-auto rounded-full mb-2"></div><div class="text-center mb-2.5 font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Ciallo～(∠・ω&lt;)⌒★</div>
+        <div class="mt-4 pt-3 border-t border-base-content/20"><div class="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-2 justify-items-center"><div class="tooltip tooltip-bottom" data-tip="GitHub"><a href="https://github.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="mdi:github"></span></a></div><div class="tooltip tooltip-bottom" data-tip="BiliBili"><a href="https://bilibili.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:bilibili-fill"></span></a></div></div></div>
+        <div class="grid grid-cols-2 mt-3 pt-3 border-t border-base-content/20"><div class="text-center"><div class="text-xs text-base-content/50 mb-1">访问量</div><div class="font-bold text-lg">-</div></div><div class="text-center border-l border-base-content/20"><div class="text-xs text-base-content/50 mb-1">访客数</div><div class="font-bold text-lg">-</div></div></div></div>
+      </div>
+      <div class="glass-card p-3 mb-4"><div class="font-bold text-lg relative ml-4 mb-2 before:w-1 before:h-4 before:rounded-md before:bg-primary before:absolute before:left-[-16px] before:top-[5.5px]">分类</div><div class="px-2"><a href="../pages/categories.html" class="ripple-link"><button class="w-full h-10 rounded-lg hover:bg-base-200 transition-all pl-2 text-left">📐 数学公式指南</button></a><a href="../pages/categories.html" class="ripple-link"><button class="w-full h-10 rounded-lg hover:bg-base-200 transition-all pl-2 text-left">📝 Markdown 教程</button></a></div></div>
+      <div class="glass-card p-3"><div class="font-bold text-lg relative ml-4 mb-2 before:w-1 before:h-4 before:rounded-md before:bg-primary before:absolute before:left-[-16px] before:top-[5.5px]">标签</div><div class="px-2"><div class="flex gap-1 flex-wrap"><a href="../pages/tags.html" class="h-6 px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content transition-all inline-flex items-center ripple-link">LaTeX</a><a href="../pages/tags.html" class="h-6 px-2 rounded-md border border-secondary text-base-content hover:bg-secondary transition-all inline-flex items-center ripple-link">Markdown</a><a href="../pages/tags.html" class="h-6 px-2 rounded-md border border-secondary text-base-content hover:bg-secondary transition-all inline-flex items-center ripple-link">数学公式</a></div></div></div>
+    </aside>
+    <!-- 右侧主内容：语法指南 -->
+    <div class="md:col-span-4 lg:col-span-3 order-1 md:order-2">
+      <article class="glass-card p-6 md:p-8 animate-fade-in-up">
+        <h1 class="ryuchan-heading text-2xl md:text-3xl mb-4">📖 如何在 Markdown 中使用 LaTeX 书写数学公式</h1>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-base-content/70 mb-4"><span class="flex items-center gap-1.5"><span class="iconify" data-icon="material-symbols:calendar-month-outline"></span> 2026年5月24日</span><span class="flex items-center gap-1.5"><span class="iconify" data-icon="material-symbols:schedule-outline"></span> 约 7 分钟</span><span class="flex items-center gap-1.5"><span class="iconify" data-icon="material-symbols:visibility-outline"></span> 329 次浏览</span></div>
+        <div class="flex flex-wrap items-center gap-2 mb-5"><span class="flex items-center gap-1 text-sm"><span class="iconify" data-icon="material-symbols:folder-outline"></span>分类：</span><a href="categories.html" class="btn btn-xs btn-category rounded-lg">教程</a><span class="mx-1 text-base-content/20">|</span><span class="flex items-center gap-1 text-sm"><span class="iconify" data-icon="material-symbols:label-outline"></span>标签：</span><a href="tags.html" class="btn btn-xs btn-tag rounded-lg">LaTeX</a><a href="tags.html" class="btn btn-xs btn-tag rounded-lg">Markdown</a><a href="tags.html" class="btn btn-xs btn-tag rounded-lg">数学公式</a></div>
+        <hr class="mb-6 border-base-content/10">
+        <div class="prose prose-base max-w-none text-base-content/90">
+          <p class="lead">在 Markdown 中插入数学公式需要使用 <strong>LaTeX 语法</strong>，并通过渲染引擎（如 MathJax 或 KaTeX）将其转换为美观的公式。本站已集成 MathJax，你只需要按照下面规则书写即可。</p>
+
+          <h2 class="text-xl font-bold mt-8 mb-3">✨ 行内公式与块级公式</h2>
+          <ul><li><strong>行内公式</strong>：使用 <code class="bg-base-300 px-1 rounded">\( ... \)</code> 包裹，公式与文字在同一行。例如：质能方程 \(E = mc^2\) 非常简洁。</li>
+          <li><strong>块级公式（独立显示）</strong>：使用 <code class="bg-base-300 px-1 rounded">\[ ... \]</code> 包裹，公式独占一行并居中。例如：</li></ul>
+          <div class="latex-demo">\[ \int_{0}^{\infty} e^{-x^2} dx = \frac{\sqrt{\pi}}{2} \]</div>
+          <div class="latex-source"><strong>📄 源码：</strong><br><code>\[ \int_{0}^{\infty} e^{-x^2} dx = \frac{\sqrt{\pi}}{2} \]</code></div>
+
+          <h2 class="text-xl font-bold mt-8 mb-3">🔢 常用基础符号</h2>
+          <div class="overflow-x-auto"><table class="table table-sm w-full"><thead><tr><th>效果</th><th>LaTeX 代码</th></tr></thead><tbody><tr><td>\(x^2\)</td><td><code>x^2</code></td></tr><tr><td>\(a_{ij}\)</td><td><code>a_{ij}</code></td></tr><tr><td>\(\frac{1}{2}\)</td><td><code>\frac{1}{2}</code></td></tr><tr><td>\(\sqrt{x}\)</td><td><code>\sqrt{x}</code></td></tr><tr><td>\(\sqrt[3]{x}\)</td><td><code>\sqrt[3]{x}</code></td></tr><tr><td>\(\sum_{i=1}^{n}\)</td><td><code>\sum_{i=1}^{n}</code></td></tr><tr><td>\(\int_{a}^{b}\)</td><td><code>\int_{a}^{b}</code></td></tr></tbody></table></div>
+
+          <h2 class="text-xl font-bold mt-8 mb-3">📐 上下标与运算符</h2>
+          <p>上标 <code>^</code> ，下标 <code>_</code> ；多个字符请用花括号括起来，例如 <code>x^{10}</code> 显示为 \(x^{10}\)。希腊字母：<code>\alpha, \beta, \gamma, \delta, \epsilon, \pi, \omega</code> 等，如 \(\alpha + \beta = \gamma\)。</p>
+          <div class="latex-source"><code>\alpha, \beta, \gamma, \delta, \epsilon, \pi, \omega</code></div>
+
+          <h2 class="text-xl font-bold mt-8 mb-3">🔄 大型运算符与极限</h2>
+          <div class="latex-demo">\[ \lim_{x \to 0} \frac{\sin x}{x} = 1 \qquad \sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6} \]</div>
+          <div class="latex-source"><code>\[ \lim_{x \to 0} \frac{\sin x}{x} = 1 \qquad \sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6} \]</code></div>
+
+          <h2 class="text-xl font-bold mt-8 mb-3">📊 矩阵与行列式</h2>
+          <div class="latex-demo">\[ \mathbf{A} = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}, \quad \det(\mathbf{A}) = \begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = -2 \]</div>
+          <div class="latex-source"><code>\[ \mathbf{A} = \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}, \quad \det(\mathbf{A}) = \begin{vmatrix} 1 & 2 \\ 3 & 4 \end{vmatrix} = -2 \]</code></div>
+          <p>矩阵环境支持 <code>pmatrix</code> (圆括号), <code>bmatrix</code> (方括号), <code>vmatrix</code> (行列式竖线), <code>matrix</code> (无括号)。</p>
+
+          <h2 class="text-xl font-bold mt-8 mb-3">📚 多行公式与方程组</h2>
+          <p>使用 <code>aligned</code> 环境对齐等号：</p>
+          <div class="latex-demo">\[ \begin{aligned} 2x + 3y &= 7 \\ x - y &= 1 \end{aligned} \]</div>
+          <div class="latex-source"><code>\[ \begin{aligned} 2x + 3y &= 7 \\ x - y &= 1 \end{aligned} \]</code></div>
+          <p>分段函数 <code>cases</code>：</p>
+          <div class="latex-demo">\[ f(x) = \begin{cases} x^2, & x \ge 0 \\ -x, & x &lt; 0 \end{cases} \]</div>
+          <div class="latex-source"><code>\[ f(x) = \begin{cases} x^2, & x \ge 0 \\ -x, & x &lt; 0 \end{cases} \]</code></div>
+
+          <h2 class="text-xl font-bold mt-8 mb-3">🧪 常用符号速查</h2>
+          <div class="overflow-x-auto"><table class="table table-xs"><thead><tr><th>效果</th><th>代码</th><th>效果</th><th>代码</th></tr></thead><tbody><tr><td>\(\infty\)</td><td><code>\infty</code></td><td>\(\partial\)</td><td><code>\partial</code></td></tr><tr><td>\(\nabla\)</td><td><code>\nabla</code></td><td>\(\prod\)</td><td><code>\prod</code></td></tr><tr><td>\(\cup\)</td><td><code>\cup</code></td><td>\(\cap\)</td><td><code>\cap</code></td></tr><tr><td>\(\subseteq\)</td><td><code>\subseteq</code></td><td>\(\approx\)</td><td><code>\approx</code></td></tr><tr><td>\(\Rightarrow\)</td><td><code>\Rightarrow</code></td><td>\(\forall\)</td><td><code>\forall</code></td></tr><tr><td>\(\exists\)</td><td><code>\exists</code></td><td>\(\neq\)</td><td><code>\neq</code></td></tr></tbody></table></div>
+
+          <div class="bg-primary/5 border-l-4 border-primary p-4 rounded-r-xl my-6"><p class="text-sm"><strong>💡 小技巧：</strong> 在 <strong>VS Code</strong> 等编辑器中可以安装 Markdown+Math 插件实时预览。本站渲染引擎支持 AMS-LaTeX 扩展，几乎所有的数学符号都能识别。</p></div>
+
+          <h2 class="text-xl font-bold mt-8 mb-3">📝 完整示例（复制即用）</h2>
+          <div class="latex-demo bg-base-300/40"><pre class="text-sm font-mono whitespace-pre-wrap">这是一个行内公式 \(a^2 + b^2 = c^2\) 的例子。
+
+块级公式：
+\[
+\frac{d}{dx} \left( \int_{0}^{x} f(t)\,dt \right) = f(x)
+\]
+
+带有编号（本站自动编号需额外配置，此处仅展示语法）：
+\[
+e^{i\pi} + 1 = 0 \tag{Euler}
+\]
+
+矩阵：
+\[
+\begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix}
+\]</pre></div>
+
+          <p>以上便是 Markdown 中使用 LaTeX 的核心语法。你只需牢记：<strong>行内用 <code>\(...\)</code>，块级用 <code>\[...\]</code></strong>，再配合丰富的 LaTeX 命令，就能写出任何数学内容。如果需要更系统的学习，可以查阅 <a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics" target="_blank" class="text-primary hover:underline">LaTeX 数学模式参考手册</a>。</p>
+          <p>试着在下面的评论区或自己的博客中编写第一个公式吧！🎉</p>
+        </div>
+        <hr class="my-8 border-base-content/10">
+        <div class="flex flex-col sm:flex-row justify-between gap-3">
+          <a href="电锯人.html" class="glass-card p-3 flex items-center gap-2 hover:shadow-lg transition-all flex-1"><span class="iconify text-primary" data-icon="material-symbols:arrow-back-rounded"></span><div><div class="text-xs text-base-content/50">上一篇</div><div class="text-sm font-semibold">电锯人的观感</div></div></a>
+          <a href="添加评论系统.html" class="glass-card p-3 flex items-center gap-2 hover:shadow-lg transition-all flex-1 text-right justify-end"><div><div class="text-xs text-base-content/50">下一篇</div><div class="text-sm font-semibold">评论系统</div></div><span class="iconify text-primary" data-icon="material-symbols:arrow-forward-rounded"></span></a>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>
+<footer class="footer glass-footer py-2 px-4 md:p-10 rounded-xl shadow-lg gap-y-2 md:gap-4"><aside><svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" class="fill-current md:w-[50px] md:h-[50px]"><path d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"></path></svg><p class="text-xs md:text-base">Powered by YQLCH Template<br>Copyright &copy; YQLCH 2025–2026<br>All rights reserved</p></aside><nav><span class="footer-title text-xs md:text-sm">Social</span><div class="grid grid-flow-col gap-3 md:gap-4"><div class="tooltip" data-tip="GitHub"><a href="https://github.com" target="_blank"><span class="iconify text-xl" data-icon="mdi:github"></span></a></div><div class="tooltip" data-tip="RSS"><a href="#"><span class="iconify text-xl" data-icon="ri:rss-line"></span></a></div></div><div class="mt-2 text-xs md:text-sm"><a href="#" target="_blank" class="font-bold">萌ICP备20261117号</a></div></nav></footer>
+<button id="back-to-top" class="back-to-top opacity-0 pointer-events-none"><span class="iconify" data-icon="material-symbols:keyboard-arrow-up-rounded" style="font-size:1.5rem"></span></button>
+<div id="music-player" style="position:fixed;bottom:5rem;left:1.5rem;z-index:40;"><button id="music-toggle" class="back-to-top" style="position:static;width:3rem;height:3rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));"><span class="iconify" id="music-icon" data-icon="material-symbols:music-note-rounded" style="font-size:1.25rem;color:white;"></span></button><div id="music-panel" style="display:none;position:absolute;bottom:3.5rem;left:0;width:16rem;background:oklch(var(--b1));border-radius:1rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);padding:1rem;border:1px solid oklch(var(--bc)/0.1);"><div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;"><div style="width:3rem;height:3rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));border-radius:0.75rem;display:flex;align-items:center;justify-content:center;"><span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:1.25rem;color:white;"></span></div><div style="flex:1;overflow:hidden;"><div id="music-title" style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Math Melody</div><div id="music-artist" style="font-size:0.75rem;opacity:0.7;">LaTeX Beats</div></div></div><div style="margin-bottom:0.75rem;"><div style="height:0.25rem;background:oklch(var(--b2));border-radius:9999px;overflow:hidden;"><div id="music-progress" style="width:0%;height:100%;background:linear-gradient(90deg,oklch(var(--p)),oklch(var(--s)));transition:width 0.3s;"></div></div><div style="display:flex;justify-content:space-between;font-size:0.625rem;margin-top:0.25rem;opacity:0.6;"><span id="music-current">0:00</span><span id="music-duration">3:00</span></div></div><div style="display:flex;justify-content:center;align-items:center;gap:1rem;"><button id="music-prev" style="background:none;border:none;cursor:pointer;padding:0.25rem;"><span class="iconify" data-icon="material-symbols:skip-previous-rounded" style="font-size:1.25rem;"></span></button><button id="music-play" style="width:2.5rem;height:2.5rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;"><span class="iconify" id="play-icon" data-icon="material-symbols:play-arrow-rounded" style="font-size:1.25rem;"></span></button><button id="music-next" style="background:none;border:none;cursor:pointer;padding:0.25rem;"><span class="iconify" data-icon="material-symbols:skip-next-rounded" style="font-size:1.25rem;"></span></button></div></div></div>
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="../css/glass.css" rel="stylesheet">
+<script src="../js/utils.js" defer></script>
+<script src="../js/seo.js" defer></script>
+<script src="../js/theme.js" defer></script>
+<script src="../js/main.js" defer></script>
+<script src="../js/music.js" defer></script>
+</body>
+</html>

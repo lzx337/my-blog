@@ -1,0 +1,46 @@
+/* ============================================================
+   Glass Bridge — oklch() CSS variables for non-DaisyUI pages
+   为不使用 DaisyUI 的页面提供毛玻璃效果所需的 CSS 变量
+   ============================================================ */
+
+:root {
+  --b1: 1 0 0;
+  --b2: 0.96 0 0;
+  --b3: 0.92 0 0;
+  --bc: 0.2 0 0;
+  --p: 0.55 0.18 250;
+  --s: 0.55 0.15 175;
+  --a: 0.65 0.17 85;
+  --pc: 1 0 0;
+  --sc: 1 0 0;
+  --in: 0.55 0.15 250;
+  --su: 0.55 0.18 150;
+  --wa: 0.65 0.18 80;
+  --er: 0.5 0.2 25;
+}
+
+/* Dark mode — match body.dark convention used by member/hrh pages */
+body.dark {
+  --b1: 0.2 0 0;
+  --b2: 0.15 0 0;
+  --b3: 0.12 0 0;
+  --bc: 0.85 0 0;
+  --p: 0.62 0.18 250;
+  --s: 0.6 0.15 175;
+  --a: 0.7 0.17 85;
+}
+
+/* Also hook into glass.css dark mode selector */
+[data-theme-type="dark"],
+body.dark {
+  --glass-bg: oklch(var(--b1) / 0.35);
+  --glass-bg-strong: oklch(var(--b1) / 0.6);
+  --glass-bg-light: oklch(var(--b1) / 0.18);
+  --glass-bg-hover: oklch(var(--b1) / 0.5);
+  --glass-bg-card: oklch(var(--b1) / 0.45);
+  --glass-border: 1px solid oklch(var(--bc) / 0.1);
+  --glass-border-strong: 1px solid oklch(var(--bc) / 0.18);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.20), 0 2px 8px rgba(0,0,0,0.12);
+  --glass-shadow-hover: 0 12px 40px rgba(0,0,0,0.30), 0 4px 12px rgba(0,0,0,0.18);
+  --glass-shadow-sm: 0 2px 8px rgba(0,0,0,0.15);
+}

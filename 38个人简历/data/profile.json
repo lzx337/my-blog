@@ -1,0 +1,98 @@
+{
+  "name": "Xavier Qin",
+  "title": "全栈设计师 & 前端开发者",
+  "avatar": "avatar.jpg",
+  "bio": "热爱技术，关注设计，致力于创造优雅且功能强大的数字产品。拥有8年前端开发和UI/UX设计经验，擅长构建现代化的响应式应用和设计系统。",
+  "location": "中国 · 广州",
+  "email": "alex@example.com",
+  "website": "https://alexchen.dev",
+  "social": {
+    "github": "https://github.com/alexchen",
+    "twitter": "https://twitter.com/alexchen",
+    "linkedin": "https://linkedin.com/in/alexchen",
+    "dribbble": "https://dribbble.com/alexchen",
+    "instagram": "https://instagram.com/alexchen"
+  },
+  "skills": [
+    { "name": "前端开发", "level": 95, "category": "技术" },
+    { "name": "UI/UX设计", "level": 90, "category": "设计" },
+    { "name": "React / Vue", "level": 92, "category": "技术" },
+    { "name": "TypeScript", "level": 88, "category": "技术" },
+    { "name": "Node.js", "level": 85, "category": "技术" },
+    { "name": "CSS / Sass", "level": 93, "category": "设计" },
+    { "name": "设计系统", "level": 89, "category": "设计" },
+    { "name": "性能优化", "level": 86, "category": "技术" }
+  ],
+  "experience": [
+    {
+      "company": "TechCorp Inc.",
+      "position": "高级前端工程师",
+      "period": "2021 - 至今",
+      "description": "负责公司核心产品的前端架构设计与开发，带领5人小组完成多个重要项目的交付。"
+    },
+    {
+      "company": "DesignStudio",
+      "position": "UI/UX设计师",
+      "period": "2018 - 2021",
+      "description": "为多个知名品牌设计数字产品界面，参与从概念设计到开发落地的完整流程。"
+    },
+    {
+      "company": "StartupXYZ",
+      "position": "全栈开发工程师",
+      "period": "2016 - 2018",
+      "description": "作为初创团队核心成员，独立完成产品的前后端开发工作。"
+    }
+  ],
+  "education": [
+    {
+      "school": "广州交通大学",
+      "degree": "软件编程爱好者",
+      "period": "2014 - 2016",
+      "description": "研究方向：人机交互与用户体验"
+    },
+    {
+      "school": "华东理工大学",
+      "degree": "软件工程学士",
+      "period": "2010 - 2014",
+      "description": "ACM-ICPC 竞赛获奖者"
+    }
+  ],
+  "achievements": [
+    "获得 Google Developer Expert 认证",
+    "开源项目累计 Star 超过 15,000",
+    "多次在前端技术大会进行主题分享",
+    "出版《现代前端性能优化实战》技术书籍"
+  ],
+  "team": [
+    {
+      "name": "Sarah Liu",
+      "role": "首席设计师",
+      "avatar": "sarah.jpg",
+      "bio": "深耕 UI/UX 设计领域10年，专注于设计系统与品牌视觉。"
+    },
+    {
+      "name": "Mike Wang",
+      "role": "后端架构师",
+      "avatar": "mike.jpg",
+      "bio": "全栈工程师，擅长系统架构与微服务设计。"
+    },
+    {
+      "name": "Emma Zhang",
+      "role": "产品经理",
+      "avatar": "emma.jpg",
+      "bio": "专注于用户体验研究与产品策略规划。"
+    },
+    {
+      "name": "James Li",
+      "role": "DevOps 工程师",
+      "avatar": "james.jpg",
+      "bio": "自动化与云原生技术专家。"
+    },
+    {
+      "name": "Lisa Yang",
+      "role": "创意工程师",
+      "avatar": "lisa.jpg",
+      "bio": "热爱创意编程与互动体验设计。"
+    }
+  ]
+}

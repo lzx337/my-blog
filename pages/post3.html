@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html data-theme="garden" data-theme-type="light" lang="zh" style="background-color:var(--custom-page-bg)">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width,initial-scale=1" name="viewport">
+  <link href="../assets/favicon.png" rel="icon" type="image/x-icon">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Nunito:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['M PLUS Rounded 1c','Nunito','Noto Sans SC','sans-serif'],banner:['ZCOOL KuaiLe','cursive'],mono:['JetBrains Mono','monospace']}}}}</script>
+  <title>电锯人 第二季观后感 - YQLCH</title>
+  <style>
+    .max-w-blog{max-width:72rem}
+        [data-theme-type="light"]{color-scheme:light;--shadow-neu-out:8px 8px 16px 0 rgba(0,0,0,0.05),-8px -8px 16px 0 rgba(255,255,255,0.6)!important;--shadow-neu-in:inset 8px 8px 16px 0 rgba(0,0,0,0.05),inset -8px -8px 16px 0 rgba(255,255,255,0.6)!important}
+        [data-theme-type="dark"]{color-scheme:dark;--neu-base:oklch(var(--b1));--neu-text:oklch(var(--bc));--neu-border:oklch(var(--bc)/0.1);--neu-btn-text:oklch(var(--bc));--neu-btn-bg:oklch(var(--b2));--neu-text-muted:oklch(var(--bc)/0.5);--neu-accent:oklch(var(--p));--shadow-neu-out:8px 8px 16px 0 rgba(0,0,0,0.4),-8px -8px 16px 0 rgba(255,255,255,0.02)!important;--shadow-neu-in:inset 8px 8px 16px 0 rgba(0,0,0,0.4),inset -8px -8px 16px 0 rgba(255,255,255,0.02)!important}
+        .glass-card{background-color:oklch(var(--b1));border-radius:1rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);border:1px solid oklch(var(--bc)/0.1)}
+        h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.3;letter-spacing:0.02em}
+        .btn-category{background-color:oklch(var(--p)/0.05);color:oklch(var(--p));border:none}.btn-category:hover{background-color:oklch(var(--p));color:oklch(var(--pc));transform:scale(1.1)}
+        .btn-tag{background-color:oklch(var(--s)/0.05);color:oklch(var(--s));border:none}.btn-tag:hover{background-color:oklch(var(--s));color:oklch(var(--sc));transform:scale(1.1)}
+        .glass-panel{padding:1rem;border-radius:1.5rem;background-color:oklch(var(--b2)/0.3);backdrop-filter:blur(12px);border:1px solid oklch(var(--b3)/0.2)}
+        @keyframes fade-in-up{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+        }
+        :root,[data-theme]{--rounded-box:1rem!important;--rounded-btn:0.5rem!important;--rounded-badge:1.9rem!important}
+        .banner{position:relative;height:var(--bannerHeight,60vh);overflow:hidden}
+        @media(max-width:768px){.banner{height:40vh!important}}
+        .banner .title{font-family:'ZCOOL KuaiLe',cursive;font-size:2.25rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        @media(min-width:768px){.banner .title{font-size:3.75rem}}
+        @media(min-width:1024px){.banner .title{font-size:6rem}}
+        .banner .subtitle{font-family:'ZCOOL KuaiLe',cursive;font-size:1.25rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        @media(min-width:768px){.banner .subtitle{font-size:1.5rem}}
+        @media(min-width:1024px){.banner .subtitle{font-size:2.25rem}}
+        .waves{position:absolute;bottom:0;left:0;width:100%;overflow:hidden;line-height:0}
+        .waves svg{position:relative;display:block;width:calc(100% + 1.3px);height:60px}
+        .waves .parallax>use{animation:wave 25s cubic-bezier(0.55,0.5,0.45,0.5) infinite}
+        .waves .parallax>use:nth-child(1){animation-delay:-2s;animation-duration:7s}
+        .waves .parallax>use:nth-child(2){animation-delay:-3s;animation-duration:10s}
+        .waves .parallax>use:nth-child(3){animation-delay:-4s;animation-duration:13s}
+        .waves .parallax>use:nth-child(4){animation-delay:-5s;animation-duration:20s}
+        @keyframes wave{0%{transform:translate3d(-90px,0,0)}100%{transform:translate3d(85px,0,0)}}
+        .back-to-top:hover{transform:scale(1.1)}
+        .scrollbar-none::-webkit-scrollbar{display:none}
+  </style>
+</head>
+<body class="flex flex-col bg-[var(--banner-wave-bg)] min-h-screen" style="background:linear-gradient(135deg,oklch(var(--b2)),oklch(var(--b3)/0.6),oklch(var(--b2)));background-attachment:fixed">
+
+<!-- 装饰性背景光球 -->
+<div class="glass-bg-orbs">
+  <div class="glass-bg-orb"></div>
+  <div class="glass-bg-orb"></div>
+  <div class="glass-bg-orb"></div>
+</div>
+<!-- Banner -->
+<div class="banner" id="banner" style="--bannerHeight:60vh">
+  <div class="w-full h-full banner-inner overflow-hidden relative" style="--bannerHeight:60vh">
+    <div class="w-full h-full absolute left-0 top-0 bg-center bg-cover bg-no-repeat duration-1000 transition-opacity z-0" style="background-image:url(../assets/home.webp);--bannerHeight:60vh" id="banner-bg-current"></div>
+    <div class="w-full h-full absolute left-0 top-0 bg-black/40 duration-300 transition-colors z-10" style="--bannerHeight:60vh"></div>
+    <div class="w-full relative h-[95%] pointer-events-none z-20" style="--bannerHeight:60vh">
+      <div class="-translate-y-1/2 absolute top-1/2 -translate-x-1/2 left-1/2 lg:w-3/4 w-4/5" style="--bannerHeight:60vh">
+        <div class="flex flex-col pointer-events-auto" style="--bannerHeight:60vh">
+          <div class="font-banner lg:text-8xl md:text-6xl text-4xl title" style="--bannerHeight:60vh">电锯人 第二季观后感</div>
+          <div class="text-xl font-banner lg:text-4xl md:text-2xl subtitle" style="--bannerHeight:60vh">
+            <span style="--bannerHeight:60vh">从动画制作到剧情发展，聊聊这一季的亮点与不足，以及我对藤本树老师的期待</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="waves" style="--bannerHeight:60vh">
+    <svg class="waves" viewBox="0 24 150 28" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" shape-rendering="auto">
+      <defs><path d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" id="gentle-wave"></path></defs>
+      <g class="parallax">
+        <use style="animation-delay:-2s;animation-duration:7s" x="48" xlink:href="#gentle-wave" y="0" class="opacity-25"></use>
+        <use style="animation-delay:-3s;animation-duration:10s" x="48" xlink:href="#gentle-wave" y="3" class="opacity-50"></use>
+        <use style="animation-delay:-4s;animation-duration:13s" x="48" xlink:href="#gentle-wave" y="5" class="opacity-75"></use>
+        <use style="animation-delay:-5s;animation-duration:20s" x="48" xlink:href="#gentle-wave" y="7"></use>
+      </g>
+    </svg>
+  </div>
+</div>
+<!-- 桌面端导航栏 -->
+<nav class="hidden md:block duration-500 fixed left-0 opacity-100 pointer-events-auto right-0 top-0 transition-opacity z-50" id="navbar-desktop">
+  <div class="max-w-[95rem] mx-auto px-4">
+    <div class="rounded-full border border-white/20 backdrop-blur-xl glass-nav-inner py-3 shadow-2xl duration-300 px-6 transition-colors" id="navbar-bg">
+      <div class="flex items-center justify-center space-x-2">
+        <a href="../index.html" class="flex items-center duration-300 hover:scale-105 space-x-2 transition-transform">
+          <span class="text-3xl font-bold text-primary tracking-tight">YQLCH</span>
+        </a>
+        <a href="../index.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:home-outline-rounded" style="font-size:1.25rem"></span> 首页
+        </a>
+        <a href="search.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:edit-note-outline" style="font-size:1.25rem"></span> 写作
+        </a>
+        <a href="navigation.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:explore-outline" style="font-size:1.25rem"></span> 导航
+        </a>
+        <div class="dropdown dropdown-hover">
+          <div class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg" role="button" tabindex="0">
+            <span class="iconify" data-icon="material-symbols:play-circle-outline-rounded" style="font-size:1.25rem"></span> <span>娱乐</span>
+          </div>
+          <ul class="dropdown-content menu p-2 z-[1] w-52 glass-dropdown mt-2 text-base-content" tabindex="0">
+            <li><a href="anime.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all hover:bg-base-200 text-base"><span class="iconify" data-icon="material-symbols:movie-outline" style="font-size:1rem"></span> 追番</a></li>
+            <li><a href="music.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all hover:bg-base-200 text-base"><span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:1rem"></span> 音乐</a></li>
+          </ul>
+        </div>
+        <a href="project.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:code-blocks-outline" style="font-size:1.25rem"></span> 项目
+        </a>
+        <a href="friend.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:supervisor-account-outline-rounded" style="font-size:1.25rem"></span> 组员介绍
+        </a>
+        <a href="about.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:info-outline-rounded" style="font-size:1.25rem"></span> 关于
+        </a>
+        <div class="dropdown dropdown-hover">
+          <div class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg" role="button" tabindex="0">
+            <span class="iconify" data-icon="material-symbols:tune-outline" style="font-size:1.25rem"></span> 设置
+          </div>
+          <div class="dropdown-content z-[1] w-72 glass-dropdown mt-2 p-4 text-base-content" tabindex="0">
+            <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:photo"></span> 背景模式</h3>
+            <div class="grid grid-cols-2 gap-2 mb-4">
+              <button id="bg-banner" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:photo" style="font-size:1rem"></span>
+                <span>Banner</span>
+              </button>
+              <button id="bg-fullscreen" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:monitor-fullscreen" style="font-size:1rem"></span>
+                <span>全屏</span>
+              </button>
+              <button id="bg-background" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:image" style="font-size:1rem"></span>
+                <span>背景</span>
+              </button>
+              <button id="bg-hide" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:hide-image" style="font-size:1rem"></span>
+                <span>隐藏</span>
+              </button>
+            </div>
+            
+            <div class="border-t border-base-200 pt-3 mb-3">
+              <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:palette-outline"></span> 颜色主题</h3>
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-base-content/60">☀️ 白天</span>
+                </div>
+                <button id="theme-toggle" class="btn btn-ghost btn-sm btn-circle" aria-label="切换白天/夜晚">
+                  <span class="iconify text-yellow-400" id="sun-icon" data-icon="material-symbols:sunny" style="font-size:1rem"></span>
+                  <span class="iconify text-indigo-400 hidden" id="moon-icon" data-icon="material-symbols:moon-stars" style="font-size:1rem"></span>
+                </button>
+              </div>
+              <div id="theme-light-section" class="grid grid-cols-4 gap-3 mb-3"></div>
+              <h3 class="text-xs font-semibold text-base-content/60 mb-2 flex items-center gap-1"><span>🌙</span> 夜晚主题</h3>
+              <div id="theme-dark-section" class="grid grid-cols-4 gap-3"></div>
+            </div>
+            
+            
+          </div>
+        </div>
+        <a href="admin.html" id="nav-login-btn" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg"><span class="iconify" data-icon="material-symbols:login" style="font-size:1.25rem"></span> 登录</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- 移动端导航栏 -->
+<nav class="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50" id="navbar-mobile">
+  <div class="flex items-center gap-2 glass-nav-inner rounded-full px-4 py-3 shadow-2xl">
+    <a href="../index.html" class="btn btn-ghost btn-circle"><img src="../assets/profile.png" class="w-8 h-8 rounded-full" alt="首页"></a>
+    <a href="./navigation.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:explore-outline" style="font-size:1.25rem"></span></a>
+    <a href="./project.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:code-blocks-outline" style="font-size:1.25rem"></span></a>
+    <a href="./friend.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:supervisor-account-outline-rounded" style="font-size:1.25rem"></span></a>
+    <a href="./about.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:info-outline-rounded" style="font-size:1.25rem"></span></a>
+    <button id="theme-toggle-mobile" class="btn btn-ghost btn-circle text-primary"><span class="iconify" data-icon="material-symbols:dark-mode-outline" style="font-size:1.25rem"></span></button>
+  </div>
+</nav>
+<main class="flex-1 w-full max-w-blog mx-auto px-4 mt-8 mb-24 page-content-animate">
+  <div class="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 gap-6">
+    <!-- 左侧侧边栏 -->
+    <aside class="md:col-span-1 order-2 md:order-1">
+      <div class="glass-card p-3 mb-4">
+        <a href="./about.html" class="group block relative mx-auto mt-1 lg:mx-0 lg:mt-0 mb-3 max-w-[12rem] lg:max-w-none overflow-hidden rounded-2xl active:scale-95">
+          <div class="absolute transition pointer-events-none group-hover:bg-black/30 group-active:bg-black/50 w-full h-full z-50 flex items-center justify-center">
+            <span class="iconify transition opacity-0 scale-90 group-hover:scale-100 group-hover:opacity-100 text-white text-5xl" data-icon="material-symbols:person-outline"></span>
+          </div>
+          <div class="mx-auto lg:w-full overflow-hidden relative">
+            <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
+            <img src="../assets/profile.png" alt="YQLCH" class="w-full h-full object-cover" style="object-position:center center">
+          </div>
+        </a>
+        <div class="px-2">
+          <div class="font-bold text-xl text-center mb-1 dark:text-neutral-50 transition">YQLCH</div>
+          <div class="h-1 w-5 bg-primary mx-auto rounded-full mb-2 transition"></div>
+          <div class="text-center mb-2.5 transition font-bold tracking-wide bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent hover:scale-105 hover:from-purple-400 hover:to-pink-400">Ciallo～(∠・ω&lt;)⌒★</div>
+          <div class="mt-4 pt-3 border-t border-base-content/20">
+            <div class="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-2 justify-items-center">
+              <div class="tooltip tooltip-bottom" data-tip="GitHub"><a href="https://github.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="mdi:github"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="BiliBili"><a href="https://bilibili.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:bilibili-fill"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="Douyin"><a href="https://douyin.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:tiktok-fill"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="Weibo"><a href="https://weibo.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:weibo-fill"></span></a></div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 mt-3 pt-3 border-t border-base-content/20">
+            <div class="text-center">
+              <div class="text-xs text-base-content/50 mb-1 flex items-center justify-center gap-1"><span class="iconify text-base text-primary" data-icon="material-symbols:visibility-outline"></span><span class="text-xs">访问量</span></div>
+              <div class="font-bold text-lg text-base-content">-</div>
+            </div>
+            <div class="text-center border-l border-base-content/20">
+              <div class="text-xs text-base-content/50 mb-1 flex items-center justify-center gap-1"><span class="iconify text-base text-primary" data-icon="material-symbols:person"></span><span class="text-xs">访客数</span></div>
+              <div class="font-bold text-lg text-base-content">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-3 mb-4">
+        <div class="font-bold transition text-lg text-base-content relative ml-4 mb-2 before:w-1 before:h-4 before:rounded-md before:bg-primary before:absolute before:left-[-16px] before:top-[5.5px]">分类</div>
+        <div class="px-2">
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">教程</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">3</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">动漫</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">2</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">技术</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">1</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">生活</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">1</div></div></button></a>
+        </div>
+      </div>
+      <div class="glass-card p-3">
+        <div class="font-bold transition text-lg text-base-content relative ml-4 mb-2 before:w-1 before:h-4 before:rounded-md before:bg-primary before:absolute before:left-[-16px] before:top-[5.5px]">标签</div>
+        <div class="px-2">
+          <div class="flex gap-1 flex-wrap">
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">Git</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">GitHub</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">Markdown</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">MDX</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">数学公式</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">评论系统</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">电锯人</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">样式指南</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <!-- 右侧主内容 -->
+    <div class="md:col-span-4 lg:col-span-3 order-1 md:order-2">
+
+      <article class="glass-card p-6 md:p-8 animate-fade-in-up">
+        <!-- 文章标题 -->
+        <h1 class="ryuchan-heading text-2xl md:text-3xl mb-4">电锯人 第二季观后感</h1>
+
+        <!-- 文章元信息 -->
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-base-content/70 mb-4">
+          <span class="flex items-center gap-1.5">
+            <span class="iconify" data-icon="material-symbols:calendar-month-outline" style="font-size:1rem"></span>
+            2026年5月21日
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="iconify" data-icon="material-symbols:schedule-outline" style="font-size:1rem"></span>
+            约 7 分钟
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="iconify" data-icon="material-symbols:visibility-outline" style="font-size:1rem"></span>
+            227 次浏览
+          </span>
+        </div>
+
+        <!-- 分类与标签 -->
+        <div class="flex flex-wrap items-center gap-2 mb-5">
+          <span class="flex items-center gap-1 text-sm text-base-content/60">
+            <span class="iconify" data-icon="material-symbols:folder-outline" style="font-size:1rem"></span>
+            分类：
+          </span>
+          <a href="./categories.html" class="btn btn-xs btn-category rounded-lg">动漫</a>
+          <span class="mx-1 text-base-content/20">|</span>
+          <span class="flex items-center gap-1 text-sm text-base-content/60">
+            <span class="iconify" data-icon="material-symbols:label-outline" style="font-size:1rem"></span>
+            标签：
+          </span>
+          <a href="./tags.html" class="btn btn-xs btn-tag rounded-lg">电锯人</a>
+          <a href="./tags.html" class="btn btn-xs btn-tag rounded-lg">MAPPA</a>
+          <a href="./tags.html" class="btn btn-xs btn-tag rounded-lg">藤本树</a>
+        </div>
+
+        <hr class="mb-6 border-base-content/10">
+
+        <!-- 文章封面图 -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-base-content/10">
+          <img src="../assets/images/git/b9cb7653e82633e5.png" alt="电锯人 第二季 封面" class="w-full h-auto object-cover">
+        </div>
+
+        <!-- 文章正文 -->
+        <div class="prose prose-base max-w-none text-base-content/90">
+
+          <!-- 引言 -->
+          <p class="mb-4 text-base-content/80 leading-relaxed">
+            终于等到了《电锯人》第二季的动画消息！如果聊第二季动画，也许我们离不开聊聊原作漫画已经完结的第二部。毕竟动画第二季从漫画的“国际刺客篇”开始，而整个第二部漫画在原作粉丝里已经掀起了滔天的讨论。今天的分析很大程度上受到原作第二部争议的影响，但这正是藤本树作品的魅力所在。站在动画与漫画交织的节点上，我们来聊聊第二季的走向，看看它能否延续“疯批美学”，还是会在争议中开启全新的篇章。
+          </p>
+
+          <!-- 动画第二季 -->
+          <h2 id="anime-s2" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:movie-outline" style="font-size:1.25rem"></span>
+            🎥 动画第二季：稳中求爆
+          </h2>
+
+          <h3 id="staff" class="text-lg font-bold text-base-content mt-6 mb-3">⚙️ 制作公司</h3>
+          <p class="mb-3">动画第二季依然由大家熟悉的<strong>MAPPA</strong>操刀。在经历第一部的探索后，MAPPA在视觉的连贯性与风格的承接上值得信赖。如果说第一季更像是充满艺术感的实验电影，第二季也许会更多回归动捕狂气与血浆四溅的本色，更贴近大众的口味。</p>
+
+          <h3 id="arc" class="text-lg font-bold text-base-content mt-6 mb-3">🛡️ 篇章选择</h3>
+          <p class="mb-3">这一季的进度并非直接跳到漫画第二部的主角切换，而是承接<strong>“蕾塞篇”</strong>剧场版，改编原作漫画第一部的<strong>“国际刺客篇”</strong>。该篇章云集了世界各地的杀手，全员追杀电次的心脏，战斗节奏极快，场面混乱且血腥，非常适合如今拥有丰富战斗作画经验的MAPPA制作组发挥。</p>
+
+          <h3 id="cast" class="text-lg font-bold text-base-content mt-6 mb-3">🎤 声优阵容</h3>
+          <p class="mb-3">主役声优基本延续第一部的豪华阵容，电次依然由<strong>户谷菊之介</strong>担任，玛奇玛是<strong>楠木灯</strong>，秋是<strong>洼田正孝</strong>，帕瓦是<strong>菲鲁兹·蓝</strong>。熟悉的声音加上原汁原味的演出，能带来极强的沉浸感。</p>
+
+          <h3 id="release" class="text-lg font-bold text-base-content mt-6 mb-3">⏰ 播放时间</h3>
+          <p class="mb-3">目前第二季定于<strong>2026年夏季</strong>（约7月档）播出，预计在2026年年底到2027年完全放送完毕。第二季将是这一阶段剧情的高潮，在MAPPA强大的资源投入下，大概率会在商业和口碑上拿到应有的高度。</p>
+
+          <!-- 漫画第二部 -->
+          <h2 id="manga-s2" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:auto-stories-outline" style="font-size:1.25rem"></span>
+            📜 漫画第二部：天才的失控与重生
+          </h2>
+          <p class="mb-3">如果说第二季动画是MAPPA在原作优秀土壤上精心雕琢的“标准答案”，那么真正的灵魂与风险，其实隐藏在原作漫画的第二部里。藤本树的漫画第二部远比动画此刻的冷兵器混战要复杂和拧巴，甚至因为彻底挑战了读者的耐心而饱受争议。</p>
+
+          <h3 id="highlights" class="text-lg font-bold text-base-content mt-6 mb-3">💡 亮点</h3>
+          <ul class="list-disc list-inside mb-4 space-y-2">
+            <li><strong>黑暗英雄的反向终结</strong>：漫画第二部的核心主题，并非打怪升级，而是藤本树以近乎自毁的方式，诠释了<strong>“不再做英雄的正确结局”</strong>。主角电次活在一种“不死即是地狱”的虚无中，这完成了对传统英雄叙事的逆向拆解。</li>
+            <li><strong>绝妙的胡来，才华的内爆</strong>：藤本树依然保留着巨大的才华，那些标志性的藤本树式震撼分镜依然存在，第二部开篇三鹰的校园情节甚至可以说是独立一部优秀中篇漫画。荒诞、邪典、不可预测，依然是他的底色。</li>
+          </ul>
+
+          <h3 id="shortcomings" class="text-lg font-bold text-base-content mt-6 mb-3">⚡ 不足</h3>
+          <ul class="list-disc list-inside mb-4 space-y-2">
+            <li><strong>叙事节奏与结构失控</strong>：第二部在进入“教会篇”后，叙事信息明显稀释，日常与主线严重割裂，大量的站立对话导致观感极其沉闷。无论是<strong>三船文子</strong>还是<strong>吉田宽文</strong>，前期的大量铺垫在后面都草草收场。</li>
+            <li><strong>作画质量的断崖式下滑</strong>：由于核心助手（尤其是《当哒当》作者龙幸伸等）的独立，藤本树失去了强有力的技战术支援。中后期画面变得极度潦草，大量粗制滥造的排线甚至被吐槽不如《一拳超人》原作版好懂。</li>
+            <li><strong>终极争议的收尾</strong>：波奇塔为了拯救虚无的电次，选择自我吞噬后让世界线重启，抹去了电锯恶魔的存在，许多已死角色（如帕瓦、那由多）在新世界线全员复活。这样的结局让一部分读者感动，另一部分则觉得过于“都合主义”。</li>
+          </ul>
+
+          <h3 id="summary-manga" class="text-lg font-bold text-base-content mt-6 mb-3">💎 总结</h3>
+          <p class="mb-3">总的来说，漫画第二部的高开低走是一堂生动的长篇连载课。藤本树在试图解构自我中迷失，在才华内爆中失控。但即便如此，我依然对藤本树充满期待。那一瞬间的天才光芒依然是压倒性的。对于即将到来的动画第二季，MAPPA的视觉呈现<strong>也许</strong>会弥补原作后期的混乱。也许我们不应该再把《电锯人》当成一部纯粹的热血漫，也许把它当做一个充满伤痕与遗憾的艺术家的一场大病，反而更能理解这一切。</p>
+
+          <!-- 对藤本树的期待 -->
+          <h2 id="expectations" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:favorite-outline" style="font-size:1.25rem"></span>
+            🌟 对藤本树老师的期待
+          </h2>
+          <p class="mb-3">无论第二部留下了多少争议，藤本树依然是这个世代最难以被定义的漫画家。我期待他能在休息之后，带着更纯粹的故事回来——也许不再背负“电锯人”这个巨大的IP压力，去画一些更自由、更实验的中短篇。他那令人战栗的想象力，永远值得等待。</p>
+          <p class="mb-3">最后，想对所有因为动画入坑的朋友说：去看漫画吧，哪怕第二部有些地方让你皱眉，但那些让你心脏停止跳动的瞬间，是真实存在的。</p>
+
+          <div class="bg-primary/5 border-l-4 border-primary p-4 rounded-r-xl mb-6">
+            <p class="text-sm text-base-content/80"><strong>📢 互动话题：</strong> 你对《电锯人》第二季动画最期待哪个名场面？漫画第二部的结局你满意吗？欢迎在评论区留下你的看法！</p>
+          </div>
+
+        </div>
+
+        <hr class="my-8 border-base-content/10">
+
+        <!-- 上一篇 / 下一篇 -->
+        <div class="flex flex-col sm:flex-row justify-between gap-3">
+          <a href="post2.html" class="glass-card p-3 flex items-center gap-2 hover:shadow-lg transition-all hover:-translate-y-0.5 flex-1">
+            <span class="iconify text-primary" data-icon="material-symbols:arrow-back-rounded"></span>
+            <div>
+              <div class="text-xs text-base-content/50">上一篇</div>
+              <div class="text-sm font-semibold text-base-content">Markdown 与 MDX 写作指南</div>
+            </div>
+          </a>
+          <a href="post4.html" class="glass-card p-3 flex items-center gap-2 hover:shadow-lg transition-all hover:-translate-y-0.5 flex-1 text-right sm:text-right">
+            <div class="flex-1">
+              <div class="text-xs text-base-content/50">下一篇</div>
+              <div class="text-sm font-semibold text-base-content">Vue.js 3 Composition API 实战</div>
+            </div>
+            <span class="iconify text-primary" data-icon="material-symbols:arrow-forward-rounded"></span>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</main>
+<!-- 页脚 -->
+<footer class="footer glass-footer py-2 px-4 md:p-10 rounded-xl shadow-lg gap-y-2 md:gap-4">
+  <aside>
+    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" class="fill-current md:w-[50px] md:h-[50px]"><path d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"></path></svg>
+    <p class="text-xs md:text-base">Powered by <a href="#" target="_blank" class="font-bold gradient-link">YQLCH Template</a><br>Copyright &copy; <a href="#" target="_blank" class="font-bold gradient-link">YQLCH</a> 2025&ndash;2026<br>All rights reserved</p>
+  </aside>
+  <nav>
+    <span class="footer-title text-xs md:text-sm">Social</span>
+    <div class="grid grid-flow-col gap-3 md:gap-4">
+      <div class="tooltip" data-tip="GitHub"><a href="https://github.com" target="_blank" class="social-link icon-link"><span class="iconify text-xl" data-icon="mdi:github"></span></a></div>
+      <div class="tooltip" data-tip="BiliBili"><a href="https://bilibili.com" target="_blank" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:bilibili-fill"></span></a></div>
+      <div class="tooltip" data-tip="X"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:twitter-x-fill"></span></a></div>
+      <div class="tooltip" data-tip="Telegram"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:telegram-fill"></span></a></div>
+      <div class="tooltip" data-tip="RSS"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:rss-line"></span></a></div>
+    </div>
+    <div class="mt-2 text-xs md:text-sm"><a href="#" target="_blank" rel="noopener" class="font-bold gradient-link">萌ICP备20261117号</a> &nbsp;|&nbsp; <a href="admin.html" class="text-base-content/30 hover:text-base-content/60 transition-colors text-xs md:text-sm">管理</a></div>
+  </nav>
+</footer>
+<!-- 回到顶部 -->
+<button id="back-to-top" class="back-to-top opacity-0 pointer-events-none" aria-label="Back to top">
+  <span class="iconify" data-icon="material-symbols:keyboard-arrow-up-rounded" style="font-size:1.5rem"></span>
+</button>
+<!-- 音乐播放器 -->
+<div id="music-player" style="position:fixed;bottom:5rem;left:1.5rem;z-index:40;">
+  <button id="music-toggle" class="back-to-top" style="position:static;width:3rem;height:3rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));" aria-label="播放音乐">
+    <span class="iconify" id="music-icon" data-icon="material-symbols:music-note-rounded" style="font-size:1.25rem;color:white;"></span>
+  </button>
+  <div id="music-panel" style="display:none;position:absolute;bottom:3.5rem;left:0;width:16rem;background:oklch(var(--b1));border-radius:1rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);padding:1rem;border:1px solid oklch(var(--bc)/0.1);">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+      <div style="width:3rem;height:3rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));border-radius:0.75rem;display:flex;align-items:center;justify-content:center;">
+        <span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:1.25rem;color:white;"></span>
+      </div>
+      <div style="flex:1;overflow:hidden;">
+        <div id="music-title" style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">星炬不熄</div>
+        <div id="music-artist" style="font-size:0.75rem;opacity:0.7;">星炬学院毕业生</div>
+      </div>
+    </div>
+    <div style="margin-bottom:0.75rem;">
+      <div style="height:0.25rem;background:oklch(var(--b2));border-radius:9999px;overflow:hidden;">
+        <div id="music-progress" style="width:0%;height:100%;background:linear-gradient(90deg,oklch(var(--p)),oklch(var(--s)));transition:width 0.3s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:0.625rem;margin-top:0.25rem;opacity:0.6;">
+        <span id="music-current">0:00</span><span id="music-duration">3:13</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;align-items:center;gap:1rem;">
+      <button id="music-prev" style="background:none;border:none;cursor:pointer;padding:0.25rem;"><span class="iconify" data-icon="material-symbols:skip-previous-rounded" style="font-size:1.25rem;"></span></button>
+      <button id="music-play" style="width:2.5rem;height:2.5rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;"><span class="iconify" id="play-icon" data-icon="material-symbols:play-arrow-rounded" style="font-size:1.25rem;"></span></button>
+      <button id="music-next" style="background:none;border:none;cursor:pointer;padding:0.25rem;"><span class="iconify" data-icon="material-symbols:skip-next-rounded" style="font-size:1.25rem;"></span></button>
+    </div>
+  </div>
+</div>
+<!-- Iconify -->
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="../css/glass.css" rel="stylesheet">
+<!-- JS -->
+<script src="../js/utils.js" defer></script>
+<script src="../js/seo.js" defer></script>
+<script src="../js/theme.js" defer></script>
+<script src="../js/main.js" defer></script>
+    <script src="../js/music.js" defer></script>
+</body>
+</html>

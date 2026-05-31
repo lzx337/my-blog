@@ -1,0 +1,1333 @@
+/* ============================================================
+   YQLCH Blog — Glassmorphism Design System v2
+   毛玻璃效果毕业设计重构版
+   ============================================================ */
+
+/* ---- 1. Design Tokens ---- */
+:root {
+  --glass-bg: oklch(var(--b1) / 0.45);
+  --glass-bg-strong: oklch(var(--b1) / 0.72);
+  --glass-bg-light: oklch(var(--b1) / 0.22);
+  --glass-bg-hover: oklch(var(--b1) / 0.65);
+  --glass-bg-card: oklch(var(--b1) / 0.55);
+
+  --glass-border: 1px solid oklch(var(--bc) / 0.08);
+  --glass-border-strong: 1px solid oklch(var(--bc) / 0.14);
+
+  --glass-blur: 16px;
+  --glass-blur-light: 8px;
+  --glass-blur-strong: 28px;
+  --glass-blur-xl: 40px;
+
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  --glass-shadow-hover: 0 12px 40px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
+  --glass-shadow-lg: 0 20px 60px rgba(0,0,0,0.10);
+  --glass-shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+
+  --page-bg: oklch(var(--b2));
+  --radius-xl: 1.5rem;
+
+  --rounded-box: 1rem !important;
+  --rounded-btn: 0.5rem !important;
+  --rounded-badge: 1.9rem !important;
+
+  --font-sans: 'M PLUS Rounded 1c', 'Nunito', 'Noto Sans SC', sans-serif;
+  --font-banner: 'ZCOOL KuaiLe', cursive;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme-type="dark"] {
+  --glass-bg: oklch(var(--b1) / 0.35);
+  --glass-bg-strong: oklch(var(--b1) / 0.6);
+  --glass-bg-light: oklch(var(--b1) / 0.18);
+  --glass-bg-hover: oklch(var(--b1) / 0.5);
+  --glass-bg-card: oklch(var(--b1) / 0.45);
+  --glass-border: 1px solid oklch(var(--bc) / 0.1);
+  --glass-border-strong: 1px solid oklch(var(--bc) / 0.18);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.20), 0 2px 8px rgba(0,0,0,0.12);
+  --glass-shadow-hover: 0 12px 40px rgba(0,0,0,0.30), 0 4px 12px rgba(0,0,0,0.18);
+  --glass-shadow-sm: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* ---- 2. Base & Typography ---- */
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: var(--page-bg);
+  font-size: 16px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, oklch(var(--b2)), oklch(var(--b3) / 0.6), oklch(var(--b2)));
+  background-attachment: fixed;
+  color: oklch(var(--bc));
+  min-height: 100vh;
+  font-weight: 400;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.font-banner { font-family: var(--font-banner); }
+.font-mono  { font-family: var(--font-mono); }
+
+.max-w-blog { max-width: 72rem; }
+
+/* ---- 3. Background Decorative Orbs ---- */
+.glass-bg-orbs {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.glass-bg-orb {
+  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+.glass-bg-orb:nth-child(1) {
+  width: 400px; height: 400px; background: oklch(var(--p) / 0.15);
+  top: -100px; left: -100px; animation-delay: 0s;
+}
+.glass-bg-orb:nth-child(2) {
+  width: 300px; height: 300px; background: oklch(var(--s) / 0.12);
+  bottom: -50px; right: -80px; animation-delay: -7s;
+}
+.glass-bg-orb:nth-child(3) {
+  width: 250px; height: 250px; background: oklch(var(--a) / 0.10);
+  top: 50%; left: 60%; animation-delay: -14s;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.1); }
+  66% { transform: translate(-20px, 30px) scale(0.9); }
+}
+
+/* ---- 4. Glass Card (standard) ---- */
+.glass-card {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s ease;
+}
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  box-shadow: var(--glass-shadow-hover);
+  border: var(--glass-border-strong);
+  transform: translateY(-2px);
+}
+
+/* 文章卡片基类（主页/搜索页动态渲染使用） */
+.card-base {
+  background-color: oklch(var(--b1));
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  border: 1px solid oklch(var(--bc) / 0.1);
+  transition: all 0.3s ease;
+}
+.card-base:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+  border-color: oklch(var(--bc) / 0.18);
+  transform: translateY(-2px);
+}
+
+/* ---- 5. Glass Panel (stronger, less transparent) ---- */
+.glass-panel {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+  border: var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: var(--glass-shadow);
+}
+
+/* ---- 6. Glass Overlay (very transparent) ---- */
+.glass-overlay {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur-light));
+  -webkit-backdrop-filter: blur(var(--glass-blur-light));
+  border: var(--glass-border);
+  border-radius: 1rem;
+}
+
+/* ---- 7. Glass Navbar ---- */
+.glass-nav {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-xl));
+  -webkit-backdrop-filter: blur(var(--glass-blur-xl));
+  border-bottom: var(--glass-border);
+  box-shadow: var(--glass-shadow-sm);
+}
+
+.glass-nav-inner {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-xl));
+  -webkit-backdrop-filter: blur(var(--glass-blur-xl));
+  border: 1px solid oklch(var(--bc) / 0.08);
+  border-radius: 9999px;
+  box-shadow: var(--glass-shadow);
+}
+
+/* ---- 8. Glass Footer ---- */
+.glass-footer {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: var(--glass-shadow);
+}
+
+/* ---- 9. Glass Input / Textarea / Select ---- */
+.glass-input {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: oklch(var(--bc));
+  outline: none;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  width: 100%;
+}
+.glass-input:focus {
+  border-color: oklch(var(--p));
+  box-shadow: 0 0 0 3px oklch(var(--p) / 0.15);
+  background: var(--glass-bg-strong);
+}
+.glass-input::placeholder { color: oklch(var(--bc) / 0.3); }
+
+.glass-textarea {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: oklch(var(--bc));
+  outline: none;
+  transition: all 0.2s;
+  resize: vertical;
+  font-family: var(--font-mono);
+  width: 100%;
+}
+.glass-textarea:focus {
+  border-color: oklch(var(--p));
+  box-shadow: 0 0 0 3px oklch(var(--p) / 0.15);
+  background: var(--glass-bg-strong);
+}
+
+/* ---- 10. Glass Buttons ---- */
+.glass-btn {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: oklch(var(--bc));
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.glass-btn:hover {
+  background: var(--glass-bg-strong);
+  border: var(--glass-border-strong);
+  box-shadow: var(--glass-shadow);
+}
+.glass-btn-primary {
+  background: oklch(var(--p) / 0.7);
+  color: oklch(var(--pc));
+  border: 1px solid oklch(var(--p) / 0.3);
+}
+.glass-btn-primary:hover {
+  background: oklch(var(--p) / 0.9);
+  box-shadow: 0 4px 16px oklch(var(--p) / 0.25);
+}
+.glass-btn-sm { font-size: 0.75rem; padding: 0.25rem 0.75rem; }
+.glass-btn-xs { font-size: 0.65rem; padding: 0.125rem 0.5rem; }
+
+/* ---- 11. Glass Table ---- */
+.glass-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: 1rem;
+  overflow: hidden;
+}
+.glass-table th {
+  background: var(--glass-bg-strong);
+  color: oklch(var(--bc) / 0.6);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: var(--glass-border-strong);
+}
+.glass-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: var(--glass-border);
+  font-size: 0.875rem;
+}
+.glass-table tr:last-child td { border-bottom: none; }
+.glass-table tr:hover td { background: var(--glass-bg-light); }
+
+/* ---- 12. Glass Badge / Tag ---- */
+.glass-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-light));
+  -webkit-backdrop-filter: blur(var(--glass-blur-light));
+  border: var(--glass-border);
+  color: oklch(var(--bc));
+}
+
+/* ---- 13. Glass Modal / Dropdown ---- */
+.glass-dropdown {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+  border: var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: var(--glass-shadow-lg);
+}
+
+/* ---- 14. Banner Styles ---- */
+.banner {
+  position: relative;
+  overflow: hidden;
+  height: var(--bannerHeight, 60vh);
+}
+.banner .title {
+  font-family: var(--font-banner);
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.banner .subtitle {
+  font-family: var(--font-banner);
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.25);
+}
+.banner-text-container {
+  background: rgba(0,0,0,0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  padding: 1.5rem 2rem;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 25;
+}
+
+.waves {
+  position: absolute; bottom: 0; left: 0; width: 100%;
+  overflow: hidden; line-height: 0;
+}
+.waves svg {
+  position: relative; display: block;
+  width: calc(100% + 1.3px); height: 80px;
+}
+.waves .parallax > use {
+  animation: wave 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+}
+.waves .parallax > use:nth-child(1) { animation-delay: -2s; animation-duration: 7s; }
+.waves .parallax > use:nth-child(2) { animation-delay: -3s; animation-duration: 10s; }
+.waves .parallax > use:nth-child(3) { animation-delay: -4s; animation-duration: 13s; }
+.waves .parallax > use:nth-child(4) { animation-delay: -5s; animation-duration: 20s; }
+@keyframes wave {
+  0% { transform: translate3d(-90px, 0, 0); }
+  100% { transform: translate3d(85px, 0, 0); }
+}
+
+/* ---- 15. Navigation Link Effects ---- */
+.nav-item {
+  position: relative; text-decoration: none;
+}
+.nav-item::before {
+  content: '';
+  position: absolute; bottom: -2px; left: 50%;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, oklch(var(--p)), oklch(var(--s)));
+  transition: width 0.3s ease, left 0.3s ease;
+  border-radius: 2px;
+}
+.nav-item:hover::before { width: 100%; left: 0; }
+
+.gradient-link {
+  background: linear-gradient(135deg, oklch(var(--p)), oklch(var(--s)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  position: relative;
+}
+.gradient-link::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, oklch(var(--p)), oklch(var(--s)));
+  transition: width 0.3s ease;
+}
+.gradient-link:hover::after { width: 100%; }
+
+/* ---- 16. Gradient Heading ---- */
+.ryuchan-heading {
+  background: linear-gradient(135deg, #1f2937, #374151);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.25;
+}
+
+/* ---- 17. Social Link ---- */
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.social-link:hover {
+  transform: translateY(-3px) scale(1.1);
+  color: oklch(var(--p));
+}
+
+/* ---- 18. Tag Pill ---- */
+.tag-link {
+  display: inline-block;
+  padding: 0.2rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid oklch(var(--bc) / 0.15);
+  font-size: 0.75rem;
+  color: oklch(var(--bc) / 0.7);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.tag-link:hover {
+  background: linear-gradient(135deg, oklch(var(--p) / 0.15), oklch(var(--s) / 0.15));
+  border-color: oklch(var(--p) / 0.4);
+  color: oklch(var(--p));
+}
+
+/* ---- 19. Article Link ---- */
+.article-link {
+  text-decoration: none;
+  color: oklch(var(--bc));
+  transition: all 0.25s ease;
+  display: inline-block;
+}
+.article-link:hover {
+  color: oklch(var(--p));
+  transform: translateX(4px);
+}
+
+/* ---- 20. Ripple Effect ---- */
+.ripple-link {
+  position: relative; overflow: hidden;
+}
+.ripple-link::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle, oklch(var(--p) / 0.3) 10%, transparent 10%);
+  background-position: center; background-repeat: no-repeat;
+  opacity: 0; transition: opacity 0.4s ease, background-size 0.4s ease;
+  background-size: 0% 0%;
+}
+.ripple-link:active::after {
+  background-size: 200% 200%; opacity: 1; transition: opacity 0s, background-size 0s;
+}
+
+/* ---- 21. Buttons (DaisyUI compatible) ---- */
+.btn-category {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-light));
+  -webkit-backdrop-filter: blur(var(--glass-blur-light));
+  border: var(--glass-border);
+  color: oklch(var(--p));
+  transition: all 0.2s;
+}
+.btn-category:hover {
+  background: oklch(var(--p) / 0.8);
+  color: oklch(var(--pc));
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px oklch(var(--p) / 0.2);
+}
+
+.btn-tag {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-light));
+  -webkit-backdrop-filter: blur(var(--glass-blur-light));
+  border: var(--glass-border);
+  color: oklch(var(--s));
+  transition: all 0.2s;
+}
+.btn-tag:hover {
+  background: oklch(var(--s) / 0.8);
+  color: oklch(var(--sc));
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px oklch(var(--s) / 0.2);
+}
+
+/* ---- 22. Animations ---- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in-up { animation: fadeInUp 0.45s ease-out forwards; }
+.animate-fade-in    { animation: fadeIn 0.5s ease-out forwards; }
+.animate-slide-in   { animation: slideInRight 0.4s ease-out forwards; }
+.animate-scale-in   { animation: scaleIn 0.35s ease-out forwards; }
+
+.page-content-animate > * {
+  animation: fadeInUp 0.4s ease-out forwards;
+  opacity: 0;
+}
+.page-content-animate > *:nth-child(1) { animation-delay: 0.05s; }
+.page-content-animate > *:nth-child(2) { animation-delay: 0.10s; }
+.page-content-animate > *:nth-child(3) { animation-delay: 0.15s; }
+.page-content-animate > *:nth-child(4) { animation-delay: 0.20s; }
+.page-content-animate > *:nth-child(5) { animation-delay: 0.25s; }
+.page-content-animate > *:nth-child(6) { animation-delay: 0.30s; }
+.page-content-animate > *:nth-child(7) { animation-delay: 0.35s; }
+.page-content-animate > *:nth-child(8) { animation-delay: 0.40s; }
+
+/* ---- 23. Skeleton Loading ---- */
+.skeleton {
+  background: linear-gradient(90deg, oklch(var(--b2)), oklch(var(--b3)), oklch(var(--b2)));
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
+/* ---- 24. Scrollbar ---- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: oklch(var(--b2)); border-radius: 9999px; }
+::-webkit-scrollbar-thumb { background: oklch(var(--p) / 0.4); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: oklch(var(--p) / 0.7); }
+@supports not selector(::-webkit-scrollbar) {
+  * { scrollbar-width: thin; scrollbar-color: oklch(var(--p) / 0.4) oklch(var(--b2)); }
+}
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ---- 25. Back to Top ---- */
+.back-to-top {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 40;
+  width: 2.75rem; height: 2.75rem; border-radius: 50%;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+.back-to-top:hover {
+  opacity: 1; transform: translateY(-3px);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+/* ---- 26. Reading Progress ---- */
+#reading-progress {
+  position: fixed; top: 0; left: 0; width: 0%; height: 3px;
+  background: linear-gradient(to right, oklch(var(--p)), oklch(var(--s)));
+  z-index: 100; transition: width 0.1s linear;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ---- 27. Announcement Bar ---- */
+.announcement-bar {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 1rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.announcement-bar.hidden-bar {
+  opacity: 0; max-height: 0; margin: 0; padding: 0;
+  overflow: hidden; border-width: 0;
+}
+
+/* ---- 28. Music Player Glass ---- */
+.glass-player {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+  border: var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: var(--glass-shadow-lg);
+}
+
+/* ---- 29. Admin Layout Specific ---- */
+.glass-sidebar {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-strong));
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong));
+  border-right: var(--glass-border);
+}
+
+.glass-login-card {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur-xl));
+  -webkit-backdrop-filter: blur(var(--glass-blur-xl));
+  border: var(--glass-border);
+  border-radius: 1.5rem;
+  box-shadow: var(--glass-shadow-lg);
+}
+
+.glass-stat-card {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: var(--glass-shadow);
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.glass-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-hover);
+  border: var(--glass-border-strong);
+}
+
+/* ---- 30. Music Page Specific ---- */
+.glass-album-cover {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: var(--glass-shadow);
+  border: var(--glass-border);
+  transition: all 0.3s ease;
+}
+.glass-album-cover:hover {
+  transform: scale(1.02);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+/* ---- 31. Member Card ---- */
+.glass-member-card {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 1.5rem;
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.glass-member-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-hover);
+  border: var(--glass-border-strong);
+}
+
+/* ---- 32. Project / Anime Card ---- */
+.glass-project-card {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: 1rem;
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.glass-project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-hover);
+  border: var(--glass-border-strong);
+}
+
+/* ---- 33. Navbar Dim Effect ---- */
+#navbar-bg {
+  transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#navbar-desktop[data-nav-dimmed="true"] #navbar-bg {
+  background-color: oklch(var(--b1) / 0.2) !important;
+  border-color: rgba(255,255,255,0.05) !important;
+  box-shadow: 0 2px 8px -2px rgba(0,0,0,0.08) !important;
+}
+
+/* ---- 34. Responsive ---- */
+@media (max-width: 768px) {
+  .banner { height: 40vh !important; }
+  .banner .title { font-size: 2.25rem; }
+  .banner .subtitle { font-size: 1.25rem; }
+  .banner-text-container { padding: 1rem 1.25rem; border-radius: 1rem; }
+  .glass-bg-orb:nth-child(1) { width: 200px; height: 200px; }
+  .glass-bg-orb:nth-child(2) { width: 150px; height: 150px; }
+  .glass-bg-orb:nth-child(3) { width: 120px; height: 120px; }
+}
+@media (min-width: 768px) {
+  .banner .title { font-size: 3.75rem; }
+  .banner .subtitle { font-size: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .banner .title { font-size: 6rem; }
+  .banner .subtitle { font-size: 2.25rem; }
+}
+
+/* ============================================================
+   ---- 35. AI Chat Assistant ----
+   ============================================================ */
+
+/* ---- 悬浮按钮 ---- */
+#ai-assistant-container {
+  position: fixed;
+  bottom: 24px;
+  left: 16px;
+  z-index: 9999;
+}
+
+.ai-floating-btn {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: none;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10000;
+  overflow: visible;
+}
+
+.ai-floating-btn:hover {
+  transform: scale(1.1) rotate(-8deg);
+  box-shadow: 0 6px 28px rgba(102, 126, 234, 0.55);
+}
+
+.ai-floating-btn:active {
+  transform: scale(0.92);
+}
+
+.ai-btn-pulse-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  animation: ai-pulse-ring 2s ease-out infinite;
+}
+
+@keyframes ai-pulse-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.ai-btn-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- 对话框 ---- */
+.ai-dialog-box {
+  position: fixed;
+  bottom: 80px;
+  left: 16px;
+  width: 320px;
+  max-height: 960px;
+  background: oklch(var(--b1) / 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  border: var(--glass-border);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  z-index: 9998;
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  transform-origin: bottom left;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ai-dialog-box.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ---- 标题栏 ---- */
+.ai-dlg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  border-bottom: var(--glass-border);
+  background: oklch(var(--b1) / 0.15);
+  flex-shrink: 0;
+  min-height: 42px;
+}
+
+.ai-dlg-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: oklch(var(--bc));
+}
+
+.ai-dlg-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.ai-dlg-back-btn,
+.ai-dlg-close-btn {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 9999px;
+  border: none;
+  background: oklch(var(--bc) / 0.06);
+  color: oklch(var(--bc) / 0.55);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.ai-dlg-back-btn.hidden,
+.ai-dlg-close-btn.hidden {
+  display: none;
+}
+
+/* ---- 内容区域 ---- */
+.ai-dlg-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 400px;
+}
+
+.ai-dlg-view {
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem;
+  animation: ai-view-fade 0.2s ease;
+}
+
+.ai-dlg-view.hidden {
+  display: none;
+}
+
+@keyframes ai-view-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- 主视图（首页）---- */
+.ai-dlg-greeting {
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: oklch(var(--bc));
+  margin: 0.5rem 0 0.75rem;
+}
+
+.ai-dlg-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ai-dlg-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.75rem;
+  background: oklch(var(--b1) / 0.2);
+  border: var(--glass-border);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: oklch(var(--bc));
+  transition: all 0.2s;
+  text-align: left;
+  font-family: inherit;
+}
+
+.ai-dlg-shortcut:hover {
+  background: oklch(var(--b1) / 0.35);
+  border-color: oklch(var(--p) / 0.15);
+  transform: translateX(2px);
+}
+
+.ai-dlg-shortcut-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* ---- 组员列表视图标签 ---- */
+.ai-dlg-view-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: oklch(var(--bc) / 0.4);
+  margin-bottom: 0.5rem;
+}
+
+/* ---- 对话视图 - 消息容器 ---- */
+.ai-dlg-chat-messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: 100px;
+}
+
+.ai-dlg-chat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+  gap: 0.35rem;
+}
+
+.ai-dlg-chat-empty-icon {
+  font-size: 2rem;
+  opacity: 0.4;
+}
+
+.ai-dlg-chat-empty-text {
+  font-size: 0.78rem;
+  color: oklch(var(--bc) / 0.3);
+}
+
+/* ---- 对话消息 ---- */
+.ai-dlg-chat-msg {
+  display: flex;
+  animation: ai-chat-in 0.25s ease;
+}
+
+@keyframes ai-chat-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ai-dlg-chat-msg-user {
+  justify-content: flex-end;
+}
+
+.ai-dlg-chat-msg-bot {
+  justify-content: flex-start;
+}
+
+.ai-dlg-chat-bubble {
+  max-width: 85%;
+  padding: 0.5rem 0.7rem;
+  border-radius: 1rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.ai-dlg-chat-bubble-user {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.ai-dlg-chat-bubble-bot {
+  background: oklch(var(--b2) / 0.5);
+  color: oklch(var(--bc));
+  border-bottom-left-radius: 0.25rem;
+  border: var(--glass-border);
+}
+
+/* ---- 打字指示器 ---- */
+.ai-dlg-typing-bubble {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.65rem 0.75rem !important;
+}
+
+.ai-dlg-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: oklch(var(--bc) / 0.3);
+  animation: ai-typing-bounce 1.4s infinite ease-in-out;
+}
+
+.ai-dlg-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.ai-dlg-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes ai-typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+}
+
+/* ---- 底部栏：输入框 + 按钮组 ---- */
+.ai-dlg-bottom {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.65rem;
+  border-top: var(--glass-border);
+  background: oklch(var(--b1) / 0.1);
+  flex-shrink: 0;
+}
+
+/* 底部按钮（组员/音乐） */
+.ai-dlg-bottom-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: oklch(var(--bc) / 0.06);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  color: oklch(var(--bc) / 0.5);
+}
+.ai-dlg-bottom-btn:hover {
+  background: oklch(var(--bc) / 0.12);
+  color: oklch(var(--bc));
+  transform: scale(1.05);
+}
+.ai-dlg-bottom-members { color: #4facfe; }
+.ai-dlg-bottom-music { color: #e879a8; }
+
+.ai-dlg-input-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-dlg-input {
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.5rem;
+  border: var(--glass-border);
+  background: oklch(var(--b1) / 0.3);
+  color: oklch(var(--bc));
+  font-size: 0.8rem;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.ai-dlg-input:focus {
+  border-color: oklch(var(--p) / 0.4);
+  background: oklch(var(--b1) / 0.5);
+}
+
+.ai-dlg-input::placeholder {
+  color: oklch(var(--bc) / 0.3);
+}
+
+.ai-dlg-send-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.ai-dlg-send-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+}
+
+/* ---- 组员列表视图 ---- */
+.ai-dlg-members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ai-dlg-member-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: oklch(var(--b1) / 0.2);
+  border: 1px solid transparent;
+}
+
+.ai-dlg-member-item:hover {
+  background: oklch(var(--b1) / 0.4);
+  border-color: oklch(var(--p) / 0.12);
+  transform: translateX(2px);
+}
+
+.ai-dlg-member-avatar {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.ai-dlg-member-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-dlg-member-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: oklch(var(--bc));
+}
+
+.ai-dlg-member-desc {
+  font-size: 0.68rem;
+  color: oklch(var(--bc) / 0.4);
+}
+
+/* ---- 独立音乐播放器弹窗 ---- */
+.ai-music-popup {
+  position: fixed;
+  bottom: 90px;
+  left: 16px;
+  width: 280px;
+  background: oklch(var(--b1) / 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  border: var(--glass-border);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  z-index: 9999;
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  transform-origin: bottom left;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ai-music-popup.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.ai-music-popup.hidden {
+  display: none;
+}
+
+.ai-music-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  border-bottom: var(--glass-border);
+  background: oklch(var(--b1) / 0.15);
+}
+
+.ai-music-popup-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: oklch(var(--bc));
+}
+
+.ai-music-popup-close {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 9999px;
+  border: none;
+  background: oklch(var(--bc) / 0.06);
+  color: oklch(var(--bc) / 0.55);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.ai-music-popup-close:hover {
+  background: oklch(var(--bc) / 0.12);
+  color: oklch(var(--bc));
+}
+
+.ai-music-popup-body {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ai-music-popup-cover {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #e879a8, #f43f5e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.6rem;
+  box-shadow: 0 4px 16px rgba(232, 121, 168, 0.3);
+}
+
+.ai-music-popup-info {
+  text-align: center;
+  margin-bottom: 0.65rem;
+}
+
+.ai-music-popup-title-text {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: oklch(var(--bc));
+}
+
+.ai-music-popup-artist {
+  font-size: 0.72rem;
+  color: oklch(var(--bc) / 0.45);
+  margin-top: 0.1rem;
+}
+
+.ai-music-popup-progress {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.ai-music-popup-bar {
+  width: 100%;
+  height: 4px;
+  background: oklch(var(--bc) / 0.1);
+  border-radius: 2px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.ai-music-popup-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e879a8, #f43f5e);
+  border-radius: 2px;
+  transition: width 0.2s linear;
+}
+
+.ai-music-popup-time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.64rem;
+  color: oklch(var(--bc) / 0.35);
+  margin-top: 0.2rem;
+}
+
+.ai-music-popup-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.ai-music-popup-mctrl {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 9999px;
+  border: none;
+  background: oklch(var(--bc) / 0.06);
+  color: oklch(var(--bc) / 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.ai-music-popup-mctrl:hover {
+  background: oklch(var(--bc) / 0.12);
+  color: oklch(var(--bc));
+}
+
+.ai-music-popup-mctrl.active {
+  color: #e879a8;
+  background: oklch(var(--bc) / 0.1);
+}
+
+.ai-music-popup-play {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 9999px;
+  border: none;
+  background: linear-gradient(135deg, #e879a8, #f43f5e);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 3px 12px rgba(232, 121, 168, 0.35);
+}
+
+.ai-music-popup-play:hover {
+  transform: scale(1.08);
+}
+
+/* ---- 滚动条 ---- */
+.ai-dlg-body::-webkit-scrollbar { width: 4px; }
+.ai-dlg-body::-webkit-scrollbar-track { background: transparent; }
+.ai-dlg-body::-webkit-scrollbar-thumb { background: oklch(var(--bc) / 0.15); border-radius: 2px; }
+
+/* ---- 响应式 ---- */
+@media (max-width: 768px) {
+  #ai-assistant-container { bottom: 16px; left: 12px; }
+  .ai-floating-btn { width: 2.6rem; height: 2.6rem; }
+  .ai-dialog-box { left: 8px; bottom: 70px; width: calc(100vw - 16px); max-height: 80vh; border-radius: 0.85rem; }
+}

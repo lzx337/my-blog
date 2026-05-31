@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html data-theme="garden" data-theme-type="light" lang="zh" style="background-color:var(--custom-page-bg)">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width,initial-scale=1" name="viewport">
+  <link href="../assets/favicon.png" rel="icon" type="image/x-icon">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Nunito:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['M PLUS Rounded 1c','Nunito','Noto Sans SC','sans-serif'],banner:['ZCOOL KuaiLe','cursive'],mono:['JetBrains Mono','monospace']}}}}</script>
+  <title>Git 安装与推送到 GitHub - YQLCH</title>
+  <style>
+    .max-w-blog{max-width:72rem}
+        [data-theme-type="light"]{color-scheme:light;--shadow-neu-out:8px 8px 16px 0 rgba(0,0,0,0.05),-8px -8px 16px 0 rgba(255,255,255,0.6)!important;--shadow-neu-in:inset 8px 8px 16px 0 rgba(0,0,0,0.05),inset -8px -8px 16px 0 rgba(255,255,255,0.6)!important}
+        [data-theme-type="dark"]{color-scheme:dark;--neu-base:oklch(var(--b1));--neu-text:oklch(var(--bc));--neu-border:oklch(var(--bc)/0.1);--neu-btn-text:oklch(var(--bc));--neu-btn-bg:oklch(var(--b2));--neu-text-muted:oklch(var(--bc)/0.5);--neu-accent:oklch(var(--p));--shadow-neu-out:8px 8px 16px 0 rgba(0,0,0,0.4),-8px -8px 16px 0 rgba(255,255,255,0.02)!important;--shadow-neu-in:inset 8px 8px 16px 0 rgba(0,0,0,0.4),inset -8px -8px 16px 0 rgba(255,255,255,0.02)!important}
+        .glass-card{background-color:oklch(var(--b1));border-radius:1rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);border:1px solid oklch(var(--bc)/0.1)}
+        h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.3;letter-spacing:0.02em}
+        .btn-category{background-color:oklch(var(--p)/0.05);color:oklch(var(--p));border:none}.btn-category:hover{background-color:oklch(var(--p));color:oklch(var(--pc));transform:scale(1.1)}
+        .btn-tag{background-color:oklch(var(--s)/0.05);color:oklch(var(--s));border:none}.btn-tag:hover{background-color:oklch(var(--s));color:oklch(var(--sc));transform:scale(1.1)}
+        .glass-panel{padding:1rem;border-radius:1.5rem;background-color:oklch(var(--b2)/0.3);backdrop-filter:blur(12px);border:1px solid oklch(var(--b3)/0.2)}
+        @keyframes fade-in-up{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+        }
+        :root,[data-theme]{--rounded-box:1rem!important;--rounded-btn:0.5rem!important;--rounded-badge:1.9rem!important}
+        .banner{position:relative;height:var(--bannerHeight,60vh);overflow:hidden}
+        @media(max-width:768px){.banner{height:40vh!important}}
+        .banner .title{font-family:'ZCOOL KuaiLe',cursive;font-size:2.25rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        @media(min-width:768px){.banner .title{font-size:3.75rem}}
+        @media(min-width:1024px){.banner .title{font-size:6rem}}
+        .banner .subtitle{font-family:'ZCOOL KuaiLe',cursive;font-size:1.25rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        @media(min-width:768px){.banner .subtitle{font-size:1.5rem}}
+        @media(min-width:1024px){.banner .subtitle{font-size:2.25rem}}
+        .waves{position:absolute;bottom:0;left:0;width:100%;overflow:hidden;line-height:0}
+        .waves svg{position:relative;display:block;width:calc(100% + 1.3px);height:60px}
+        .waves .parallax>use{animation:wave 25s cubic-bezier(0.55,0.5,0.45,0.5) infinite}
+        .waves .parallax>use:nth-child(1){animation-delay:-2s;animation-duration:7s}
+        .waves .parallax>use:nth-child(2){animation-delay:-3s;animation-duration:10s}
+        .waves .parallax>use:nth-child(3){animation-delay:-4s;animation-duration:13s}
+        .waves .parallax>use:nth-child(4){animation-delay:-5s;animation-duration:20s}
+        @keyframes wave{0%{transform:translate3d(-90px,0,0)}100%{transform:translate3d(85px,0,0)}}
+        .back-to-top:hover{transform:scale(1.1)}
+        .scrollbar-none::-webkit-scrollbar{display:none}
+  </style>
+</head>
+<body class="flex flex-col bg-[var(--banner-wave-bg)] min-h-screen" style="background:linear-gradient(135deg,oklch(var(--b2)),oklch(var(--b3)/0.6),oklch(var(--b2)));background-attachment:fixed">
+
+<!-- 装饰性背景光球 -->
+<div class="glass-bg-orbs">
+  <div class="glass-bg-orb"></div>
+  <div class="glass-bg-orb"></div>
+  <div class="glass-bg-orb"></div>
+</div>
+<!-- Banner -->
+<div class="banner" id="banner" style="--bannerHeight:60vh">
+  <div class="w-full h-full banner-inner overflow-hidden relative" style="--bannerHeight:60vh">
+    <div class="w-full h-full absolute left-0 top-0 bg-center bg-cover bg-no-repeat duration-1000 transition-opacity z-0" style="background-image:url(../assets/home.webp);--bannerHeight:60vh" id="banner-bg-current"></div>
+    <div class="w-full h-full absolute left-0 top-0 bg-black/40 duration-300 transition-colors z-10" style="--bannerHeight:60vh"></div>
+    <div class="w-full relative h-[95%] pointer-events-none z-20" style="--bannerHeight:60vh">
+      <div class="-translate-y-1/2 absolute top-1/2 -translate-x-1/2 left-1/2 lg:w-3/4 w-4/5" style="--bannerHeight:60vh">
+        <div class="flex flex-col pointer-events-auto" style="--bannerHeight:60vh">
+          <div class="font-banner lg:text-8xl md:text-6xl text-4xl title" style="--bannerHeight:60vh">Git 安装与推送到 GitHub</div>
+          <div class="text-xl font-banner lg:text-4xl md:text-2xl subtitle" style="--bannerHeight:60vh">
+            <span style="--bannerHeight:60vh">首次仓库构建初始化与远程推送</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="waves" style="--bannerHeight:60vh">
+    <svg class="waves" viewBox="0 24 150 28" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" shape-rendering="auto">
+      <defs><path d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" id="gentle-wave"></path></defs>
+      <g class="parallax">
+        <use style="animation-delay:-2s;animation-duration:7s" x="48" xlink:href="#gentle-wave" y="0" class="opacity-25"></use>
+        <use style="animation-delay:-3s;animation-duration:10s" x="48" xlink:href="#gentle-wave" y="3" class="opacity-50"></use>
+        <use style="animation-delay:-4s;animation-duration:13s" x="48" xlink:href="#gentle-wave" y="5" class="opacity-75"></use>
+        <use style="animation-delay:-5s;animation-duration:20s" x="48" xlink:href="#gentle-wave" y="7"></use>
+      </g>
+    </svg>
+  </div>
+</div>
+<!-- 桌面端导航栏 -->
+<nav class="hidden md:block duration-500 fixed left-0 opacity-100 pointer-events-auto right-0 top-0 transition-opacity z-50" id="navbar-desktop">
+  <div class="max-w-[95rem] mx-auto px-4">
+    <div class="rounded-full border border-white/20 backdrop-blur-xl glass-nav-inner py-3 shadow-2xl duration-300 px-6 transition-colors" id="navbar-bg">
+      <div class="flex items-center justify-center space-x-2">
+        <a href="../index.html" class="flex items-center duration-300 hover:scale-105 space-x-2 transition-transform">
+          <span class="text-3xl font-bold text-primary tracking-tight">YQLCH</span>
+        </a>
+        <a href="../index.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:home-outline-rounded" style="font-size:1.25rem"></span> 首页
+        </a>
+        <a href="search.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:edit-note-outline" style="font-size:1.25rem"></span> 写作
+        </a>
+        <a href="navigation.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:explore-outline" style="font-size:1.25rem"></span> 导航
+        </a>
+        <div class="dropdown dropdown-hover">
+          <div class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg" role="button" tabindex="0">
+            <span class="iconify" data-icon="material-symbols:play-circle-outline-rounded" style="font-size:1.25rem"></span> <span>娱乐</span>
+          </div>
+          <ul class="dropdown-content menu p-2 z-[1] w-52 glass-dropdown mt-2 text-base-content" tabindex="0">
+            <li><a href="anime.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all hover:bg-base-200 text-base"><span class="iconify" data-icon="material-symbols:movie-outline" style="font-size:1rem"></span> 追番</a></li>
+            <li><a href="music.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all hover:bg-base-200 text-base"><span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:1rem"></span> 音乐</a></li>
+          </ul>
+        </div>
+        <a href="project.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:code-blocks-outline" style="font-size:1.25rem"></span> 项目
+        </a>
+        <a href="friend.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:supervisor-account-outline-rounded" style="font-size:1.25rem"></span> 组员介绍
+        </a>
+        <a href="about.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:info-outline-rounded" style="font-size:1.25rem"></span> 关于
+        </a>
+        <div class="dropdown dropdown-hover">
+          <div class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg" role="button" tabindex="0">
+            <span class="iconify" data-icon="material-symbols:tune-outline" style="font-size:1.25rem"></span> 设置
+          </div>
+          <div class="dropdown-content z-[1] w-72 glass-dropdown mt-2 p-4 text-base-content" tabindex="0">
+            <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:photo"></span> 背景模式</h3>
+            <div class="grid grid-cols-2 gap-2 mb-4">
+              <button id="bg-banner" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:photo" style="font-size:1rem"></span>
+                <span>Banner</span>
+              </button>
+              <button id="bg-fullscreen" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:monitor-fullscreen" style="font-size:1rem"></span>
+                <span>全屏</span>
+              </button>
+              <button id="bg-background" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:image" style="font-size:1rem"></span>
+                <span>背景</span>
+              </button>
+              <button id="bg-hide" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:hide-image" style="font-size:1rem"></span>
+                <span>隐藏</span>
+              </button>
+            </div>
+            
+            <div class="border-t border-base-200 pt-3 mb-3">
+              <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:palette-outline"></span> 颜色主题</h3>
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-base-content/60">☀️ 白天</span>
+                </div>
+                <button id="theme-toggle" class="btn btn-ghost btn-sm btn-circle" aria-label="切换白天/夜晚">
+                  <span class="iconify text-yellow-400" id="sun-icon" data-icon="material-symbols:sunny" style="font-size:1rem"></span>
+                  <span class="iconify text-indigo-400 hidden" id="moon-icon" data-icon="material-symbols:moon-stars" style="font-size:1rem"></span>
+                </button>
+              </div>
+              <div id="theme-light-section" class="grid grid-cols-4 gap-3 mb-3"></div>
+              <h3 class="text-xs font-semibold text-base-content/60 mb-2 flex items-center gap-1"><span>🌙</span> 夜晚主题</h3>
+              <div id="theme-dark-section" class="grid grid-cols-4 gap-3"></div>
+            </div>
+            
+            
+          </div>
+        </div>
+        <a href="admin.html" id="nav-login-btn" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg"><span class="iconify" data-icon="material-symbols:login" style="font-size:1.25rem"></span> 登录</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- 移动端导航栏 -->
+<nav class="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50" id="navbar-mobile">
+  <div class="flex items-center gap-2 glass-nav-inner rounded-full px-4 py-3 shadow-2xl">
+    <a href="../index.html" class="btn btn-ghost btn-circle"><img src="../assets/profile.png" class="w-8 h-8 rounded-full" alt="首页"></a>
+    <a href="./navigation.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:explore-outline" style="font-size:1.25rem"></span></a>
+    <a href="./project.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:code-blocks-outline" style="font-size:1.25rem"></span></a>
+    <a href="./friend.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:supervisor-account-outline-rounded" style="font-size:1.25rem"></span></a>
+    <a href="./about.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:info-outline-rounded" style="font-size:1.25rem"></span></a>
+    <button id="theme-toggle-mobile" class="btn btn-ghost btn-circle text-primary"><span class="iconify" data-icon="material-symbols:dark-mode-outline" style="font-size:1.25rem"></span></button>
+  </div>
+</nav>
+<main class="flex-1 w-full max-w-blog mx-auto px-4 mt-8 mb-24 page-content-animate">
+  <div class="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 gap-6">
+    <!-- 左侧侧边栏 -->
+    <aside class="md:col-span-1 order-2 md:order-1">
+      <div class="glass-card p-3 mb-4">
+        <a href="./about.html" class="group block relative mx-auto mt-1 lg:mx-0 lg:mt-0 mb-3 max-w-[12rem] lg:max-w-none overflow-hidden rounded-2xl active:scale-95">
+          <div class="absolute transition pointer-events-none group-hover:bg-black/30 group-active:bg-black/50 w-full h-full z-50 flex items-center justify-center">
+            <span class="iconify transition opacity-0 scale-90 group-hover:scale-100 group-hover:opacity-100 text-white text-5xl" data-icon="material-symbols:person-outline"></span>
+          </div>
+          <div class="mx-auto lg:w-full overflow-hidden relative">
+            <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
+            <img src="../assets/profile.png" alt="YQLCH" class="w-full h-full object-cover" style="object-position:center center">
+          </div>
+        </a>
+        <div class="px-2">
+          <div class="font-bold text-xl text-center mb-1 dark:text-neutral-50 transition">YQLCH</div>
+          <div class="h-1 w-5 bg-primary mx-auto rounded-full mb-2 transition"></div>
+          <div class="text-center mb-2.5 transition font-bold tracking-wide bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent hover:scale-105 hover:from-purple-400 hover:to-pink-400">Ciallo～(∠・ω&lt;)⌒★</div>
+          <div class="mt-4 pt-3 border-t border-base-content/20">
+            <div class="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-2 justify-items-center">
+              <div class="tooltip tooltip-bottom" data-tip="GitHub"><a href="https://github.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="mdi:github"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="BiliBili"><a href="https://bilibili.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:bilibili-fill"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="Douyin"><a href="https://douyin.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:tiktok-fill"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="Weibo"><a href="https://weibo.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:weibo-fill"></span></a></div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 mt-3 pt-3 border-t border-base-content/20">
+            <div class="text-center">
+              <div class="text-xs text-base-content/50 mb-1 flex items-center justify-center gap-1"><span class="iconify text-base text-primary" data-icon="material-symbols:visibility-outline"></span><span class="text-xs">访问量</span></div>
+              <div class="font-bold text-lg text-base-content">-</div>
+            </div>
+            <div class="text-center border-l border-base-content/20">
+              <div class="text-xs text-base-content/50 mb-1 flex items-center justify-center gap-1"><span class="iconify text-base text-primary" data-icon="material-symbols:person"></span><span class="text-xs">访客数</span></div>
+              <div class="font-bold text-lg text-base-content">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-3 mb-4">
+        <div class="font-bold transition text-lg text-base-content relative ml-4 mb-2 before:w-1 before:h-4 before:rounded-md before:bg-primary before:absolute before:left-[-16px] before:top-[5.5px]">分类</div>
+        <div class="px-2">
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">教程</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">3</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">动漫</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">2</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">技术</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">1</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">生活</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">1</div></div></button></a>
+        </div>
+      </div>
+      <div class="glass-card p-3">
+        <div class="font-bold transition text-lg text-base-content relative ml-4 mb-2 before:w-1 before:h-4 before:rounded-md before:bg-primary before:absolute before:left-[-16px] before:top-[5.5px]">标签</div>
+        <div class="px-2">
+          <div class="flex gap-1 flex-wrap">
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">Git</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">GitHub</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">Markdown</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">MDX</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">数学公式</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">评论系统</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">电锯人</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">样式指南</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <!-- 右侧主内容 -->
+    <div class="md:col-span-4 lg:col-span-3 order-1 md:order-2">
+
+      <article class="glass-card p-6 md:p-8 animate-fade-in-up">
+        <!-- 文章标题 -->
+        <h1 class="ryuchan-heading text-2xl md:text-3xl mb-4">Git 安装与推送到 GitHub</h1>
+
+        <!-- 文章元信息 -->
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-base-content/70 mb-4">
+          <span class="flex items-center gap-1.5">
+            <span class="iconify" data-icon="material-symbols:calendar-month-outline" style="font-size:1rem"></span>
+            周六 4月 18 2026
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="iconify" data-icon="material-symbols:schedule-outline" style="font-size:1rem"></span>
+            约 5 分钟
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="iconify" data-icon="material-symbols:visibility-outline" style="font-size:1rem"></span>
+            1 次浏览
+          </span>
+        </div>
+
+        <!-- 分类与标签 -->
+        <div class="flex flex-wrap items-center gap-2 mb-5">
+          <span class="flex items-center gap-1 text-sm text-base-content/60">
+            <span class="iconify" data-icon="material-symbols:folder-outline" style="font-size:1rem"></span>
+            分类：
+          </span>
+          <a href="./categories.html" class="btn btn-xs btn-category rounded-lg">教程</a>
+          <span class="mx-1 text-base-content/20">|</span>
+          <span class="flex items-center gap-1 text-sm text-base-content/60">
+            <span class="iconify" data-icon="material-symbols:label-outline" style="font-size:1rem"></span>
+            标签：
+          </span>
+          <a href="./tags.html" class="btn btn-xs btn-tag rounded-lg">Git</a>
+          <a href="./tags.html" class="btn btn-xs btn-tag rounded-lg">GitHub</a>
+        </div>
+
+        <hr class="mb-6 border-base-content/10">
+
+        <!-- 文章封面图 -->
+        <div class="mb-8 rounded-2xl overflow-hidden border border-base-content/10">
+          <img src="../assets/images/git/b9cb7653e82633e5.png" alt="Git 安装与推送到 GitHub 封面" class="w-full h-auto object-cover">
+        </div>
+
+        <!-- 文章正文 -->
+        <div class="prose prose-base max-w-none text-base-content/90">
+
+          <!-- 前言 -->
+          <p class="mb-4 text-base-content/80 leading-relaxed">
+            Git 是目前世界上最流行的分布式版本控制系统，由 Linux 之父 Linus Torvalds 于 2005 年创建。无论你是个人开发者还是团队协作，Git 都是不可或缺的工具。本文将带你从零开始，完成 Git 的安装、配置，并将本地仓库推送到 GitHub 远程仓库。
+          </p>
+
+          <!-- 第一章：安装 Git -->
+          <h2 id="install-git" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:download-outline" style="font-size:1.25rem"></span>
+            安装 Git
+          </h2>
+          <p class="mb-3">Git 支持所有主流操作系统，下面分别介绍在不同平台上的安装方法。</p>
+
+          <h3 id="install-windows" class="text-lg font-bold text-base-content mt-6 mb-3">Windows 平台</h3>
+          <p class="mb-3">前往 Git 官方网站下载最新版本的安装包，双击运行即可完成安装。安装过程中建议保持默认选项。</p>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code># 下载地址
+https://git-scm.com/download/win
+
+# 安装完成后打开终端验证
+git --version
+# 输出示例：git version 2.45.0.windows.1</code></pre>
+          </div>
+
+          <h3 id="install-macos" class="text-lg font-bold text-base-content mt-6 mb-3">macOS 平台</h3>
+          <p class="mb-3">macOS 用户可以通过 Homebrew 包管理器快速安装 Git：</p>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code># 使用 Homebrew 安装
+brew install git
+
+# 验证安装
+git --version</code></pre>
+          </div>
+          <p class="mb-3">也可以通过安装 Xcode Command Line Tools 来获取 Git：</p>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code>xcode-select --install</code></pre>
+          </div>
+
+          <h3 id="install-linux" class="text-lg font-bold text-base-content mt-6 mb-3">Linux 平台</h3>
+          <p class="mb-3">大多数 Linux 发行版已经预装了 Git。如果没有，可以使用包管理器安装：</p>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code># Ubuntu / Debian
+sudo apt-get update
+sudo apt-get install git
+
+# CentOS / RHEL / Fedora
+sudo yum install git
+
+# Arch Linux
+sudo pacman -S git</code></pre>
+          </div>
+
+          <!-- 第二章：配置 Git -->
+          <h2 id="config-git" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:settings-outline" style="font-size:1.25rem"></span>
+            配置 Git
+          </h2>
+          <p class="mb-3">安装完成后，第一步是配置你的用户名和邮箱地址。这些信息会记录在每一次提交中，方便团队协作时识别作者。</p>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code># 设置全局用户名和邮箱
+git config --global user.name "你的用户名"
+git config --global user.email "你的邮箱@example.com"
+
+# 查看当前配置
+git config --list
+
+# 设置默认分支名称为 main
+git config --global init.defaultBranch main
+
+# 设置默认编辑器（可选）
+git config --global core.editor "code --wait"</code></pre>
+          </div>
+
+          <div class="bg-primary/5 border-l-4 border-primary p-4 rounded-r-xl mb-6">
+            <p class="text-sm text-base-content/80"><strong>提示：</strong>使用 <code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">--global</code> 参数表示全局配置，对所有仓库生效。如果只想对某个仓库单独配置，去掉 <code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">--global</code> 即可。</p>
+          </div>
+
+          <!-- 第三章：创建仓库 -->
+          <h2 id="create-repo" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:create-new-folder-outline" style="font-size:1.25rem"></span>
+            创建仓库并推送到 GitHub
+          </h2>
+          <p class="mb-3">下面是完整的仓库创建和推送流程，从零开始一步步操作：</p>
+
+          <h3 id="step-1" class="text-lg font-bold text-base-content mt-6 mb-3">Step 1：在 GitHub 上创建远程仓库</h3>
+          <ol class="list-decimal list-inside space-y-2 mb-4 pl-2">
+            <li>登录 <a href="https://github.com" target="_blank" class="text-primary hover:underline">GitHub</a> 账号</li>
+            <li>点击右上角的 <strong>+</strong> 号，选择 <strong>New repository</strong></li>
+            <li>填写仓库名称（例如 <code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">my-project</code>）</li>
+            <li>选择 <strong>Public</strong> 或 <strong>Private</strong></li>
+            <li>勾选 <strong>Add a README file</strong>（可选）</li>
+            <li>点击 <strong>Create repository</strong></li>
+          </ol>
+
+          <h3 id="step-2" class="text-lg font-bold text-base-content mt-6 mb-3">Step 2：本地初始化仓库</h3>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code># 1. 创建项目目录
+mkdir my-project
+cd my-project
+
+# 2. 初始化 Git 仓库
+git init
+# 输出：Initialized empty Git repository in /path/to/my-project/.git/
+
+# 3. 创建 README 文件
+echo "# My Project" > README.md
+
+# 4. 添加所有文件到暂存区
+git add .
+
+# 5. 提交更改
+git commit -m "feat: initial commit"</code></pre>
+          </div>
+
+          <h3 id="step-3" class="text-lg font-bold text-base-content mt-6 mb-3">Step 3：关联远程仓库并推送</h3>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code># 1. 添加远程仓库地址
+git remote add origin https://github.com/username/my-project.git
+
+# 2. 验证远程仓库
+git remote -v
+
+# 3. 推送到 GitHub（首次推送使用 -u 参数）
+git push -u origin main
+
+# 之后推送只需
+git push</code></pre>
+          </div>
+
+          <div class="bg-primary/5 border-l-4 border-primary p-4 rounded-r-xl mb-6">
+            <p class="text-sm text-base-content/80"><strong>提示：</strong>如果你在创建 GitHub 仓库时勾选了 README 等文件，需要先执行 <code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git pull origin main --allow-unrelated-histories</code> 合并远程历史，然后再推送。</p>
+          </div>
+
+          <!-- 第四章：SSH 密钥配置 -->
+          <h2 id="ssh-config" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:key-outline" style="font-size:1.25rem"></span>
+            配置 SSH 密钥（推荐）
+          </h2>
+          <p class="mb-3">使用 HTTPS 方式推送每次都需要输入密码，而 SSH 密钥可以实现免密推送，更加方便安全。</p>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code># 1. 生成 SSH 密钥
+ssh-keygen -t ed25519 -C "你的邮箱@example.com"
+# 一路回车使用默认设置即可
+
+# 2. 查看公钥内容
+cat ~/.ssh/id_ed25519.pub
+
+# 3. 将公钥添加到 GitHub
+#    进入 GitHub -> Settings -> SSH and GPG keys -> New SSH key
+#    粘贴公钥内容并保存
+
+# 4. 测试连接
+ssh -T git@github.com
+# 输出：Hi username! You've successfully authenticated...
+
+# 5. 使用 SSH 地址替代 HTTPS 地址
+git remote set-url origin git@github.com:username/my-project.git</code></pre>
+          </div>
+
+          <!-- 第五章：常用命令速查 -->
+          <h2 id="common-commands" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:terminal-outline" style="font-size:1.25rem"></span>
+            常用命令速查表
+          </h2>
+          <p class="mb-4">以下是一些日常开发中最常用的 Git 命令，建议收藏备用：</p>
+          <div class="overflow-x-auto mb-6">
+            <table class="table table-zebra w-full text-sm">
+              <thead>
+                <tr>
+                  <th class="font-bold">命令</th>
+                  <th class="font-bold">说明</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git init</code></td><td>初始化新仓库</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git clone &lt;url&gt;</code></td><td>克隆远程仓库到本地</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git status</code></td><td>查看工作区状态</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git add .</code></td><td>添加所有文件到暂存区</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git commit -m "msg"</code></td><td>提交更改到本地仓库</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git push</code></td><td>推送到远程仓库</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git pull</code></td><td>拉取并合并远程更新</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git branch</code></td><td>查看所有分支</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git checkout -b &lt;name&gt;</code></td><td>创建并切换到新分支</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git merge &lt;name&gt;</code></td><td>合并指定分支到当前分支</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git log --oneline</code></td><td>查看简洁提交历史</td></tr>
+                <tr><td><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git stash</code></td><td>暂存当前修改</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 第六章：.gitignore -->
+          <h2 id="gitignore" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:rule-outline" style="font-size:1.25rem"></span>
+            .gitignore 文件
+          </h2>
+          <p class="mb-3"><code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">.gitignore</code> 文件用于指定哪些文件或目录不需要被 Git 跟踪。以下是一个常见的前端项目 <code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">.gitignore</code> 示例：</p>
+          <div class="bg-base-300 rounded-xl p-4 mb-4 overflow-x-auto">
+            <pre class="font-mono text-sm leading-relaxed"><code># 依赖目录
+node_modules/
+.pnpm-store/
+
+# 构建输出
+dist/
+build/
+.next/
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+
+# 编辑器配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志文件
+*.log
+npm-debug.log*</code></pre>
+          </div>
+
+          <!-- 第七章：注意事项 -->
+          <h2 id="notes" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:info-outline" style="font-size:1.25rem"></span>
+            注意事项
+          </h2>
+          <div class="glass-card p-5 bg-warning/5 border border-warning/20 mb-6">
+            <h4 class="font-bold text-base mb-3 flex items-center gap-2">
+              <span class="iconify text-warning" data-icon="material-symbols:warning-outline" style="font-size:1.25rem"></span> 重要提醒
+            </h4>
+            <ul class="list-disc list-inside space-y-2 text-sm text-base-content/80">
+              <li><strong>切勿提交敏感信息</strong>：密码、API 密钥、Token 等绝不能提交到仓库，使用环境变量文件管理</li>
+              <li><strong>定期提交代码</strong>：保持提交历史清晰，每次提交只做一件事</li>
+              <li><strong>写好 commit 信息</strong>：建议遵循约定式提交（Conventional Commits）规范，如 <code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">feat:</code>、<code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">fix:</code>、<code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">docs:</code> 等</li>
+              <li><strong>推送前先拉取</strong>：执行 <code class="bg-base-300 px-1.5 py-0.5 rounded text-xs">git pull</code> 获取最新代码，避免产生冲突</li>
+              <li><strong>善用分支</strong>：新功能或修复 Bug 时创建新分支，完成后再合并到主分支</li>
+              <li><strong>使用 SSH 密钥</strong>：比 HTTPS 更安全便捷，配置一次终身受益</li>
+            </ul>
+          </div>
+
+          <!-- 总结 -->
+          <h2 id="summary" class="text-xl font-bold text-base-content mt-8 mb-4 flex items-center gap-2">
+            <span class="iconify text-primary" data-icon="material-symbols:check-circle-outline" style="font-size:1.25rem"></span>
+            总结
+          </h2>
+          <p class="mb-4 text-base-content/80 leading-relaxed">
+            到这里，你已经学会了 Git 的完整安装和配置流程，以及如何创建本地仓库并推送到 GitHub。掌握这些基础操作后，你可以进一步学习分支管理、变基（rebase）、标签（tag）等高级功能。Git 的学习曲线虽然有些陡峭，但一旦掌握，它将成为你开发工作中最得力的助手。
+          </p>
+          <p class="mb-4 text-base-content/80 leading-relaxed">
+            如果你在操作过程中遇到任何问题，欢迎在评论区留言讨论，或者查阅 <a href="https://git-scm.com/doc" target="_blank" class="text-primary hover:underline">Git 官方文档</a> 获取更多帮助。
+          </p>
+
+        </div>
+
+        <hr class="my-8 border-base-content/10">
+
+        <!-- 上一篇 / 下一篇 -->
+        <div class="flex flex-col sm:flex-row justify-between gap-3">
+          <a href="#" class="glass-card p-3 flex items-center gap-2 hover:shadow-lg transition-all hover:-translate-y-0.5 flex-1">
+            <span class="iconify text-primary" data-icon="material-symbols:arrow-back-rounded"></span>
+            <div>
+              <div class="text-xs text-base-content/50">上一篇</div>
+              <div class="text-sm font-semibold text-base-content">Git 安装与推送到 GitHub</div>
+            </div>
+          </a>
+          <a href="post4.html" class="glass-card p-3 flex items-center gap-2 hover:shadow-lg transition-all hover:-translate-y-0.5 flex-1 text-right sm:text-right">
+            <div class="flex-1">
+              <div class="text-xs text-base-content/50">下一篇</div>
+              <div class="text-sm font-semibold text-base-content">Vue.js 3 Composition API 实战</div>
+            </div>
+            <span class="iconify text-primary" data-icon="material-symbols:arrow-forward-rounded"></span>
+          </a>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</main>
+<!-- 页脚 -->
+<footer class="footer glass-footer py-2 px-4 md:p-10 rounded-xl shadow-lg gap-y-2 md:gap-4">
+  <aside>
+    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" class="fill-current md:w-[50px] md:h-[50px]"><path d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"></path></svg>
+    <p class="text-xs md:text-base">Powered by <a href="#" target="_blank" class="font-bold gradient-link">YQLCH Template</a><br>Copyright &copy; <a href="#" target="_blank" class="font-bold gradient-link">YQLCH</a> 2025&ndash;2026<br>All rights reserved</p>
+  </aside>
+  <nav>
+    <span class="footer-title text-xs md:text-sm">Social</span>
+    <div class="grid grid-flow-col gap-3 md:gap-4">
+      <div class="tooltip" data-tip="GitHub"><a href="https://github.com" target="_blank" class="social-link icon-link"><span class="iconify text-xl" data-icon="mdi:github"></span></a></div>
+      <div class="tooltip" data-tip="BiliBili"><a href="https://bilibili.com" target="_blank" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:bilibili-fill"></span></a></div>
+      <div class="tooltip" data-tip="X"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:twitter-x-fill"></span></a></div>
+      <div class="tooltip" data-tip="Telegram"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:telegram-fill"></span></a></div>
+      <div class="tooltip" data-tip="RSS"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:rss-line"></span></a></div>
+    </div>
+    <div class="mt-2 text-xs md:text-sm"><a href="#" target="_blank" rel="noopener" class="font-bold gradient-link">萌ICP备20261117号</a> &nbsp;|&nbsp; <a href="admin.html" class="text-base-content/30 hover:text-base-content/60 transition-colors text-xs md:text-sm">管理</a></div>
+  </nav>
+</footer>
+<!-- 回到顶部 -->
+<button id="back-to-top" class="back-to-top opacity-0 pointer-events-none" aria-label="Back to top">
+  <span class="iconify" data-icon="material-symbols:keyboard-arrow-up-rounded" style="font-size:1.5rem"></span>
+</button>
+<!-- 音乐播放器 -->
+<div id="music-player" style="position:fixed;bottom:5rem;left:1.5rem;z-index:40;">
+  <button id="music-toggle" class="back-to-top" style="position:static;width:3rem;height:3rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));" aria-label="播放音乐">
+    <span class="iconify" id="music-icon" data-icon="material-symbols:music-note-rounded" style="font-size:1.25rem;color:white;"></span>
+  </button>
+  <div id="music-panel" style="display:none;position:absolute;bottom:3.5rem;left:0;width:16rem;background:oklch(var(--b1));border-radius:1rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);padding:1rem;border:1px solid oklch(var(--bc)/0.1);">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+      <div style="width:3rem;height:3rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));border-radius:0.75rem;display:flex;align-items:center;justify-content:center;">
+        <span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:1.25rem;color:white;"></span>
+      </div>
+      <div style="flex:1;overflow:hidden;">
+        <div id="music-title" style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">星炬不熄</div>
+        <div id="music-artist" style="font-size:0.75rem;opacity:0.7;">星炬学院毕业生</div>
+      </div>
+    </div>
+    <div style="margin-bottom:0.75rem;">
+      <div style="height:0.25rem;background:oklch(var(--b2));border-radius:9999px;overflow:hidden;">
+        <div id="music-progress" style="width:0%;height:100%;background:linear-gradient(90deg,oklch(var(--p)),oklch(var(--s)));transition:width 0.3s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:0.625rem;margin-top:0.25rem;opacity:0.6;">
+        <span id="music-current">0:00</span><span id="music-duration">4:01</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;align-items:center;gap:1rem;">
+      <button id="music-prev" style="background:none;border:none;cursor:pointer;padding:0.25rem;"><span class="iconify" data-icon="material-symbols:skip-previous-rounded" style="font-size:1.25rem;"></span></button>
+      <button id="music-play" style="width:2.5rem;height:2.5rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;"><span class="iconify" id="play-icon" data-icon="material-symbols:play-arrow-rounded" style="font-size:1.25rem;"></span></button>
+      <button id="music-next" style="background:none;border:none;cursor:pointer;padding:0.25rem;"><span class="iconify" data-icon="material-symbols:skip-next-rounded" style="font-size:1.25rem;"></span></button>
+    </div>
+  </div>
+</div>
+<!-- Iconify -->
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="../css/glass.css" rel="stylesheet">
+<!-- JS -->
+<script src="../js/utils.js" defer></script>
+<script src="../js/seo.js" defer></script>
+<script src="../js/data.js" defer></script>
+<script src="../js/theme.js" defer></script>
+<script src="../js/main.js" defer></script>
+    <script src="../js/music.js" defer></script>
+</body>
+</html>

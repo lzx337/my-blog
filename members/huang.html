@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黄润华 · 中职技术博客 | 技能成长记录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto { content-visibility: auto; }
+            .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+            .card-hover { transition: all 0.3s ease; }
+            .card-hover:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -8px rgba(0, 0, 0, 0.12); }
+            .progress-bar { transition: width 1.2s ease; }
+        }
+    </style>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.6s ease forwards; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating-icon { animation: float 4s ease-in-out infinite; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+        html { scroll-behavior: smooth; }
+        .friend-link-card { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .friend-link-card:hover { transform: translateY(-8px); box-shadow: 0 25px 35px -12px rgba(59, 130, 246, 0.35); }
+        .friend-link-card:hover .friend-avatar { transform: scale(1.1); border-color: #3B82F6; }
+        .friend-avatar { transition: all 0.35s ease; }
+        .bg-pattern {
+            background-color: #f0f4ff;
+            background-image: radial-gradient(circle at 25% 25%, rgba(59,130,246,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        /* 深色主题样式 */
+        body.dark { background-color: #111827; color: #e5e7eb; }
+        body.dark header { background-color: rgba(17, 24, 39, 0.92) !important; backdrop-filter: blur(8px); }
+        body.dark .bg-white { background-color: #1f2937 !important; }
+        body.dark .bg-gray-50 { background-color: #111827 !important; }
+        body.dark .text-dark { color: #f3f4f6 !important; }
+        body.dark .text-gray-600 { color: #9ca3af !important; }
+        body.dark .text-gray-500 { color: #9ca3af !important; }
+        body.dark .border-gray-100 { border-color: #374151 !important; }
+        body.dark .border-gray-200 { border-color: #374151 !important; }
+        body.dark .border-gray-300 { border-color: #4b5563 !important; }
+        body.dark .bg-pattern { background-color: #1f2937; background-image: radial-gradient(circle at 25% 25%, rgba(59,130,246,0.1) 1px, transparent 1px); }
+        body.dark .friend-link-card { background-color: #1f2937; border-color: #374151; }
+        body.dark .friend-link-card h4 { color: #f3f4f6; }
+        body.dark .bg-blue-50 { background-color: #1e3a5f !important; }
+        body.dark .bg-green-50 { background-color: #14532d !important; }
+        body.dark .bg-amber-50 { background-color: #78350f !important; }
+        body.dark .bg-purple-50 { background-color: #3b0764 !important; }
+        body.dark input, body.dark textarea { background-color: #374151; border-color: #4b5563; color: #e5e7eb; }
+        body.dark input::placeholder, body.dark textarea::placeholder { color: #9ca3af; }
+        body.dark .from-blue-50 { --tw-gradient-from: #1e293b; }
+        body.dark .via-indigo-50 { --tw-gradient-to: #1e293b; }
+        body.dark .to-purple-50 { --tw-gradient-to: #1e293b; }
+        #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        
+        /* 模态框动画 */
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-card-animate { animation: modalPop 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards; }
+        .modal-overlay { transition: opacity 0.25s ease; }
+    </style>
+  <link href="../css/glass-standalone.css" rel="stylesheet">
+  <link href="../css/glass.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <div class="glass-bg-orbs">
+    <div class="glass-bg-orb"></div>
+    <div class="glass-bg-orb"></div>
+    <div class="glass-bg-orb"></div>
+  </div>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <header class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300 py-3" id="navbar">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-2 group">
+                <i class="fa fa-code text-primary text-2xl group-hover:scale-110 transition-transform"></i>
+                <span class="font-bold text-xl tracking-tight">黄润华<span class="text-primary">.技术博客</span></span>
+            </a>
+            <nav class="hidden md:flex items-center gap-6">
+                <a href="#home" class="font-medium hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-primary after:transition-all">首页</a>
+                <a href="#skills" class="font-medium hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-primary after:transition-all">专业技能</a>
+                <a href="#projects" class="font-medium hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-primary after:transition-all">作品展示</a>
+                <a href="#contact" class="font-medium hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-primary after:transition-all">联系我</a>
+                <a href="#team-members" class="font-medium hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-primary after:transition-all">小组成员</a>
+                <button id="theme-toggle" class="font-medium text-gray-600 hover:text-primary bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full transition-all flex items-center gap-1" title="切换主题">
+                    <i class="fa fa-moon-o text-sm"></i>
+                </button>
+            </nav>
+            <button class="md:hidden text-gray-700" id="menu-toggle">
+                <i class="fa fa-bars text-xl"></i>
+            </button>
+        </div>
+        <div class="md:hidden hidden bg-white/80 backdrop-blur-md shadow-md absolute w-full" id="mobile-menu">
+            <div class="container mx-auto px-4 py-4 flex flex-col gap-3">
+                <a href="#home" class="py-2 font-medium hover:text-primary transition-colors flex items-center gap-2"><i class="fa fa-home text-sm"></i> 首页</a>
+                <a href="#skills" class="py-2 font-medium hover:text-primary transition-colors flex items-center gap-2"><i class="fa fa-bar-chart text-sm"></i> 专业技能</a>
+                <a href="#projects" class="py-2 font-medium hover:text-primary transition-colors flex items-center gap-2"><i class="fa fa-folder-open text-sm"></i> 作品展示</a>
+                <a href="#contact" class="py-2 font-medium hover:text-primary transition-colors flex items-center gap-2"><i class="fa fa-envelope text-sm"></i> 联系我</a>
+                <a href="#team-members" class="py-2 font-medium hover:text-primary transition-colors flex items-center gap-2"><i class="fa fa-users text-sm"></i> 小组成员</a>
+                <button id="theme-toggle-mobile" class="py-2 font-medium text-gray-600 hover:text-primary flex items-center gap-2 w-full text-left">
+                    <i class="fa fa-moon-o text-sm"></i> 切换主题
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section id="home" class="pt-20 md:pt-0 min-h-screen flex items-center relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 overflow-hidden">
+        <div class="absolute inset-0 opacity-30">
+            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://picsum.photos/id/180/1920/1080')] bg-cover bg-center mix-blend-overlay"></div>
+        </div>
+        <div class="absolute top-20 left-10 text-primary/20 text-6xl floating-icon" style="animation-delay: 0s;"><i class="fa fa-code"></i></div>
+        <div class="absolute bottom-20 right-10 text-secondary/20 text-5xl floating-icon" style="animation-delay: 1.5s;"><i class="fa fa-database"></i></div>
+        <div class="absolute top-1/3 right-1/4 text-accent/20 text-4xl floating-icon" style="animation-delay: 0.8s;"><i class="fa fa-html5"></i></div>
+        
+        <div class="container mx-auto px-4 py-20 md:py-0 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-[clamp(2rem,5vw,3.8rem)] font-bold text-dark mb-4 leading-tight text-shadow animate-fade-in" style="animation-delay: 0.1s">
+                    黄润华<span class="text-primary">技能成长</span>记录
+                </h1>
+                <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-600 mb-10 max-w-2xl mx-auto animate-fade-in" style="animation-delay: 0.3s">
+                    记录我的中职学习生活、专业技能成长和实习经历，分享技术学习心得与作品展示
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style="animation-delay: 0.5s">
+                    <a href="#projects" class="px-8 py-3.5 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+                        查看我的作品 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#contact" class="px-8 py-3.5 bg-white text-primary border border-primary/30 rounded-xl font-semibold hover:bg-gray-50 transition-all shadow-md hover:shadow-lg hover:-translate-y-1">
+                        联系我 <i class="fa fa-comment ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#about" class="text-gray-400 hover:text-primary transition-colors"><i class="fa fa-angle-down text-3xl"></i></a>
+        </div>
+    </section>
+
+    <section id="about" class="py-20 bg-white/40 backdrop-blur-sm">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">关于我</h2>
+                <div class="w-20 h-1.5 bg-primary mx-auto rounded-full"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1">
+                    <h3 class="text-2xl font-bold mb-4 text-dark">中职<span class="text-primary">软件与信息服务</span>专业学生</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">我是一名中职三年级学生，就读于广州市信息技术职业学校。在校期间，我系统学习了计算机基础、网络技术、网页设计、数据库应用等专业课程。</p>
+                    <p class="text-gray-600 mb-8 leading-relaxed">我热爱技术，尤其对前端开发和网络安全有浓厚兴趣。获得过计算机一级证书。</p>
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-sm"><div class="text-3xl font-bold text-primary mb-1">3+2</div><div class="text-gray-500 text-sm">中高职贯通</div></div>
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-sm"><div class="text-3xl font-bold text-primary mb-1">5+</div><div class="text-gray-500 text-sm">技能证书</div></div>
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-sm"><div class="text-3xl font-bold text-primary mb-1">10+</div><div class="text-gray-500 text-sm">项目经验</div></div>
+                        <div class="bg-gray-50 p-4 rounded-xl shadow-sm"><div class="text-3xl font-bold text-primary mb-1">1</div><div class="text-gray-500 text-sm">实习经历</div></div>
+                    </div>
+                    <div class="flex gap-4"><a href="#contact" class="px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all shadow-md">联系我 <i class="fa fa-arrow-right ml-2"></i></a></div>
+                </div>
+                <div class="order-1 md:order-2 flex justify-center">
+                    <div class="relative">
+                        <div class="w-64 h-64 md:w-80 md:h-80 rounded-3xl overflow-hidden border-4 border-white shadow-2xl card-hover"><img src="https://picsum.photos/id/1005/600/600" alt="个人照片" class="w-full h-full object-cover"></div>
+                        <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-2xl shadow-xl"><div class="text-center"><div class="text-2xl font-bold text-primary">2026</div><div class="text-sm text-gray-500">毕业年份</div></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="py-20 bg-gray-50 bg-pattern">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16"><h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">专业技能</h2><div class="w-20 h-1.5 bg-primary mx-auto rounded-full mb-6"></div><p class="text-gray-600 max-w-2xl mx-auto">在校期间学习掌握的专业技能，包括软件操作、编程语言和专业工具的使用</p></div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white/60 backdrop-blur-md rounded-2xl p-7 shadow-md card-hover border border-gray-100"><div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-6"><i class="fa fa-code text-primary text-2xl"></i></div><h3 class="text-xl font-bold mb-3 text-dark">Web前端开发</h3><p class="text-gray-600 mb-5 text-sm">掌握HTML5、CSS3、JavaScript基础，能够使用Tailwind CSS和Bootstrap开发响应式网页</p><div class="space-y-3"><div><div class="flex justify-between text-sm mb-1"><span>HTML/CSS</span><span class="font-mono">85%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-primary h-2 rounded-full progress-bar" style="width: 0%" data-width="85%"></div></div></div><div><div class="flex justify-between text-sm mb-1"><span>JavaScript</span><span class="font-mono">75%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-primary h-2 rounded-full progress-bar" style="width: 0%" data-width="75%"></div></div></div><div><div class="flex justify-between text-sm mb-1"><span>Tailwind CSS</span><span class="font-mono">80%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-primary h-2 rounded-full progress-bar" style="width: 0%" data-width="80%"></div></div></div></div></div>
+                <div class="bg-white/60 backdrop-blur-md rounded-2xl p-7 shadow-md card-hover border border-gray-100"><div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-6"><i class="fa fa-database text-secondary text-2xl"></i></div><h3 class="text-xl font-bold mb-3 text-dark">数据库应用</h3><p class="text-gray-600 mb-5 text-sm">掌握SQL语言基础，能够使用MySQL进行数据查询、插入、更新和删除操作</p><div class="space-y-3"><div><div class="flex justify-between text-sm mb-1"><span>MySQL</span><span class="font-mono">70%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-secondary h-2 rounded-full progress-bar" style="width: 0%" data-width="70%"></div></div></div><div><div class="flex justify-between text-sm mb-1"><span>SQL语言</span><span class="font-mono">75%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-secondary h-2 rounded-full progress-bar" style="width: 0%" data-width="75%"></div></div></div><div><div class="flex justify-between text-sm mb-1"><span>数据库设计</span><span class="font-mono">65%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-secondary h-2 rounded-full progress-bar" style="width: 0%" data-width="65%"></div></div></div></div></div>
+                <div class="bg-white/60 backdrop-blur-md rounded-2xl p-7 shadow-md card-hover border border-gray-100"><div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center mb-6"><i class="fa fa-wrench text-accent text-2xl"></i></div><h3 class="text-xl font-bold mb-3 text-dark">计算机维护</h3><p class="text-gray-600 mb-5 text-sm">掌握计算机硬件组装与维护、操作系统安装与调试、网络故障排查等技能</p><div class="space-y-3"><div><div class="flex justify-between text-sm mb-1"><span>硬件维护</span><span class="font-mono">85%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-accent h-2 rounded-full progress-bar" style="width: 0%" data-width="85%"></div></div></div><div><div class="flex justify-between text-sm mb-1"><span>系统安装</span><span class="font-mono">90%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-accent h-2 rounded-full progress-bar" style="width: 0%" data-width="90%"></div></div></div><div><div class="flex justify-between text-sm mb-1"><span>网络调试</span><span class="font-mono">70%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-accent h-2 rounded-full progress-bar" style="width: 0%" data-width="70%"></div></div></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="py-20 bg-white/40 backdrop-blur-sm">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16"><h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">作品展示</h2><div class="w-20 h-1.5 bg-primary mx-auto rounded-full mb-6"></div><p class="text-gray-600 max-w-2xl mx-auto">在校期间完成的课程设计和个人项目，展示我的专业技能和实践能力</p></div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden shadow-md card-hover border border-gray-100"><div class="h-48 overflow-hidden"><img src="https://picsum.photos/id/0/600/400" alt="个人博客网站" class="w-full h-full object-cover transition-transform hover:scale-110 duration-500"></div><div class="p-6"><div class="flex items-center gap-2 mb-3"><span class="px-3 py-1 bg-blue-100 text-primary text-xs rounded-full">Web前端</span><span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">课程设计</span></div><h3 class="text-xl font-bold mb-2 text-dark">个人博客网站</h3><p class="text-gray-600 mb-4 text-sm">使用HTML、CSS、JS和Tailwind CSS开发的响应式个人博客，包含文章展示与评论功能。</p><a href="../hrh/1.html" class="text-primary font-medium hover:underline inline-flex items-center gap-1">查看详情 <i class="fa fa-arrow-right text-xs"></i></a></div></div>
+                <div class="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden shadow-md card-hover border border-gray-100"><div class="h-48 overflow-hidden"><img src="https://picsum.photos/id/180/600/400" alt="人脸识别网站" class="w-full h-full object-cover transition-transform hover:scale-110 duration-500"></div><div class="p-6"><div class="flex items-center gap-2 mb-3"><span class="px-3 py-1 bg-green-100 text-secondary text-xs rounded-full">Python</span><span class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">团队项目</span></div><h3 class="text-xl font-bold mb-2 text-dark">人脸识别网站</h3><p class="text-gray-600 mb-4 text-sm">结合摄像头与Python API实现人物拍照，并进行人脸检测与对比的智能系统。</p><a href="../hrh/2.html" class="text-primary font-medium hover:underline inline-flex items-center gap-1">查看详情 <i class="fa fa-arrow-right text-xs"></i></a></div></div>
+                <div class="bg-white/60 backdrop-blur-md rounded-2xl overflow-hidden shadow-md card-hover border border-gray-100"><div class="h-48 overflow-hidden"><img src="https://picsum.photos/id/48/600/400" alt="翻译网站" class="w-full h-full object-cover transition-transform hover:scale-110 duration-500"></div><div class="p-6"><div class="flex items-center gap-2 mb-3"><span class="px-3 py-1 bg-blue-100 text-primary text-xs rounded-full">Web前端</span><span class="px-3 py-1 bg-amber-100 text-accent text-xs rounded-full">个人项目</span></div><h3 class="text-xl font-bold mb-2 text-dark">文字翻译网站</h3><p class="text-gray-600 mb-4 text-sm">基于JavaScript开发的翻译工具，支持文字输入、照片与拍照上传翻译。</p><a href="../hrh/3.html" class="text-primary font-medium hover:underline inline-flex items-center gap-1">查看详情 <i class="fa fa-arrow-right text-xs"></i></a></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16"><h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">联系我</h2><div class="w-20 h-1.5 bg-primary mx-auto rounded-full mb-6"></div><p class="text-gray-600 max-w-2xl mx-auto">对我的作品和经历感兴趣？欢迎通过以下方式联系我</p></div>
+            <div class="grid md:grid-cols-2 gap-12 items-start mb-20">
+                <div class="bg-white/60 backdrop-blur-md p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-2xl font-bold mb-6 text-dark flex items-center gap-2"><i class="fa fa-paper-plane text-primary"></i> 发送消息</h3>
+                    <div id="form-error-msg" class="text-red-500 text-sm mb-4 hidden bg-red-50 p-3 rounded-lg border border-red-200 flex items-center gap-2"><i class="fa fa-exclamation-circle"></i> <span></span></div>
+                    <form id="contactForm">
+                        <div class="mb-4"><label for="name" class="block text-gray-700 mb-2 font-medium">姓名</label><input type="text" id="name" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition" placeholder="您的姓名"></div>
+                        <div class="mb-4"><label for="email" class="block text-gray-700 mb-2 font-medium">邮箱</label><input type="email" id="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition" placeholder="your@email.com"></div>
+                        <div class="mb-6"><label for="message" class="block text-gray-700 mb-2 font-medium">消息内容</label><textarea id="message" rows="4" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition" placeholder="请输入您想说的话..."></textarea></div>
+                        <button type="submit" id="submitBtn" class="w-full py-3.5 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-all shadow-md hover:shadow-xl flex items-center justify-center gap-2"><i class="fa fa-paper-plane"></i> 发送消息</button>
+                    </form>
+                </div>
+                <div><h3 class="text-2xl font-bold mb-8 text-dark flex items-center gap-2"><i class="fa fa-address-card text-primary"></i> 联系方式</h3><div class="space-y-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100"><div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center"><i class="fa fa-envelope text-primary text-xl"></i></div><div><h4 class="font-bold text-lg">邮箱</h4><p class="text-gray-600">2896545684@qq.com</p></div></div><div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center"><i class="fa fa-phone text-primary text-xl"></i></div><div><h4 class="font-bold text-lg">电话</h4><p class="text-gray-600">173 **** 5965</p></div></div><div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center"><i class="fa fa-map-marker text-primary text-xl"></i></div><div><h4 class="font-bold text-lg">学校地址</h4><p class="text-gray-600">广州市信息技术职业学校</p></div></div><div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center"><i class="fa fa-graduation-cap text-primary text-xl"></i></div><div><h4 class="font-bold text-lg">专业班级</h4><p class="text-gray-600">软件与信息服务应用专业 2023级6班</p></div></div></div><div class="mt-8"><h4 class="font-bold text-lg mb-4 flex items-center gap-2"><i class="fa fa-share-alt text-primary"></i> 关注我</h4><div class="flex gap-4"><a href="https://www.bilibili.com" target="_blank" class="w-11 h-11 bg-white border border-gray-200 rounded-xl flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"><i class="fa fa-tv text-lg"></i></a><a href="https://github.com" target="_blank" class="w-11 h-11 bg-white border border-gray-200 rounded-xl flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"><i class="fa fa-github text-lg"></i></a><a href="https://weibo.com" target="_blank" class="w-11 h-11 bg-white border border-gray-200 rounded-xl flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"><i class="fa fa-weibo text-lg"></i></a><a href="https://www.douyin.com" target="_blank" class="w-11 h-11 bg-white border border-gray-200 rounded-xl flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm"><i class="fa fa-music text-lg"></i></a></div></div></div>
+            </div>
+            <div id="team-members" class="mt-10 pt-12 border-t border-gray-200"><div class="text-center mb-12"><h3 class="text-2xl font-bold text-dark mb-3 flex items-center justify-center gap-2"><i class="fa fa-users text-primary"></i> 小组成员</h3><div class="w-16 h-1.5 bg-primary mx-auto rounded-full mb-4"></div><p class="text-gray-500 text-sm">点击卡片访问小组成员的个人主页</p></div><div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"><a href="ysj46.html" target="_blank" class="friend-link-card bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-sm text-center block group cursor-pointer border border-gray-100 hover:border-primary/40"><div class="friend-avatar w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-inner"><span class="text-white text-3xl font-bold">Y</span></div><h4 class="font-bold text-dark text-lg mb-1 group-hover:text-primary transition-colors">袁圣杰</h4><p class="text-gray-500 text-xs mb-3">全栈开发者</p></a><a href="../38个人简历/qin.html" target="_blank" class="friend-link-card bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-sm text-center block group cursor-pointer border border-gray-100 hover:border-primary/40"><div class="friend-avatar w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center shadow-inner"><span class="text-white text-3xl font-bold">Q</span></div><h4 class="font-bold text-dark text-lg mb-1 group-hover:text-primary transition-colors">秦鑫炎</h4><p class="text-gray-500 text-xs mb-3">UI/UX 设计师</p></a><a href="linzhixuan.html" target="_blank" class="friend-link-card bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-sm text-center block group cursor-pointer border border-gray-100 hover:border-primary/40"><div class="friend-avatar w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-inner"><span class="text-white text-3xl font-bold">L</span></div><h4 class="font-bold text-dark text-lg mb-1 group-hover:text-primary transition-colors">林志轩</h4><p class="text-gray-500 text-xs mb-3">前端开发工程师</p></a><a href="chenjingwei.html" target="_blank" class="friend-link-card bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-sm text-center block group cursor-pointer border border-gray-100 hover:border-primary/40"><div class="friend-avatar w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-inner"><span class="text-white text-3xl font-bold">C</span></div><h4 class="font-bold text-dark text-lg mb-1 group-hover:text-primary transition-colors">陈景威</h4><p class="text-gray-500 text-xs mb-3">后端开发工程师</p></a></div></div>
+        </div>
+    </section>
+
+    <footer class="glass-footer text-white py-12">
+        <div class="container mx-auto px-4 text-center"><div class="flex items-center justify-center gap-2 mb-4"><i class="fa fa-code text-primary text-2xl"></i><span class="font-bold text-xl">黄润华的中职技术博客</span></div><p class="text-gray-400 mb-8">记录中职学习生活，分享技能成长历程</p><div class="flex justify-center gap-8 mb-10"><a href="#home" class="text-gray-400 hover:text-white transition-colors">首页</a><a href="#skills" class="text-gray-400 hover:text-white transition-colors">专业技能</a><a href="#projects" class="text-gray-400 hover:text-white transition-colors">作品展示</a><a href="#contact" class="text-gray-400 hover:text-white transition-colors">联系我</a><a href="#team-members" class="text-gray-400 hover:text-white transition-colors">小组成员</a></div><div class="text-gray-500 text-sm">© 2024 黄润华. 保留所有权利.</div></div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-6 right-6 w-12 h-12 bg-primary text-white rounded-full shadow-xl flex items-center justify-center opacity-0 invisible transition-all z-50 hover:bg-primary/90"><i class="fa fa-arrow-up text-lg"></i></button>
+
+    <!-- 成功模态框（发送消息后页面风格） -->
+    <div id="successModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[200] opacity-0 invisible transition-all duration-300 modal-overlay">
+        <div class="bg-white/90 backdrop-blur-md dark:bg-gray-800/90 rounded-2xl max-w-md w-full mx-4 p-6 shadow-2xl transform transition-all modal-card-animate border border-gray-100 dark:border-gray-700">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-check-circle text-green-500 text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-dark dark:text-white mb-2">发送成功！</h3>
+                <div id="modalMessagePreview" class="text-gray-500 dark:text-gray-300 text-sm mb-4 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg"></div>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">感谢你的留言，我会尽快与你联系。</p>
+                <button id="closeModalBtn" class="px-6 py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition shadow-md w-full">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 粒子画布初始化 (保留全部功能)
+        (function initParticles() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 80;
+            const CONNECT_DISTANCE = 120;
+            const PARTICLE_SPEED = 0.5;
+            function getThemeColors() {
+                const isDark = document.body.classList.contains('dark');
+                return { particle: isDark ? 'rgba(59, 130, 246, 0.4)' : 'rgba(59, 130, 246, 0.2)', line: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.06)' };
+            }
+            class Particle { constructor() { this.x = Math.random() * width; this.y = Math.random() * height; this.vx = (Math.random() - 0.5) * PARTICLE_SPEED; this.vy = (Math.random() - 0.5) * PARTICLE_SPEED; this.radius = Math.random() * 2 + 1; } update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > width) this.vx *= -1; if (this.y < 0 || this.y > height) this.vy *= -1; } draw(ctx, color) { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill(); } }
+            function createParticles(count) { particles = []; for (let i = 0; i < count; i++) particles.push(new Particle()); }
+            function resizeCanvas() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; createParticles(PARTICLE_COUNT); }
+            function drawConnections(particles, ctx, lineColor) { for (let i = 0; i < particles.length; i++) { for (let j = i + 1; j < particles.length; j++) { const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < CONNECT_DISTANCE) { ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.strokeStyle = lineColor; ctx.lineWidth = 0.8; ctx.stroke(); } } } }
+            function animate() { ctx.clearRect(0, 0, width, height); const colors = getThemeColors(); for (const p of particles) { p.update(); p.draw(ctx, colors.particle); } drawConnections(particles, ctx, colors.line); requestAnimationFrame(animate); }
+            resizeCanvas(); animate(); window.addEventListener('resize', resizeCanvas);
+            const themeToggle = document.getElementById('theme-toggle'); const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+            if (themeToggle) themeToggle.addEventListener('click', () => setTimeout(createParticles, 50, PARTICLE_COUNT));
+            if (themeToggleMobile) themeToggleMobile.addEventListener('click', () => setTimeout(createParticles, 50, PARTICLE_COUNT));
+        })();
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => { if (window.scrollY > 50) { navbar.classList.add('py-2', 'shadow'); navbar.classList.remove('py-3'); } else { navbar.classList.add('py-3'); navbar.classList.remove('py-2', 'shadow'); } });
+        const menuToggle = document.getElementById('menu-toggle'); const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => { anchor.addEventListener('click', function(e) { e.preventDefault(); const targetElement = document.querySelector(this.getAttribute('href')); if (targetElement) { window.scrollTo({ top: targetElement.offsetTop - 80, behavior: 'smooth' }); if (!mobileMenu.classList.contains('hidden')) mobileMenu.classList.add('hidden'); } }); });
+        const backToTopButton = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => { if (window.scrollY > 400) { backToTopButton.classList.remove('opacity-0', 'invisible'); backToTopButton.classList.add('opacity-100', 'visible'); } else { backToTopButton.classList.add('opacity-0', 'invisible'); backToTopButton.classList.remove('opacity-100', 'visible'); } });
+        backToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        const themeToggleBtn = document.getElementById('theme-toggle'); const themeToggleMobileBtn = document.getElementById('theme-toggle-mobile'); const body = document.body;
+        function updateThemeIcon() { const isDark = body.classList.contains('dark'); const iconClass = isDark ? 'fa fa-sun-o text-sm' : 'fa fa-moon-o text-sm'; if (themeToggleBtn) themeToggleBtn.querySelector('i').className = iconClass; if (themeToggleMobileBtn) themeToggleMobileBtn.querySelector('i').className = iconClass; }
+        function applyTheme(theme) { if (theme === 'dark') { body.classList.add('dark'); } else { body.classList.remove('dark'); } updateThemeIcon(); localStorage.setItem('theme', theme); }
+        const savedTheme = localStorage.getItem('theme') || 'light'; applyTheme(savedTheme);
+        if (themeToggleBtn) { themeToggleBtn.addEventListener('click', () => { const newTheme = body.classList.contains('dark') ? 'light' : 'dark'; applyTheme(newTheme); }); }
+        if (themeToggleMobileBtn) { themeToggleMobileBtn.addEventListener('click', () => { const newTheme = body.classList.contains('dark') ? 'light' : 'dark'; applyTheme(newTheme); }); }
+        const animateElements = document.querySelectorAll('.card-hover, .friend-link-card');
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; } }); }, { threshold: 0.1 });
+        animateElements.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; el.style.transition = 'opacity 0.5s ease, transform 0.5s ease'; observer.observe(el); });
+        const progressBars = document.querySelectorAll('.progress-bar');
+        const progressObserver = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { const bar = entry.target; const width = bar.getAttribute('data-width'); bar.style.width = width; progressObserver.unobserve(bar); } }); }, { threshold: 0.5 });
+        progressBars.forEach(bar => progressObserver.observe(bar));
+
+        // 表单提交 & 模态框逻辑
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const errorMsgDiv = document.getElementById('form-error-msg');
+        const errorSpan = errorMsgDiv?.querySelector('span');
+        const modal = document.getElementById('successModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalMessagePreview = document.getElementById('modalMessagePreview');
+
+        function showError(message) {
+            if (errorMsgDiv && errorSpan) {
+                errorSpan.innerText = message;
+                errorMsgDiv.classList.remove('hidden');
+                setTimeout(() => { errorMsgDiv.classList.add('hidden'); }, 4000);
+            } else { alert(message); }
+        }
+        function hideError() { if (errorMsgDiv) errorMsgDiv.classList.add('hidden'); }
+        function showModal(name, msgPreview) {
+            if (modalMessagePreview) {
+                let previewText = `来自 ${name} 的留言：${msgPreview.substring(0, 60)}${msgPreview.length > 60 ? '...' : ''}`;
+                modalMessagePreview.innerText = previewText;
+            }
+            modal.classList.remove('opacity-0', 'invisible');
+            modal.classList.add('opacity-100', 'visible');
+            document.body.style.overflow = 'hidden';
+        }
+        function hideModal() {
+            modal.classList.add('opacity-0', 'invisible');
+            modal.classList.remove('opacity-100', 'visible');
+            document.body.style.overflow = '';
+        }
+        if (closeModalBtn) closeModalBtn.addEventListener('click', hideModal);
+        modal?.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal?.classList.contains('visible')) hideModal(); });
+
+        contactForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const messageInput = document.getElementById('message');
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const message = messageInput.value.trim();
+            if (!name) { showError('请输入姓名'); nameInput.focus(); return; }
+            if (!email) { showError('请输入邮箱'); emailInput.focus(); return; }
+            const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+            if (!emailRegex.test(email)) { showError('请输入有效的邮箱地址'); emailInput.focus(); return; }
+            if (!message) { showError('请输入消息内容'); messageInput.focus(); return; }
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> 发送中...';
+            await new Promise(resolve => setTimeout(resolve, 800));
+            showModal(name, message);
+            contactForm.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
+    </script>
+</body>
+</html>

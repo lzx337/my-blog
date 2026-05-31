@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html data-theme="garden" data-theme-type="light" lang="zh" style="background-color:var(--custom-page-bg)">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width,initial-scale=1" name="viewport">
+  <link href="../assets/favicon.png" rel="icon" type="image/x-icon">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Nunito:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:['M PLUS Rounded 1c','Nunito','Noto Sans SC','sans-serif'],banner:['ZCOOL KuaiLe','cursive'],mono:['JetBrains Mono','monospace']}}}}</script>
+  <title>组员介绍 - YQLCH</title>
+  <style>
+    .max-w-blog{max-width:72rem}
+        [data-theme-type="light"]{color-scheme:light;--shadow-neu-out:8px 8px 16px 0 rgba(0,0,0,0.05),-8px -8px 16px 0 rgba(255,255,255,0.6)!important;--shadow-neu-in:inset 8px 8px 16px 0 rgba(0,0,0,0.05),inset -8px -8px 16px 0 rgba(255,255,255,0.6)!important}
+        [data-theme-type="dark"]{color-scheme:dark;--neu-base:oklch(var(--b1));--neu-text:oklch(var(--bc));--neu-border:oklch(var(--bc)/0.1);--neu-btn-text:oklch(var(--bc));--neu-btn-bg:oklch(var(--b2));--neu-text-muted:oklch(var(--bc)/0.5);--neu-accent:oklch(var(--p));--shadow-neu-out:8px 8px 16px 0 rgba(0,0,0,0.4),-8px -8px 16px 0 rgba(255,255,255,0.02)!important;--shadow-neu-in:inset 8px 8px 16px 0 rgba(0,0,0,0.4),inset -8px -8px 16px 0 rgba(255,255,255,0.02)!important}
+        .glass-card{background-color:oklch(var(--b1));border-radius:1rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);border:1px solid oklch(var(--bc)/0.1)}
+        h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.3;letter-spacing:0.02em}
+        .btn-category{background-color:oklch(var(--p)/0.05);color:oklch(var(--p));border:none}.btn-category:hover{background-color:oklch(var(--p));color:oklch(var(--pc));transform:scale(1.1)}
+        .btn-tag{background-color:oklch(var(--s)/0.05);color:oklch(var(--s));border:none}.btn-tag:hover{background-color:oklch(var(--s));color:oklch(var(--sc));transform:scale(1.1)}
+        .glass-panel{padding:1rem;border-radius:1.5rem;background-color:oklch(var(--b2)/0.3);backdrop-filter:blur(12px);border:1px solid oklch(var(--b3)/0.2)}
+        @keyframes fade-in-up{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+        }
+        :root,[data-theme]{--rounded-box:1rem!important;--rounded-btn:0.5rem!important;--rounded-badge:1.9rem!important}
+        .banner{position:relative;height:var(--bannerHeight,60vh);overflow:hidden}
+        @media(max-width:768px){.banner{height:40vh!important}}
+        .banner .title{font-family:'ZCOOL KuaiLe',cursive;font-size:2.25rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        @media(min-width:768px){.banner .title{font-size:3.75rem}}
+        @media(min-width:1024px){.banner .title{font-size:6rem}}
+        .banner .subtitle{font-family:'ZCOOL KuaiLe',cursive;font-size:1.25rem;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        @media(min-width:768px){.banner .subtitle{font-size:1.5rem}}
+        @media(min-width:1024px){.banner .subtitle{font-size:2.25rem}}
+        .waves{position:absolute;bottom:0;left:0;width:100%;overflow:hidden;line-height:0}
+        .waves svg{position:relative;display:block;width:calc(100% + 1.3px);height:60px}
+        .waves .parallax>use{animation:wave 25s cubic-bezier(0.55,0.5,0.45,0.5) infinite}
+        .waves .parallax>use:nth-child(1){animation-delay:-2s;animation-duration:7s}
+        .waves .parallax>use:nth-child(2){animation-delay:-3s;animation-duration:10s}
+        .waves .parallax>use:nth-child(3){animation-delay:-4s;animation-duration:13s}
+        .waves .parallax>use:nth-child(4){animation-delay:-5s;animation-duration:20s}
+        @keyframes wave{0%{transform:translate3d(-90px,0,0)}100%{transform:translate3d(85px,0,0)}}
+        .back-to-top:hover{transform:scale(1.1)}
+        .scrollbar-none::-webkit-scrollbar{display:none}
+  </style>
+</head>
+<body class="flex flex-col bg-[var(--banner-wave-bg)] min-h-screen" style="background:linear-gradient(135deg,oklch(var(--b2)),oklch(var(--b3)/0.6),oklch(var(--b2)));background-attachment:fixed">
+
+<!-- 装饰性背景光球 -->
+<div class="glass-bg-orbs">
+  <div class="glass-bg-orb"></div>
+  <div class="glass-bg-orb"></div>
+  <div class="glass-bg-orb"></div>
+</div>
+<!-- Banner -->
+<div class="banner" id="banner" style="--bannerHeight:60vh">
+  <div class="w-full h-full banner-inner overflow-hidden relative" style="--bannerHeight:60vh">
+    <div class="w-full h-full absolute left-0 top-0 bg-center bg-cover bg-no-repeat duration-1000 transition-opacity z-0" style="background-image:url(../assets/home.webp);--bannerHeight:60vh" id="banner-bg-current"></div>
+    <div class="w-full h-full absolute left-0 top-0 bg-black/40 duration-300 transition-colors z-10" style="--bannerHeight:60vh"></div>
+    <div class="w-full relative h-[95%] pointer-events-none z-20" style="--bannerHeight:60vh">
+      <div class="-translate-y-1/2 absolute top-1/2 -translate-x-1/2 left-1/2 lg:w-3/4 w-4/5" style="--bannerHeight:60vh">
+        <div class="flex flex-col pointer-events-auto" style="--bannerHeight:60vh">
+          <div class="font-banner lg:text-8xl md:text-6xl text-4xl title" style="--bannerHeight:60vh">组员介绍</div>
+          <div class="text-xl font-banner lg:text-4xl md:text-2xl subtitle" style="--bannerHeight:60vh">
+            <span style="--bannerHeight:60vh">认识我们团队的成员</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="waves" style="--bannerHeight:60vh">
+    <svg class="waves" viewBox="0 24 150 28" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" shape-rendering="auto">
+      <defs><path d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" id="gentle-wave"></path></defs>
+      <g class="parallax">
+        <use style="animation-delay:-2s;animation-duration:7s" x="48" xlink:href="#gentle-wave" y="0" class="opacity-25"></use>
+        <use style="animation-delay:-3s;animation-duration:10s" x="48" xlink:href="#gentle-wave" y="3" class="opacity-50"></use>
+        <use style="animation-delay:-4s;animation-duration:13s" x="48" xlink:href="#gentle-wave" y="5" class="opacity-75"></use>
+        <use style="animation-delay:-5s;animation-duration:20s" x="48" xlink:href="#gentle-wave" y="7"></use>
+      </g>
+    </svg>
+  </div>
+</div>
+<!-- 桌面端导航栏 -->
+<nav class="hidden md:block duration-500 fixed left-0 opacity-100 pointer-events-auto right-0 top-0 transition-opacity z-50" id="navbar-desktop">
+  <div class="max-w-[95rem] mx-auto px-4">
+    <div class="rounded-full border border-white/20 backdrop-blur-xl glass-nav-inner py-3 shadow-2xl duration-300 px-6 transition-colors" id="navbar-bg">
+      <div class="flex items-center justify-center space-x-2">
+        <a href="../index.html" class="flex items-center duration-300 hover:scale-105 space-x-2 transition-transform">
+          <span class="text-3xl font-bold text-primary tracking-tight">YQLCH</span>
+        </a>
+        <a href="../index.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:home-outline-rounded" style="font-size:1.25rem"></span> 首页
+        </a>
+        <a href="search.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:edit-note-outline" style="font-size:1.25rem"></span> 写作
+        </a>
+        <a href="navigation.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:explore-outline" style="font-size:1.25rem"></span> 导航
+        </a>
+        <div class="dropdown dropdown-hover">
+          <div class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg" role="button" tabindex="0">
+            <span class="iconify" data-icon="material-symbols:play-circle-outline-rounded" style="font-size:1.25rem"></span> <span>娱乐</span>
+          </div>
+          <ul class="dropdown-content menu p-2 z-[1] w-52 glass-dropdown mt-2 text-base-content" tabindex="0">
+            <li><a href="anime.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all hover:bg-base-200 text-base"><span class="iconify" data-icon="material-symbols:movie-outline" style="font-size:1rem"></span> 追番</a></li>
+            <li><a href="music.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all hover:bg-base-200 text-base"><span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:1rem"></span> 音乐</a></li>
+          </ul>
+        </div>
+        <a href="project.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:code-blocks-outline" style="font-size:1.25rem"></span> 项目
+        </a>
+        <a href="friend.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:supervisor-account-outline-rounded" style="font-size:1.25rem"></span> 组员介绍
+        </a>
+        <a href="./about.html" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+          <span class="iconify" data-icon="material-symbols:info-outline-rounded" style="font-size:1.25rem"></span> 关于
+        </a>
+        <div class="dropdown dropdown-hover">
+          <div class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg" role="button" tabindex="0">
+            <span class="iconify" data-icon="material-symbols:tune-outline" style="font-size:1.25rem"></span> 设置
+          </div>
+          <div class="dropdown-content z-[1] w-72 glass-dropdown mt-2 p-4 text-base-content" tabindex="0">
+            <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:photo"></span> 背景模式</h3>
+            <div class="grid grid-cols-2 gap-2 mb-4">
+              <button id="bg-banner" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:photo" style="font-size:1rem"></span>
+                <span>Banner</span>
+              </button>
+              <button id="bg-fullscreen" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:monitor-fullscreen" style="font-size:1rem"></span>
+                <span>全屏</span>
+              </button>
+              <button id="bg-background" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:image" style="font-size:1rem"></span>
+                <span>背景</span>
+              </button>
+              <button id="bg-hide" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
+                <span class="iconify" data-icon="material-symbols:hide-image" style="font-size:1rem"></span>
+                <span>隐藏</span>
+              </button>
+            </div>
+            
+            <div class="border-t border-base-200 pt-3 mb-3">
+              <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:palette-outline"></span> 颜色主题</h3>
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-base-content/60">☀️ 白天</span>
+                </div>
+                <button id="theme-toggle" class="btn btn-ghost btn-sm btn-circle" aria-label="切换白天/夜晚">
+                  <span class="iconify text-yellow-400" id="sun-icon" data-icon="material-symbols:sunny" style="font-size:1rem"></span>
+                  <span class="iconify text-indigo-400 hidden" id="moon-icon" data-icon="material-symbols:moon-stars" style="font-size:1rem"></span>
+                </button>
+              </div>
+              <div id="theme-light-section" class="grid grid-cols-4 gap-3 mb-3"></div>
+              <h3 class="text-xs font-semibold text-base-content/60 mb-2 flex items-center gap-1"><span>🌙</span> 夜晚主题</h3>
+              <div id="theme-dark-section" class="grid grid-cols-4 gap-3"></div>
+            </div>
+            
+
+          </div>
+        </div>
+        <a href="admin.html" id="nav-login-btn" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg"><span class="iconify" data-icon="material-symbols:login" style="font-size:1.25rem"></span> 登录</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- 移动端导航栏 -->
+<nav class="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50" id="navbar-mobile">
+  <div class="flex items-center gap-2 glass-nav-inner rounded-full px-4 py-3 shadow-2xl">
+    <a href="../index.html" class="btn btn-ghost btn-circle"><img src="../assets/profile.png" class="w-8 h-8 rounded-full" alt="首页"></a>
+    <a href="./navigation.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:explore-outline" style="font-size:1.25rem"></span></a>
+    <a href="./project.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:code-blocks-outline" style="font-size:1.25rem"></span></a>
+    <a href="./friend.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:supervisor-account-outline-rounded" style="font-size:1.25rem"></span></a>
+    <a href="./about.html" class="btn btn-ghost btn-circle text-base-content"><span class="iconify" data-icon="material-symbols:info-outline-rounded" style="font-size:1.25rem"></span></a>
+    <button id="theme-toggle-mobile" class="btn btn-ghost btn-circle text-primary"><span class="iconify" data-icon="material-symbols:dark-mode-outline" style="font-size:1.25rem"></span></button>
+  </div>
+</nav>
+<main class="flex-1 w-full max-w-blog mx-auto px-4 mt-8 mb-24 page-content-animate">
+  <div class="grid grid-cols-1 md:grid-cols-5 lg:grid-cols-4 gap-6">
+    <!-- 左侧侧边栏 -->
+    <aside class="md:col-span-1 order-2 md:order-1">
+      <div class="glass-card p-3 mb-4">
+        <a href="./about.html" class="group block relative mx-auto mt-1 lg:mx-0 lg:mt-0 mb-3 max-w-[12rem] lg:max-w-none overflow-hidden rounded-2xl active:scale-95">
+          <div class="absolute transition pointer-events-none group-hover:bg-black/30 group-active:bg-black/50 w-full h-full z-50 flex items-center justify-center">
+            <span class="iconify transition opacity-0 scale-90 group-hover:scale-100 group-hover:opacity-100 text-white text-5xl" data-icon="material-symbols:person-outline"></span>
+          </div>
+          <div class="mx-auto lg:w-full overflow-hidden relative">
+            <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
+            <img src="../assets/profile.png" alt="YQLCH" class="w-full h-full object-cover" style="object-position:center center">
+          </div>
+        </a>
+        <div class="px-2">
+          <div class="font-bold text-xl text-center mb-1 dark:text-neutral-50 transition">YQLCH</div>
+          <div class="h-1 w-5 bg-primary mx-auto rounded-full mb-2 transition"></div>
+          <div class="text-center mb-2.5 transition font-bold tracking-wide bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent hover:scale-105 hover:from-purple-400 hover:to-pink-400">Ciallo～(∠・ω&lt;)⌒★</div>
+          <div class="mt-4 pt-3 border-t border-base-content/20">
+            <div class="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-2 justify-items-center">
+              <div class="tooltip tooltip-bottom" data-tip="GitHub"><a href="https://github.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="mdi:github"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="BiliBili"><a href="https://bilibili.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:bilibili-fill"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="Douyin"><a href="https://douyin.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:tiktok-fill"></span></a></div>
+              <div class="tooltip tooltip-bottom" data-tip="Weibo"><a href="https://weibo.com" target="_blank" class="btn btn-circle btn-ghost"><span class="iconify text-xl" data-icon="ri:weibo-fill"></span></a></div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 mt-3 pt-3 border-t border-base-content/20">
+            <div class="text-center">
+              <div class="text-xs text-base-content/50 mb-1 flex items-center justify-center gap-1"><span class="iconify text-base text-primary" data-icon="material-symbols:visibility-outline"></span><span class="text-xs">访问量</span></div>
+              <div class="font-bold text-lg text-base-content">-</div>
+            </div>
+            <div class="text-center border-l border-base-content/20">
+              <div class="text-xs text-base-content/50 mb-1 flex items-center justify-center gap-1"><span class="iconify text-base text-primary" data-icon="material-symbols:person"></span><span class="text-xs">访客数</span></div>
+              <div class="font-bold text-lg text-base-content">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="glass-card p-3 mb-4">
+        <div class="font-bold transition text-lg text-base-content relative ml-4 mb-2 before:w-1 before:h-4 before:rounded-md before:bg-primary before:absolute before:left-[-16px] before:top-[5.5px]">分类</div>
+        <div class="px-2">
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">教程</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">3</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">动漫</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">2</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">技术</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">1</div></div></button></a>
+          <a href="./categories.html"><button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary"><div class="flex items-center justify-between relative mr-2"><div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">生活</div><div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">1</div></div></button></a>
+        </div>
+      </div>
+      <div class="glass-card p-3">
+        <div class="font-bold transition text-lg text-base-content relative ml-4 mb-2 before:w-1 before:h-4 before:rounded-md before:bg-primary before:absolute before:left-[-16px] before:top-[5.5px]">标签</div>
+        <div class="px-2">
+          <div class="flex gap-1 flex-wrap">
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">Git</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">GitHub</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">Markdown</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">MDX</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">数学公式</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">评论系统</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">电锯人</a>
+            <a href="./tags.html" class="h-6 text-base px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center">样式指南</a>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <!-- 右侧主内容 -->
+    <div class="md:col-span-4 lg:col-span-3 order-1 md:order-2">
+
+      <!-- 组员介绍说明 -->
+      <div class="glass-card p-6 mb-6 animate-fade-in-up">
+        <h3 class="text-lg font-bold text-base-content mb-3 flex items-center gap-2">
+          <span class="iconify text-primary text-xl" data-icon="material-symbols:info-outline"></span> 组员介绍
+        </h3>
+        <div class="text-base-content/80 text-sm leading-relaxed">
+          <p>这里是我们团队每一位成员的介绍，了解他们的技能、兴趣和项目经历。</p>
+        </div>
+      </div>
+
+      <!-- 友链卡片 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <a href="../members/ysj46.html" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-4 hover:shadow-xl transition-all hover:-translate-y-1 animate-fade-in-up group relative">
+          <div class="relative flex-shrink-0">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Haru" alt="袁圣杰" class="w-14 h-14 rounded-full border-2 border-accent/20 flex-shrink-0 group-hover:border-accent/50 transition-colors">
+            <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-accent text-white text-[10px] font-bold flex items-center justify-center shadow">Y</span>
+          </div>
+          <div class="min-w-0">
+            <div class="font-bold text-base text-base-content truncate">袁圣杰</div>
+            <div class="text-xs text-base-content/60 truncate">探索前端技术的无限可能</div>
+          </div>
+        </a>
+        <a href="../38个人简历/qin.html" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-4 hover:shadow-xl transition-all hover:-translate-y-1 animate-fade-in-up group relative">
+          <div class="relative flex-shrink-0">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Xavier" alt="秦鑫炎" class="w-14 h-14 rounded-full border-2 border-secondary/20 flex-shrink-0 group-hover:border-secondary/50 transition-colors">
+            <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-secondary text-white text-[10px] font-bold flex items-center justify-center shadow">Q</span>
+          </div>
+          <div class="min-w-0">
+            <div class="font-bold text-base text-base-content truncate">秦鑫炎</div>
+            <div class="text-xs text-base-content/60 truncate">全栈设计师 & 前端开发者</div>
+          </div>
+        </a>
+        <a href="../members/linzhixuan.html" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-4 hover:shadow-xl transition-all hover:-translate-y-1 animate-fade-in-up group relative">
+          <div class="relative flex-shrink-0">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=YQLCH" alt="林志轩" class="w-14 h-14 rounded-full border-2 border-success/20 flex-shrink-0 group-hover:border-success/50 transition-colors">
+            <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-success text-white text-[10px] font-bold flex items-center justify-center shadow">L</span>
+          </div>
+          <div class="min-w-0">
+            <div class="font-bold text-base text-base-content truncate">林志轩</div>
+            <div class="text-xs text-base-content/60 truncate">Web前端开发 · 中职软件与信息服务专业</div>
+          </div>
+        </a>
+        <a href="../members/chenjingwei.html" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-4 hover:shadow-xl transition-all hover:-translate-y-1 animate-fade-in-up group relative">
+          <div class="relative flex-shrink-0">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=ChenJW" alt="陈景威" class="w-14 h-14 rounded-full border-2 border-primary/20 flex-shrink-0 group-hover:border-primary/50 transition-colors">
+            <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shadow">C</span>
+          </div>
+          <div class="min-w-0">
+            <div class="font-bold text-base text-base-content truncate">陈景威</div>
+            <div class="text-xs text-base-content/60 truncate">后端开发 · 专注 Java/Python/数据库</div>
+          </div>
+        </a>
+        <a href="../members/huang.html" target="_blank" rel="noopener" class="glass-card p-4 flex items-center gap-4 hover:shadow-xl transition-all hover:-translate-y-1 animate-fade-in-up group relative">
+          <div class="relative flex-shrink-0">
+            <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Akira" alt="黄润华" class="w-14 h-14 rounded-full border-2 border-primary/20 flex-shrink-0 group-hover:border-primary/50 transition-colors">
+            <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shadow">H</span>
+          </div>
+          <div class="min-w-0">
+            <div class="font-bold text-base text-base-content truncate">黄润华</div>
+            <div class="text-xs text-base-content/60 truncate">一个热爱技术的全栈开发者</div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</main>
+<!-- 页脚 -->
+<footer class="footer glass-footer py-2 px-4 md:p-10 rounded-xl shadow-lg gap-y-2 md:gap-4">
+  <aside>
+    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" class="fill-current md:w-[50px] md:h-[50px]"><path d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"></path></svg>
+    <p class="text-xs md:text-base">Powered by <a href="#" target="_blank" class="font-bold gradient-link">YQLCH Template</a><br>Copyright &copy; <a href="#" target="_blank" class="font-bold gradient-link">YQLCH</a> 2025&ndash;2026<br>All rights reserved</p>
+  </aside>
+  <nav>
+    <span class="footer-title text-xs md:text-sm">Social</span>
+    <div class="grid grid-flow-col gap-3 md:gap-4">
+      <div class="tooltip" data-tip="GitHub"><a href="https://github.com" target="_blank" class="social-link icon-link"><span class="iconify text-xl" data-icon="mdi:github"></span></a></div>
+      <div class="tooltip" data-tip="BiliBili"><a href="https://bilibili.com" target="_blank" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:bilibili-fill"></span></a></div>
+      <div class="tooltip" data-tip="X"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:twitter-x-fill"></span></a></div>
+      <div class="tooltip" data-tip="Telegram"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:telegram-fill"></span></a></div>
+      <div class="tooltip" data-tip="RSS"><a href="#" class="social-link icon-link"><span class="iconify text-xl" data-icon="ri:rss-line"></span></a></div>
+    </div>
+    <div class="mt-2 text-xs md:text-sm"><a href="#" target="_blank" rel="noopener" class="font-bold gradient-link">萌ICP备20261117号</a> &nbsp;|&nbsp; <a href="admin.html" class="text-base-content/30 hover:text-base-content/60 transition-colors text-xs md:text-sm">管理</a></div>
+  </nav>
+</footer>
+<!-- 回到顶部 -->
+<button id="back-to-top" class="back-to-top opacity-0 pointer-events-none" aria-label="Back to top">
+  <span class="iconify" data-icon="material-symbols:keyboard-arrow-up-rounded" style="font-size:1.5rem"></span>
+</button>
+<!-- 音乐播放器 -->
+<div id="music-player" style="position:fixed;bottom:5rem;left:1.5rem;z-index:40;">
+  <button id="music-toggle" class="back-to-top" style="position:static;width:3rem;height:3rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));" aria-label="播放音乐">
+    <span class="iconify" id="music-icon" data-icon="material-symbols:music-note-rounded" style="font-size:1.25rem;color:white;"></span>
+  </button>
+  <div id="music-panel" style="display:none;position:absolute;bottom:3.5rem;left:0;width:16rem;background:oklch(var(--b1));border-radius:1rem;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);padding:1rem;border:1px solid oklch(var(--bc)/0.1);">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+      <div style="width:3rem;height:3rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));border-radius:0.75rem;display:flex;align-items:center;justify-content:center;">
+        <span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:1.25rem;color:white;"></span>
+      </div>
+      <div style="flex:1;overflow:hidden;">
+        <div id="music-title" style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">星炬不熄</div>
+        <div id="music-artist" style="font-size:0.75rem;opacity:0.7;">星炬学院毕业生</div>
+      </div>
+    </div>
+    <div style="margin-bottom:0.75rem;">
+      <div style="height:0.25rem;background:oklch(var(--b2));border-radius:9999px;overflow:hidden;">
+        <div id="music-progress" style="width:0%;height:100%;background:linear-gradient(90deg,oklch(var(--p)),oklch(var(--s)));transition:width 0.3s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:0.625rem;margin-top:0.25rem;opacity:0.6;">
+        <span id="music-current">0:00</span><span id="music-duration">4:01</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;align-items:center;gap:1rem;">
+      <button id="music-prev" style="background:none;border:none;cursor:pointer;padding:0.25rem;"><span class="iconify" data-icon="material-symbols:skip-previous-rounded" style="font-size:1.25rem;"></span></button>
+      <button id="music-play" style="width:2.5rem;height:2.5rem;background:linear-gradient(135deg,oklch(var(--p)),oklch(var(--s)));border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;"><span class="iconify" id="play-icon" data-icon="material-symbols:play-arrow-rounded" style="font-size:1.25rem;"></span></button>
+      <button id="music-next" style="background:none;border:none;cursor:pointer;padding:0.25rem;"><span class="iconify" data-icon="material-symbols:skip-next-rounded" style="font-size:1.25rem;"></span></button>
+    </div>
+  </div>
+</div>
+<!-- Iconify -->
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="../css/glass.css" rel="stylesheet">
+<!-- JS -->
+<script src="../js/utils.js" defer></script>
+<script src="../js/theme.js" defer></script>
+<script src="../js/main.js" defer></script>
+    <script src="../js/music.js" defer></script>
+</body>
+</html>

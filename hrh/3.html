@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字翻译网站 · 作品详情 | 黄润华技术博客</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{primary:'#3B82F6',secondary:'#10B981',accent:'#F59E0B',dark:'#1F2937',light:'#F9FAFB'},fontFamily:{sans:['Inter','system-ui','sans-serif'],mono:['Fira Code','monospace']}}}}</script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.6s ease forwards; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating-icon { animation: float 4s ease-in-out infinite; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+        html { scroll-behavior: smooth; }
+        .tech-tag { transition: all 0.25s; }
+        .tech-tag:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .feature-card { transition: all 0.3s; }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+
+        /* 深色主题 */
+        body.dark {
+            background-color: #111827;
+            color: #e5e7eb;
+        }
+        body.dark header {
+            background-color: rgba(17, 24, 39, 0.92) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            backdrop-filter: blur(12px) !important;
+        }
+        body.dark header[class*="bg-white"] {
+            background-color: rgba(17, 24, 39, 0.92) !important;
+        }
+        body.dark .bg-white\/90 {
+            background-color: rgba(17, 24, 39, 0.92) !important;
+        }
+        body.dark .bg-white {
+            background-color: #1f2937 !important;
+        }
+        body.dark .bg-gray-50 {
+            background-color: #111827 !important;
+        }
+        body.dark .bg-gray-100 {
+            background-color: #1f2937 !important;
+        }
+        body.dark .bg-gray-200 {
+            background-color: #374151 !important;
+        }
+        body.dark .text-dark {
+            color: #f3f4f6 !important;
+        }
+        body.dark .text-gray-600 {
+            color: #9ca3af !important;
+        }
+        body.dark .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        body.dark .text-gray-700 {
+            color: #d1d5db !important;
+        }
+        body.dark .text-gray-300 {
+            color: #6b7280 !important;
+        }
+        body.dark .border-gray-100 {
+            border-color: #374151 !important;
+        }
+        body.dark .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        body.dark .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+        }
+        body.dark .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4) !important;
+        }
+        body.dark .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+        }
+        body.dark .bg-blue-50 { background-color: #1e3a5f !important; }
+        body.dark .bg-blue-100 { background-color: #1e3a5f !important; }
+        body.dark .bg-green-50 { background-color: #14532d !important; }
+        body.dark .bg-green-100 { background-color: #14532d !important; }
+        body.dark .bg-amber-50 { background-color: #78350f !important; }
+        body.dark .bg-amber-100 { background-color: #78350f !important; }
+        body.dark .bg-purple-50 { background-color: #3b0764 !important; }
+        body.dark .bg-indigo-50 { background-color: #1e1b4b !important; }
+        body.dark .bg-teal-50 { background-color: #0f2f2f !important; }
+        body.dark .from-amber-50 {
+            --tw-gradient-from: #1e293b !important;
+        }
+        body.dark .via-orange-50 {
+            --tw-gradient-via: #1e293b !important;
+        }
+        body.dark .to-yellow-50 {
+            --tw-gradient-to: #1e293b !important;
+        }
+        body.dark .feature-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        body.dark .hover\:bg-gray-50:hover {
+            background-color: #374151 !important;
+        }
+        body.dark .hover\:bg-gray-200:hover {
+            background-color: #4b5563 !important;
+        }
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+  <link href="../css/glass-standalone.css" rel="stylesheet">
+  <link href="../css/glass.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <div class="glass-bg-orbs">
+    <div class="glass-bg-orb"></div>
+    <div class="glass-bg-orb"></div>
+    <div class="glass-bg-orb"></div>
+  </div>
+    <canvas id="particle-canvas"></canvas>
+
+    <header class="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300 py-3" id="navbar">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="../members/huang.html" class="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors group">
+                    <i class="fa fa-arrow-left text-lg group-hover:-translate-x-1 transition-transform"></i>
+                    <span class="hidden sm:inline font-medium">返回主页</span>
+                </a>
+                <span class="text-gray-300 hidden sm:inline">|</span>
+                <span class="font-bold text-lg text-dark">文字翻译<span class="text-accent">网站</span></span>
+            </div>
+            <nav class="hidden md:flex items-center gap-5">
+                <a href="1.html" class="text-sm font-medium hover:text-primary transition-colors">个人博客</a>
+                <a href="2.html" class="text-sm font-medium hover:text-primary transition-colors">人脸识别</a>
+                <a href="#" class="text-sm font-medium text-accent">翻译网站</a>
+                <button id="theme-toggle" class="font-medium text-gray-600 hover:text-primary bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-full transition-all">
+                    <i class="fa fa-moon-o text-sm"></i>
+                </button>
+            </nav>
+            <button class="md:hidden text-gray-700" id="menu-toggle"><i class="fa fa-bars text-xl"></i></button>
+        </div>
+        <div class="md:hidden hidden bg-white/80 backdrop-blur-md shadow-md absolute w-full" id="mobile-menu">
+            <div class="container mx-auto px-4 py-4 flex flex-col gap-3">
+                <a href="../members/huang.html" class="py-2 font-medium hover:text-primary"><i class="fa fa-arrow-left"></i> 返回主页</a>
+                <a href="1.html" class="py-2 font-medium hover:text-primary"><i class="fa fa-file-text"></i> 个人博客</a>
+                <a href="2.html" class="py-2 font-medium hover:text-primary"><i class="fa fa-camera"></i> 人脸识别</a>
+                <button id="theme-toggle-mobile" class="py-2 font-medium text-gray-600 hover:text-primary text-left"><i class="fa fa-moon-o text-sm"></i> 切换主题</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="pt-24 pb-12 md:pt-32 md:pb-16 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 relative overflow-hidden">
+        <div class="absolute bottom-10 left-10 text-accent/15 text-5xl floating-icon"><i class="fa fa-language"></i></div>
+        <div class="absolute top-16 right-10 text-primary/15 text-4xl floating-icon" style="animation-delay:1.2s"><i class="fa fa-laptop"></i></div>
+        <div class="container mx-auto px-4 relative z-10 text-center">
+            <h1 class="text-[clamp(1.8rem,4vw,3.2rem)] font-bold text-dark mb-4 animate-fade-in">文字翻译<span class="text-accent">网站</span></h1>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-6 animate-fade-in" style="animation-delay:0.2s">基于JavaScript的多功能翻译工具，支持文字输入、照片上传与实时拍照翻译。</p>
+            <div class="flex flex-wrap gap-3 justify-center animate-fade-in" style="animation-delay:0.35s">
+                <span class="px-5 py-2 bg-white text-accent border border-accent/30 rounded-full font-medium text-sm"><i class="fa fa-user mr-1.5"></i>个人项目</span>
+                <span class="px-5 py-2 bg-white text-secondary border border-secondary/30 rounded-full font-medium text-sm"><i class="fa fa-check mr-1.5"></i>已完成</span>
+            </div>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 max-w-5xl py-12 relative z-10">
+        <div class="mb-10 rounded-xl overflow-hidden shadow-xl">
+            <img src="https://picsum.photos/id/48/1200/600" alt="翻译网站截图" class="w-full">
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white/60 backdrop-blur-md rounded-xl p-5 text-center feature-card border">
+                <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa fa-calendar text-accent text-lg"></i></div>
+                <h4 class="font-bold text-dark">开发时间</h4><p class="text-gray-500 text-sm">2024年1月-2月</p>
+            </div>
+            <div class="bg-white/60 backdrop-blur-md rounded-xl p-5 text-center feature-card border">
+                <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa fa-user text-accent text-lg"></i></div>
+                <h4 class="font-bold text-dark">项目类型</h4><p class="text-gray-500 text-sm">个人独立开发</p>
+            </div>
+            <div class="bg-white/60 backdrop-blur-md rounded-xl p-5 text-center feature-card border">
+                <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3"><i class="fa fa-lightbulb-o text-accent text-lg"></i></div>
+                <h4 class="font-bold text-dark">创新亮点</h4><p class="text-gray-500 text-sm">三种翻译输入方式</p>
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h3 class="text-xl font-bold text-dark mb-4"><i class="fa fa-cogs text-accent"></i> 技术栈</h3>
+            <div class="flex flex-wrap gap-3">
+                <span class="tech-tag px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm border"><i class="fa fa-html5 mr-1.5"></i>HTML5</span>
+                <span class="tech-tag px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm border"><i class="fa fa-css3 mr-1.5"></i>CSS3</span>
+                <span class="tech-tag px-4 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm border"><i class="fa fa-code mr-1.5"></i>JavaScript ES6</span>
+                <span class="tech-tag px-4 py-2 bg-teal-50 text-teal-700 rounded-lg text-sm border"><i class="fa fa-wind mr-1.5"></i>Tailwind CSS</span>
+                <span class="tech-tag px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg text-sm border"><i class="fa fa-cloud-upload mr-1.5"></i>文件上传API</span>
+                <span class="tech-tag px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm border"><i class="fa fa-camera mr-1.5"></i>摄像头调用</span>
+                <span class="tech-tag px-4 py-2 bg-green-50 text-green-700 rounded-lg text-sm border"><i class="fa fa-language mr-1.5"></i>翻译API</span>
+            </div>
+        </div>
+
+        <div class="mb-10">
+            <h3 class="text-xl font-bold text-dark mb-4"><i class="fa fa-check-circle text-accent"></i> 核心功能</h3>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="flex gap-3 bg-white/60 backdrop-blur-md rounded-xl p-4 feature-card border"><i class="fa fa-keyboard-o text-accent text-xl mt-0.5"></i><div><h4 class="font-bold text-dark">文字输入翻译</h4><p class="text-gray-500 text-sm">多语言实时翻译</p></div></div>
+                <div class="flex gap-3 bg-white/60 backdrop-blur-md rounded-xl p-4 feature-card border"><i class="fa fa-picture-o text-accent text-xl mt-0.5"></i><div><h4 class="font-bold text-dark">照片上传翻译</h4><p class="text-gray-500 text-sm">识别图中文字</p></div></div>
+                <div class="flex gap-3 bg-white/60 backdrop-blur-md rounded-xl p-4 feature-card border"><i class="fa fa-camera text-accent text-xl mt-0.5"></i><div><h4 class="font-bold text-dark">实时拍照翻译</h4><p class="text-gray-500 text-sm">摄像头即时翻译</p></div></div>
+                <div class="flex gap-3 bg-white/60 backdrop-blur-md rounded-xl p-4 feature-card border"><i class="fa fa-copy text-accent text-xl mt-0.5"></i><div><h4 class="font-bold text-dark">一键复制结果</h4><p class="text-gray-500 text-sm">方便粘贴使用</p></div></div>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="text-xl font-bold text-dark mb-4"><i class="fa fa-image text-accent"></i> 更多截图</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="rounded-xl overflow-hidden shadow-md"><img src="https://picsum.photos/id/60/400/280" alt="截图1" class="w-full"></div>
+                <div class="rounded-xl overflow-hidden shadow-md"><img src="https://picsum.photos/id/80/400/280" alt="截图2" class="w-full"></div>
+                <div class="rounded-xl overflow-hidden shadow-md"><img src="https://picsum.photos/id/91/400/280" alt="截图3" class="w-full"></div>
+            </div>
+        </div>
+    </main>
+
+    <section class="py-12 bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 relative z-10">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-xl font-bold text-dark mb-4">对我的作品感兴趣？</h3>
+            <p class="text-gray-600 mb-6">欢迎回到主页了解更多</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="../members/huang.html" class="px-8 py-3 bg-accent text-white rounded-xl font-semibold hover:bg-accent/90 transition-all shadow-lg"><i class="fa fa-arrow-left mr-2"></i>返回主页</a>
+                <a href="../members/huang.html#contact" class="px-8 py-3 bg-white text-accent border border-accent/30 rounded-xl font-semibold hover:bg-gray-50 transition-all shadow-md"><i class="fa fa-envelope mr-2"></i>联系我</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="glass-footer text-white py-10 relative z-10">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex items-center justify-center gap-2 mb-4"><i class="fa fa-code text-primary text-2xl"></i><span class="font-bold text-xl">黄润华的中职技术博客</span></div>
+            <p class="text-gray-400 mb-6">记录中职学习生活，分享技能成长历程</p>
+            <div class="flex justify-center gap-6 mb-6">
+                <a href="../members/huang.html" class="text-gray-400 hover:text-white">返回主页</a>
+                <a href="1.html" class="text-gray-400 hover:text-white">个人博客网站</a>
+                <a href="2.html" class="text-gray-400 hover:text-white">人脸识别网站</a>
+            </div>
+            <div class="text-gray-500 text-sm">© 2024 黄润华</div>
+        </div>
+    </footer>
+
+    <button id="back-to-top" class="fixed bottom-6 right-6 w-12 h-12 bg-primary text-white rounded-full shadow-xl flex items-center justify-center opacity-0 invisible transition-all z-50"><i class="fa fa-arrow-up text-lg"></i></button>
+
+    <script>
+        (function(){const canvas=document.getElementById('particle-canvas');const ctx=canvas.getContext('2d');let width,height,particles=[];const PARTICLE_COUNT=80,CONNECT_DISTANCE=120,SPEED=0.5;function getColors(){const d=document.body.classList.contains('dark');return{particle:d?'rgba(59,130,246,0.4)':'rgba(59,130,246,0.2)',line:d?'rgba(59,130,246,0.1)':'rgba(59,130,246,0.06)'}}class Particle{constructor(){this.x=Math.random()*width;this.y=Math.random()*height;this.vx=(Math.random()-0.5)*SPEED;this.vy=(Math.random()-0.5)*SPEED;this.radius=Math.random()*2+1}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>width)this.vx*=-1;if(this.y<0||this.y>height)this.vy*=-1}draw(c,col){c.beginPath();c.arc(this.x,this.y,this.radius,0,Math.PI*2);c.fillStyle=col;c.fill()}}function create(n){particles=[];for(let i=0;i<n;i++)particles.push(new Particle())}function resize(){width=window.innerWidth;height=window.innerHeight;canvas.width=width;canvas.height=height;create(PARTICLE_COUNT)}function drawLines(arr,c,col){for(let i=0;i<arr.length;i++){for(let j=i+1;j<arr.length;j++){const dx=arr[i].x-arr[j].x,dy=arr[i].y-arr[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<CONNECT_DISTANCE){c.beginPath();c.moveTo(arr[i].x,arr[i].y);c.lineTo(arr[j].x,arr[j].y);c.strokeStyle=col;c.lineWidth=0.8;c.stroke()}}}}function animate(){ctx.clearRect(0,0,width,height);const colors=getColors();particles.forEach(p=>{p.update();p.draw(ctx,colors.particle)});drawLines(particles,ctx,colors.line);requestAnimationFrame(animate)}resize();animate();window.addEventListener('resize',resize);})();
+
+        const navbar=document.getElementById('navbar');window.addEventListener('scroll',()=>{if(window.scrollY>50){navbar.classList.add('py-2','shadow');navbar.classList.remove('py-3')}else{navbar.classList.add('py-3');navbar.classList.remove('py-2','shadow')}});
+        document.getElementById('menu-toggle').addEventListener('click',()=>document.getElementById('mobile-menu').classList.toggle('hidden'));
+        const backBtn=document.getElementById('back-to-top');window.addEventListener('scroll',()=>{if(window.scrollY>400){backBtn.classList.remove('opacity-0','invisible');backBtn.classList.add('opacity-100','visible')}else{backBtn.classList.add('opacity-0','invisible');backBtn.classList.remove('opacity-100','visible')}});backBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+        const themeBtn=document.getElementById('theme-toggle'),themeMobile=document.getElementById('theme-toggle-mobile'),body=document.body;function updateIcon(){const d=body.classList.contains('dark');const c=d?'fa fa-sun-o text-sm':'fa fa-moon-o text-sm';if(themeBtn)themeBtn.querySelector('i').className=c;if(themeMobile)themeMobile.querySelector('i').className=c}function apply(t){if(t==='dark')body.classList.add('dark');else body.classList.remove('dark');updateIcon();localStorage.setItem('theme',t)}apply(localStorage.getItem('theme')||'light');if(themeBtn)themeBtn.addEventListener('click',()=>apply(body.classList.contains('dark')?'light':'dark'));if(themeMobile)themeMobile.addEventListener('click',()=>apply(body.classList.contains('dark')?'light':'dark'));
+        const obs=new IntersectionObserver((e)=>{e.forEach(entry=>{if(entry.isIntersecting){entry.target.style.opacity='1';entry.target.style.transform='translateY(0)'}})},{threshold:0.1});document.querySelectorAll('.feature-card,.tech-tag').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity 0.5s,transform 0.5s';obs.observe(el)});
+    </script>
+</body>
+</html>
