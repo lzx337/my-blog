@@ -1,6 +1,6 @@
-var CACHE_NAME = 'ycqh-blog-v3';
-var STATIC_CACHE = 'ycqh-static-v3';
-var API_CACHE = 'ycqh-api-v3';
+var CACHE_NAME = 'ycqh-blog-v4';
+var STATIC_CACHE = 'ycqh-static-v4';
+var API_CACHE = 'ycqh-api-v4';
 
 var PRECACHE_URLS = [
   './',

@@ -304,6 +304,8 @@
 
     const icon = document.getElementById('ai-music-play-icon');
     if (icon) icon.setAttribute('data-icon', p.isPlaying ? 'material-symbols:pause-rounded' : 'material-symbols:play-arrow-rounded');
+    const playBtn = document.getElementById('ai-music-play');
+    if (playBtn) playBtn.classList.toggle('is-playing', p.isPlaying);
   }
 
   // ---- 切换音乐弹窗 ----
@@ -400,7 +402,12 @@
       document.querySelectorAll('.ai-dlg-member-item').forEach(el => {
         el.addEventListener('click', () => {
           const key = el.dataset.key;
-          if (key) startMemberChat(key);
+          if (key) {
+            document.querySelectorAll('.ai-dlg-member-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            setTimeout(() => el.classList.remove('active'), 600);
+            startMemberChat(key);
+          }
         });
       });
     }, 50);

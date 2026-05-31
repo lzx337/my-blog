@@ -772,19 +772,19 @@ h1,h2,h3,h4,h5,h6 {
   left: 16px;
   width: 320px;
   max-height: 960px;
-  background: oklch(var(--b1) / 0.75);
+  background: oklch(var(--b1) / 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 1rem;
   border: var(--glass-border);
-  box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  box-shadow: 0 12px 48px oklch(var(--p) / 0.08), 0 2px 8px oklch(var(--b3) / 0.25);
   display: flex;
   flex-direction: column;
   z-index: 9998;
   opacity: 0;
   transform: translateY(12px) scale(0.96);
   transform-origin: bottom left;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.25s;
   pointer-events: none;
   overflow: hidden;
 }
@@ -826,12 +826,19 @@ h1,h2,h3,h4,h5,h6 {
   border-radius: 9999px;
   border: none;
   background: oklch(var(--bc) / 0.06);
-  color: oklch(var(--bc) / 0.55);
+  color: oklch(var(--bc) / 0.5);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+}
+.ai-dlg-close-btn:hover {
+  background: oklch(var(--p) / 0.12);
+  color: oklch(var(--p));
+}
+.ai-dlg-close-btn:active {
+  transform: scale(0.85);
 }
 
 .ai-dlg-back-btn.hidden,
@@ -1025,12 +1032,12 @@ h1,h2,h3,h4,h5,h6 {
   height: 2rem;
   border-radius: 0.5rem;
   border: none;
-  background: oklch(var(--bc) / 0.06);
+  background: transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   flex-shrink: 0;
   color: oklch(var(--bc) / 0.5);
 }
@@ -1039,8 +1046,24 @@ h1,h2,h3,h4,h5,h6 {
   color: oklch(var(--bc));
   transform: scale(1.05);
 }
+.ai-dlg-bottom-btn:active {
+  transform: scale(0.85);
+}
 .ai-dlg-bottom-members { color: #4facfe; }
 .ai-dlg-bottom-music { color: #e879a8; }
+
+/* 底部按钮激活态（CSS only） */
+body:has(#ai-dlg-members-view:not(.hidden)) .ai-dlg-bottom-members,
+body:has(#ai-dlg-chat-view:not(.hidden)) .ai-dlg-bottom-members {
+  background: oklch(var(--p) / 0.15) !important;
+  color: white !important;
+  transform: scale(1.05);
+}
+body:has(#ai-music-popup.open) .ai-dlg-bottom-music {
+  background: oklch(var(--p) / 0.15) !important;
+  color: white !important;
+  transform: scale(1.05);
+}
 
 .ai-dlg-input-wrap {
   flex: 1;
@@ -1050,19 +1073,21 @@ h1,h2,h3,h4,h5,h6 {
 .ai-dlg-input {
   width: 100%;
   padding: 0.45rem 0.55rem;
-  border-radius: 0.5rem;
-  border: var(--glass-border);
-  background: oklch(var(--b1) / 0.3);
+  border-radius: 0.55rem;
+  border: 1px solid oklch(var(--bc) / 0.08);
+  background: oklch(var(--b2) / 0.4);
   color: oklch(var(--bc));
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   outline: none;
-  font-family: inherit;
+  transition: all 0.2s;
   box-sizing: border-box;
+  box-shadow: inset 0 1px 3px oklch(var(--b3) / 0.3);
 }
 
 .ai-dlg-input:focus {
   border-color: oklch(var(--p) / 0.4);
-  background: oklch(var(--b1) / 0.5);
+  background: oklch(var(--b1) / 0.6);
+  box-shadow: inset 0 1px 3px oklch(var(--p) / 0.08), 0 0 0 2px oklch(var(--p) / 0.06);
 }
 
 .ai-dlg-input::placeholder {
@@ -1087,6 +1112,10 @@ h1,h2,h3,h4,h5,h6 {
 .ai-dlg-send-btn:hover {
   transform: scale(1.08);
   box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+.ai-dlg-send-btn:active {
+  transform: scale(0.9);
 }
 
 /* ---- 组员列表视图 ---- */
@@ -1100,29 +1129,36 @@ h1,h2,h3,h4,h5,h6 {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.55rem 0.7rem;
+  padding: 0.55rem 0.6rem;
   border-radius: 0.75rem;
   cursor: pointer;
-  transition: all 0.2s;
-  background: oklch(var(--b1) / 0.2);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   border: 1px solid transparent;
+  background: oklch(var(--b1) / 0.2);
 }
-
 .ai-dlg-member-item:hover {
   background: oklch(var(--b1) / 0.4);
   border-color: oklch(var(--p) / 0.12);
   transform: translateX(2px);
 }
+.ai-dlg-member-item.active {
+  transform: translateY(-2px);
+  border-color: oklch(var(--p) / 0.3);
+  background: oklch(var(--p) / 0.06);
+  box-shadow: 0 4px 12px oklch(var(--p) / 0.08);
+}
 
 .ai-dlg-member-avatar {
   width: 2.2rem;
   height: 2.2rem;
-  border-radius: 0.6rem;
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1rem;
   flex-shrink: 0;
+  border: 2px solid oklch(var(--b1));
+  box-shadow: 0 0 0 2px oklch(var(--p) / 0.2);
 }
 
 .ai-dlg-member-info {
@@ -1152,12 +1188,12 @@ h1,h2,h3,h4,h5,h6 {
   -webkit-backdrop-filter: blur(20px);
   border-radius: 1rem;
   border: var(--glass-border);
-  box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  box-shadow: 0 8px 32px oklch(var(--p) / 0.08), 0 2px 8px oklch(var(--b3) / 0.25);
   z-index: 9999;
   opacity: 0;
   transform: translateY(12px) scale(0.96);
   transform-origin: bottom left;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.25s;
   pointer-events: none;
   overflow: hidden;
 }
@@ -1202,8 +1238,11 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .ai-music-popup-close:hover {
-  background: oklch(var(--bc) / 0.12);
-  color: oklch(var(--bc));
+  background: oklch(var(--p) / 0.12);
+  color: oklch(var(--p));
+}
+.ai-music-popup-close:active {
+  transform: scale(0.85);
 }
 
 .ai-music-popup-body {
@@ -1234,12 +1273,14 @@ h1,h2,h3,h4,h5,h6 {
   font-size: 0.88rem;
   font-weight: 700;
   color: oklch(var(--bc));
+  text-shadow: 0 1px 3px oklch(var(--bc) / 0.12);
 }
 
 .ai-music-popup-artist {
   font-size: 0.72rem;
   color: oklch(var(--bc) / 0.45);
   margin-top: 0.1rem;
+  text-shadow: 0 1px 2px oklch(var(--bc) / 0.08);
 }
 
 .ai-music-popup-progress {
@@ -1258,9 +1299,22 @@ h1,h2,h3,h4,h5,h6 {
 
 .ai-music-popup-fill {
   height: 100%;
-  background: linear-gradient(90deg, #e879a8, #f43f5e);
-  border-radius: 2px;
+  background: linear-gradient(90deg, #667eea, #e879a8, #f43f5e);
+  border-radius: 9999px;
   transition: width 0.2s linear;
+  position: relative;
+}
+.ai-music-popup-fill::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 4px oklch(var(--p) / 0.5);
 }
 
 .ai-music-popup-time {
@@ -1315,9 +1369,17 @@ h1,h2,h3,h4,h5,h6 {
   transition: all 0.2s;
   box-shadow: 0 3px 12px rgba(232, 121, 168, 0.35);
 }
+.ai-music-popup-play.is-playing {
+  animation: ai-play-breathe 1.8s ease-in-out infinite;
+}
 
 .ai-music-popup-play:hover {
   transform: scale(1.08);
+}
+
+@keyframes ai-play-breathe {
+  0%, 100% { transform: scale(1); box-shadow: 0 3px 12px rgba(232,121,168,0.35); }
+  50% { transform: scale(1.06); box-shadow: 0 3px 20px rgba(232,121,168,0.5); }
 }
 
 /* ---- 滚动条 ---- */

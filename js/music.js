@@ -1,19 +1,19 @@
 (function() {
 
   const STORAGE_KEY = 'ryuchan_music_state';
+  const MUSIC_BASE_URL = 'https://raw.githubusercontent.com/lzx337/my-blog/main/music/';
 
   const DEFAULT_SONGS = [
-    { title: '青空旋律', artist: 'Takuya Matsumoto', album: '和风器乐集', duration: 218, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-    { title: '樱花小路', artist: 'Ryohei Shimoyama', album: '和风器乐集', duration: 261, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-    { title: '星夜漫步', artist: 'Yuki Nakamura', album: '和风器乐集', duration: 243, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-    { title: '晨曦微光', artist: 'Haruka Sato', album: '和风器乐集', duration: 195, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
-    { title: '星炬不熄', artist: '星炬学院毕业生', album: '鸣潮先约电台', duration: 293, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
-    { title: '夏日回忆', artist: 'Keiko Tanaka', album: '和风器乐集', duration: 236, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
-    { title: '雨后晴空', artist: 'Sora Yamamoto', album: '和风器乐集', duration: 208, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
-    { title: '花海漫游', artist: 'Rin Suzuki', album: '和风器乐集', duration: 274, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' },
-    { title: '风之约定', artist: 'Mio Watanabe', album: '和风器乐集', duration: 251, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3' },
-    { title: '远航星的告别', artist: '鸣潮先约电台', album: '鸣潮先约电台', duration: 310, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3' },
-    { title: '月下轻语', artist: 'Aoi Kobayashi', album: '和风器乐集', duration: 225, file: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3' }
+    { title: '晴天', artist: '周杰伦', album: '周杰伦经典', duration: 270, file: '晴天-周杰伦.mp3' },
+    { title: '稻香', artist: '周杰伦', album: '周杰伦经典', duration: 240, file: '稻香 - 周杰伦.mp3' },
+    { title: '花海', artist: '周杰伦', album: '周杰伦经典', duration: 260, file: '花海-周杰伦.mp3' },
+    { title: '青花瓷', artist: '周杰伦', album: '周杰伦经典', duration: 240, file: '青花瓷 - 周杰伦.mp3' },
+    { title: '夜曲', artist: '周杰伦', album: '周杰伦经典', duration: 210, file: '夜曲 - 周杰伦.mp3' },
+    { title: '告白气球', artist: '周杰伦', album: '周杰伦经典', duration: 210, file: '告白气球-周杰伦.mp3' },
+    { title: '兰亭序', artist: '周杰伦', album: '周杰伦经典', duration: 240, file: '兰亭序-周杰伦.mp3' },
+    { title: '蒲公英的约定', artist: '周杰伦', album: '周杰伦经典', duration: 260, file: '蒲公英的约定-周杰伦.mp3' },
+    { title: '星炬不熄', artist: '鸣潮先约电台', album: '鸣潮先约电台', duration: 300, file: '星炬不熄-鸣潮先约电台_飞行雪绒_星炬学院毕业生.mp3' },
+    { title: '远航星的告别', artist: '鸣潮先约电台', album: '鸣潮先约电台', duration: 300, file: '远航星的告别-鸣潮先约电台_jixwang_Tarokiki_Emi-Evans.mp3' }
   ];
 
   function getSongs() {
@@ -26,19 +26,8 @@
 
   var SONGS = getSongs();
 
-  function getMusicBasePath() {
-    var path = window.location.pathname;
-    if (path.includes('/pages/') || path.includes('/indextxt/')) {
-      return '../music/';
-    }
-    return './music/';
-  }
-
   function resolveAudioUrl(file) {
-    if (/^https?:\/\//.test(file)) {
-      return file;
-    }
-    return getMusicBasePath() + file;
+    return MUSIC_BASE_URL + file;
   }
 
   let currentIndex = 4;
