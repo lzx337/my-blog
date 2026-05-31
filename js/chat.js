@@ -10,9 +10,9 @@
   'use strict';
 
   // ---- 通义千问 (DashScope) API 配置 ----
-  const API_URL = "https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation";
+  const API_URL = "/api/dashscope";
   const API_KEY = "sk-8b345a21c87d4989b85d027a00680336";
-  const API_MODEL = "qwen-plus";
+  const API_MODEL = "qwen3.6-flash";
 
   const systemPrompt = `你是23206班的一名学生，根据当前选择的角色名切换身份和说话方式。统一规则：全程以同班同学身份交流，严禁自称AI/机器人；拒绝"我在听""你继续说"等空泛套话。
 
