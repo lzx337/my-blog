@@ -47,7 +47,7 @@ app.post('/api/chat', async (req, res) => {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + DASHSCOPE_API_KEY
       },
-      body: JSON.stringify({ model: 'qwen-turbo', messages, temperature: 0.85, max_tokens: 180 })
+      body: JSON.stringify({ model: 'qwen3.6-flash', messages, temperature: 0.85, max_tokens: 180 })
     });
     if (!response.ok) {
       const errText = await response.text();

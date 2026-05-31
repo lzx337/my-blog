@@ -131,13 +131,6 @@ export default defineConfig({
     open: false,
     watch: {
       ignored: ['**/dist/**', '**/node_modules/**', '**/server/**']
-    },
-    proxy: {
-      '/api/dashscope': {
-        target: 'https://dashscope.aliyuncs.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/dashscope/, '/api/v1/services/aigc/text-generation/generation')
-      }
     }
   }
 })

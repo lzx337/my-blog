@@ -9,10 +9,8 @@
 (function () {
   'use strict';
 
-  // ---- 通义千问 (DashScope) API 配置 ----
-  const API_URL = "/api/dashscope";
-  const API_KEY = "sk-8b345a21c87d4989b85d027a00680336";
-  const API_MODEL = "qwen3.6-flash";
+  // ---- 后端 API 代理 ----
+  const API_URL = "/api/chat";
 
   const systemPrompt = `你是23206班的一名学生，根据当前选择的角色名切换身份和说话方式。统一规则：全程以同班同学身份交流，严禁自称AI/机器人；拒绝"我在听""你继续说"等空泛套话。
 
@@ -821,23 +819,15 @@
       messages[messages.length - 1] = { role: "user", content };
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + API_KEY
-      },
-      body: JSON.stringify({
-        model: API_MODEL,
-        input: { messages: messages },
-        parameters: { result_format: "message", temperature: 0.85 }
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: messages })
     });
     if (!res.ok) {
       var errData = await res.json().catch(function () { return {}; });
-      var errMsg = errData.message || errData.code || ("API status " + res.status);
-      throw new Error(errMsg);
+      throw new Error(errData.error || "API status " + res.status);
     }
     var data = await res.json();
-    return data.output.choices[0].message.content;
+    return data.choices[0].message.content;
   }
 
   // ============================================================
