@@ -33,16 +33,20 @@
       }
 
       async function getAdminOverrides() {
-        try {
-          var resp = await fetch('/api/posts/public');
-          if (resp.ok) {
-            var posts = await resp.json();
-            if (posts && Array.isArray(posts) && posts.length > 0) {
-              localStorage.setItem('admin-posts', JSON.stringify(posts));
-              return posts;
+        var isFileProtocol = window.location.protocol === 'file:';
+        var isGithubPages = window.location.hostname.includes('github.io');
+        if (!isFileProtocol && !isGithubPages) {
+          try {
+            var resp = await fetch('/api/posts/public');
+            if (resp.ok) {
+              var posts = await resp.json();
+              if (posts && Array.isArray(posts) && posts.length > 0) {
+                localStorage.setItem('admin-posts', JSON.stringify(posts));
+                return posts;
+              }
             }
-          }
-        } catch (e) { }
+          } catch (e) { }
+        }
         try {
           var data = JSON.parse(localStorage.getItem('admin-posts') || 'null');
           if (data && Array.isArray(data) && data.length > 0) return data;

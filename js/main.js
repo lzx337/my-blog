@@ -9,57 +9,303 @@ document.addEventListener('DOMContentLoaded', () => {
   var isPostPage = !!document.getElementById('post-content');
 
   /* ============================================================
-   * BackgroundManager - 背景模式管理
+   * SettingsPopup - 设置右侧面板（共享容器，在主面板右侧外部显示）
    * ============================================================ */
-  var BackgroundManager = (function () {
+  var SettingsPopup = (function () {
     var STORAGE_KEY = 'banner-mode', DEFAULT_MODE = 'normal';
-    var BACKGROUND_IMAGE = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80';
+    var GLASS_KEY = 'glass-opacity', DEFAULT_GLASS = 100;
+    var rightPanel = null, currentType = null;
+    var settingsDropdown = null, dropdownContent = null;
+    var isOpen = false;
 
-    function applyBgMode(mode) {
-      var $html = document.documentElement, $banner = document.querySelector('.banner'), $waves = document.querySelector('.waves');
-      localStorage.setItem(STORAGE_KEY, mode);
-      $html.setAttribute('data-banner-mode', mode);
-      updateActiveButton(mode);
-      switch (mode) {
-        case 'normal':
-          document.body.style.background = '';
-          if ($banner) $banner.style.height = '';
-          if ($waves) $waves.style.display = 'block';
-          break;
-        case 'fullscreen':
-          document.body.style.background = '';
-          if ($banner) $banner.style.height = '100vh';
-          if ($waves) $waves.style.display = 'none';
-          break;
-        case 'background':
-          document.body.style.background = 'url(' + BACKGROUND_IMAGE + ') center/cover fixed';
-          if ($banner) $banner.style.height = '20vh';
-          if ($waves) $waves.style.display = 'none';
-          break;
-        case 'hide':
-          document.body.style.background = '';
-          if ($banner) { $banner.style.height = '40vh'; $banner.style.background = 'linear-gradient(135deg, oklch(var(--p)) 0%, oklch(var(--s)) 100%)'; }
-          if ($waves) $waves.style.display = 'block';
-          break;
+    function createRightPanel() {
+      if (rightPanel) return;
+      rightPanel = document.createElement('div');
+      rightPanel.id = 'settings-right-panel';
+      rightPanel.className = 'fixed rounded-xl shadow-2xl hidden';
+      rightPanel.style.cssText = 'width:300px;z-index:102;max-height:80vh;overflow-y:auto;background:color-mix(in srgb, var(--theme-bg) 92%, var(--theme-primary) 8%);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid color-mix(in srgb, var(--theme-text-secondary) 12%, transparent);padding:0.875rem;font-size:0.8125rem;box-shadow:0 8px 32px rgba(0,0,0,0.18);';
+      document.body.appendChild(rightPanel);
+    }
+
+    function positionRightPanel() {
+      if (!dropdownContent || !rightPanel) return;
+      var rect = dropdownContent.getBoundingClientRect();
+      var top = rect.top;
+      var height = rect.height;
+      if (top + height > window.innerHeight - 20) {
+        height = window.innerHeight - top - 20;
+      }
+      if (height < 100) height = 100;
+      rightPanel.style.top = top + 'px';
+      rightPanel.style.left = (rect.right + 20) + 'px';
+      rightPanel.style.height = height + 'px';
+      rightPanel.style.bottom = 'auto';
+      rightPanel.style.right = 'auto';
+    }
+
+    function showSettings(type) {
+      createRightPanel();
+      if (!dropdownContent) return;
+
+      if (currentType === type && isOpen) {
+        hideRightPanel();
+        return;
+      }
+
+      currentType = type;
+      isOpen = true;
+      rightPanel.classList.remove('hidden');
+      rightPanel.innerHTML = '';
+
+      var titles = {
+        'random-bg': '随机背景',
+        'glass-opacity': '毛玻璃透明度',
+        'carousel': '轮播图控制',
+        'reset': '恢复默认'
+      };
+
+      var header = document.createElement('div');
+      header.className = 'flex items-center justify-between mb-2 pb-2';
+      header.style.cssText = 'border-bottom:1px solid color-mix(in srgb, var(--theme-text-secondary) 10%, transparent);';
+      header.innerHTML = '<span style="font-weight:700;font-size:0.8125rem;color:var(--theme-text);">' + (titles[type] || '设置') + '</span>' +
+        '<button id="settings-right-close" style="width:1.5rem;height:1.5rem;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--theme-text-secondary);"><span class="iconify" data-icon="material-symbols:close" style="font-size:0.875rem"></span></button>';
+      rightPanel.appendChild(header);
+      var closeBtn = rightPanel.querySelector('#settings-right-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          hideRightPanel();
+        });
+      }
+
+      var content = document.createElement('div');
+      content.id = 'settings-right-content';
+      rightPanel.appendChild(content);
+
+      switch (type) {
+        case 'random-bg': renderRandomBgPopup(content); break;
+        case 'glass-opacity': renderGlassOpacityPopup(content); break;
+        case 'carousel': renderCarouselPopup(content); break;
+        case 'reset': renderResetPopup(content); break;
+      }
+
+      positionRightPanel();
+    }
+
+    function hideRightPanel() {
+      if (rightPanel) {
+        rightPanel.classList.add('hidden');
+        isOpen = false;
+        currentType = null;
       }
     }
 
-    function updateActiveButton(mode) {
-      ['bg-banner', 'bg-fullscreen', 'bg-background', 'bg-hide'].forEach(function (id) {
-        var btn = document.getElementById(id);
-        if (btn) btn.classList.toggle('bg-base-200', id === 'bg-' + (mode === 'normal' ? 'banner' : mode));
+    // ---- 随机背景设置 ----
+    function renderRandomBgPopup(container) {
+      container.innerHTML = '<div style="display:flex;flex-direction:column;gap:0.625rem;">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:var(--theme-text);font-size:0.75rem;">随机背景</span><input type="checkbox" class="toggle toggle-primary toggle-xs" id="random-bg-toggle"></div>'
+        + '<button style="width:100%;padding:0.375rem 0;border-radius:0.5rem;border:1px solid color-mix(in srgb, var(--theme-primary) 25%, transparent);background:color-mix(in srgb, var(--theme-primary) 10%, transparent);color:var(--theme-text);cursor:pointer;font-size:0.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.375rem;" id="change-bg-btn"><span class="iconify" data-icon="material-symbols:refresh" style="font-size:0.875rem"></span> 更换背景图</button>'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;"><span style="color:var(--theme-text);font-size:0.75rem;">自动轮播背景</span><input type="checkbox" class="toggle toggle-primary toggle-xs" id="auto-carousel-toggle"></div>'
+        + '</div>';
+
+      var toggle = container.querySelector('#random-bg-toggle');
+      if (toggle) {
+        toggle.checked = localStorage.getItem('random-bg-enabled') === 'true';
+        toggle.addEventListener('change', function () {
+          localStorage.setItem('random-bg-enabled', this.checked);
+          if (this.checked) applyRandomBackground();
+          else document.body.style.removeProperty('background');
+        });
+      }
+
+      var changeBtn = container.querySelector('#change-bg-btn');
+      if (changeBtn) changeBtn.addEventListener('click', applyRandomBackground);
+
+      var autoToggle = container.querySelector('#auto-carousel-toggle');
+      if (autoToggle) {
+        autoToggle.checked = localStorage.getItem('auto-carousel') === 'true';
+        autoToggle.addEventListener('change', function () {
+          localStorage.setItem('auto-carousel', this.checked);
+          if (this.checked) startAutoCarousel();
+          else stopAutoCarousel();
+        });
+      }
+    }
+
+    function applyRandomBackground() {
+      var imgUrl = 'url(https://picsum.photos/1920/1080?random=' + Date.now() + ')';
+      document.body.style.setProperty('background', imgUrl + ' center/cover fixed', 'important');
+      localStorage.setItem('random-bg-url', imgUrl);
+    }
+
+    var carouselTimer = null;
+    function startAutoCarousel() {
+      stopAutoCarousel();
+      carouselTimer = setInterval(applyRandomBackground, 10000);
+    }
+    function stopAutoCarousel() {
+      if (carouselTimer) { clearInterval(carouselTimer); carouselTimer = null; }
+    }
+
+    // ---- 毛玻璃面板透明度调节 ----
+    function renderGlassOpacityPopup(container) {
+      var saved = localStorage.getItem(GLASS_KEY);
+      if (saved === null) saved = '100';
+      container.innerHTML = '<div style="display:flex;flex-direction:column;gap:0.625rem;">'
+        + '<div style="display:flex;align-items:center;gap:0.5rem;"><span style="color:var(--theme-text);font-size:0.75rem;white-space:nowrap;">透明度</span><input type="range" min="0" max="100" value="' + saved + '" style="flex:1;height:0.375rem;" class="range range-primary range-xs" id="glass-opacity-slider"><span style="color:var(--theme-text-secondary);font-size:0.75rem;width:2.5rem;text-align:right;" id="glass-opacity-value">' + saved + '%</span></div>'
+        + '<button style="width:100%;padding:0.375rem 0;border-radius:0.5rem;border:1px solid color-mix(in srgb, var(--theme-primary) 25%, transparent);background:color-mix(in srgb, var(--theme-primary) 10%, transparent);color:var(--theme-text);cursor:pointer;font-size:0.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.375rem;" id="glass-reset-btn"><span class="iconify" data-icon="material-symbols:settings-backup-restore" style="font-size:0.875rem"></span> 重置透明度</button>'
+        + '</div>';
+
+      var slider = container.querySelector('#glass-opacity-slider');
+      var valueDisplay = container.querySelector('#glass-opacity-value');
+      if (slider) {
+        slider.addEventListener('input', function () {
+          var v = this.value;
+          if (valueDisplay) valueDisplay.textContent = v + '%';
+          localStorage.setItem(GLASS_KEY, v);
+          applyGlassOpacity(v);
+        });
+      }
+      applyGlassOpacity(saved);
+
+      var resetBtn = container.querySelector('#glass-reset-btn');
+      if (resetBtn) resetBtn.addEventListener('click', function () {
+        localStorage.setItem(GLASS_KEY, '100');
+        if (slider) slider.value = '100';
+        if (valueDisplay) valueDisplay.textContent = '100%';
+        applyGlassOpacity(100);
       });
     }
 
-    function initButtons() {
-      var btnBanner = document.getElementById('bg-banner'); if (btnBanner) btnBanner.addEventListener('click', function () { applyBgMode('normal'); });
-      var btnFs = document.getElementById('bg-fullscreen'); if (btnFs) btnFs.addEventListener('click', function () { applyBgMode('fullscreen'); });
-      var btnBg = document.getElementById('bg-background'); if (btnBg) btnBg.addEventListener('click', function () { applyBgMode('background'); });
-      var btnHide = document.getElementById('bg-hide'); if (btnHide) btnHide.addEventListener('click', function () { applyBgMode('hide'); });
+    function applyGlassOpacity(val) {
+      var opacity = val / 100;
+      document.querySelectorAll('.glass-card, .glass-panel, .glass-nav-inner, .glass-dropdown, .glass-stat-card, .glass-member-card, .glass-project-card, .glass-album-cover').forEach(function(el) {
+        el.style.opacity = opacity;
+      });
     }
 
-    applyBgMode(localStorage.getItem(STORAGE_KEY) || DEFAULT_MODE);
-    initButtons();
+    // ---- 网页轮播图控制 ----
+    function renderCarouselPopup(container) {
+      container.innerHTML = '<div style="display:flex;flex-direction:column;gap:0.5rem;">'
+        + '<button style="width:100%;padding:0.5rem 0;border-radius:0.5rem;border:none;background:color-mix(in srgb, var(--theme-primary) 20%, transparent);color:var(--theme-text);cursor:pointer;font-size:0.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.375rem;transition:all 0.15s;" id="carousel-start-btn" onmousedown="this.style.background=\'color-mix(in srgb, var(--theme-primary) 45%, transparent)\'" onmouseup="this.style.background=\'color-mix(in srgb, var(--theme-primary) 20%, transparent)\'" onmouseleave="this.style.background=\'color-mix(in srgb, var(--theme-primary) 20%, transparent)\'"><span class="iconify" data-icon="material-symbols:slideshow" style="font-size:0.875rem"></span> 全屏网页轮播图</button>'
+        + '<button style="width:100%;padding:0.5rem 0;border-radius:0.5rem;border:1px solid color-mix(in srgb, var(--theme-text-secondary) 15%, transparent);background:transparent;color:var(--theme-text);cursor:pointer;font-size:0.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.375rem;transition:all 0.15s;" id="carousel-stop-btn" onmousedown="this.style.background=\'color-mix(in srgb, var(--theme-primary) 45%, transparent)\';this.style.borderColor=\'transparent\'" onmouseup="this.style.background=\'transparent\';this.style.borderColor=\'color-mix(in srgb, var(--theme-text-secondary) 15%, transparent)\'" onmouseleave="this.style.background=\'transparent\';this.style.borderColor=\'color-mix(in srgb, var(--theme-text-secondary) 15%, transparent)\'"><span class="iconify" data-icon="material-symbols:pause-circle" style="font-size:0.875rem"></span> 停止网页轮播</button>'
+        + '<button style="width:100%;padding:0.5rem 0;border-radius:0.5rem;border:1px solid color-mix(in srgb, var(--theme-text-secondary) 15%, transparent);background:transparent;color:var(--theme-text);cursor:pointer;font-size:0.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.375rem;transition:all 0.15s;" id="carousel-resume-btn" onmousedown="this.style.background=\'color-mix(in srgb, var(--theme-primary) 45%, transparent)\';this.style.borderColor=\'transparent\'" onmouseup="this.style.background=\'transparent\';this.style.borderColor=\'color-mix(in srgb, var(--theme-text-secondary) 15%, transparent)\'" onmouseleave="this.style.background=\'transparent\';this.style.borderColor=\'color-mix(in srgb, var(--theme-text-secondary) 15%, transparent)\'"><span class="iconify" data-icon="material-symbols:play-circle" style="font-size:0.875rem"></span> 继续网页轮播</button>'
+        + '</div>';
+
+      var startBtn = container.querySelector('#carousel-start-btn');
+      if (startBtn) startBtn.addEventListener('click', function () {
+        startAutoCarousel();
+        applyBtnPress(this);
+      });
+
+      var stopBtn = container.querySelector('#carousel-stop-btn');
+      if (stopBtn) stopBtn.addEventListener('click', function () {
+        stopAutoCarousel();
+        applyBtnPress(this);
+      });
+
+      var resumeBtn = container.querySelector('#carousel-resume-btn');
+      if (resumeBtn) resumeBtn.addEventListener('click', function () {
+        startAutoCarousel();
+        applyBtnPress(this);
+      });
+    }
+
+    function applyBtnPress(btn) {
+      btn.style.transform = 'scale(0.95)';
+      btn.style.background = 'color-mix(in srgb, var(--theme-primary) 45%, transparent)';
+      btn.style.borderColor = 'transparent';
+      setTimeout(function () {
+        btn.style.transform = 'scale(1)';
+        btn.style.background = btn.id === 'carousel-start-btn' ? 'color-mix(in srgb, var(--theme-primary) 20%, transparent)' : 'transparent';
+        btn.style.borderColor = btn.id === 'carousel-start-btn' ? 'transparent' : 'color-mix(in srgb, var(--theme-text-secondary) 15%, transparent)';
+      }, 200);
+    }
+
+    // ---- 恢复网页默认样式设置 ----
+    function renderResetPopup(container) {
+      container.innerHTML = '<div style="display:flex;flex-direction:column;gap:0.625rem;">'
+        + '<p style="color:var(--theme-text-secondary);font-size:0.75rem;">确认重置所有自定义设置？（背景、透明度、轮播等）</p>'
+        + '<button style="width:100%;padding:0.5rem 0;border-radius:0.5rem;border:1px solid #ef4444;background:#ef444410;color:#ef4444;cursor:pointer;font-size:0.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:0.375rem;" id="reset-all-btn"><span class="iconify" data-icon="material-symbols:restart-alt" style="font-size:0.875rem"></span> 确认重置</button>'
+        + '</div>';
+
+      var resetBtn = container.querySelector('#reset-all-btn');
+      if (resetBtn) resetBtn.addEventListener('click', function () {
+        localStorage.removeItem('random-bg-enabled');
+        localStorage.removeItem('random-bg-url');
+        localStorage.removeItem('auto-carousel');
+        localStorage.removeItem(GLASS_KEY);
+        document.body.style.removeProperty('background');
+        document.querySelectorAll('.glass-card, .glass-panel, .glass-nav-inner, .glass-dropdown, .glass-stat-card, .glass-member-card, .glass-project-card, .glass-album-cover').forEach(function(el) {
+          el.style.opacity = '';
+        });
+        stopAutoCarousel();
+        showToast('已恢复默认设置');
+        hideRightPanel();
+      });
+    }
+
+    function showToast(msg) {
+      var t = document.getElementById('settings-toast');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = 'settings-toast';
+        t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:200;padding:0.5rem 1rem;border-radius:0.5rem;font-size:0.75rem;font-weight:600;background:color-mix(in srgb, var(--theme-bg) 90%, var(--theme-primary) 10%);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid color-mix(in srgb, var(--theme-primary) 20%, transparent);color:var(--theme-text);pointer-events:none;opacity:0;transition:opacity 0.3s;';
+        document.body.appendChild(t);
+      }
+      t.textContent = msg;
+      t.style.opacity = '1';
+      setTimeout(function () { t.style.opacity = '0'; }, 2000);
+    }
+
+    function init() {
+      createRightPanel();
+      settingsDropdown = document.getElementById('bg-banner')?.closest('.dropdown');
+      if (!settingsDropdown) settingsDropdown = document.getElementById('bg-background')?.closest('.dropdown');
+      dropdownContent = settingsDropdown?.querySelector('.dropdown-content');
+
+      var btnBg = document.getElementById('bg-background');
+      if (btnBg) { btnBg.addEventListener('click', function (e) { e.stopPropagation(); showSettings('random-bg'); }); }
+      var btnBanner = document.getElementById('bg-banner');
+      if (btnBanner) { btnBanner.addEventListener('click', function (e) { e.stopPropagation(); showSettings('glass-opacity'); }); }
+      var btnFs = document.getElementById('bg-fullscreen');
+      if (btnFs) { btnFs.addEventListener('click', function (e) { e.stopPropagation(); showSettings('carousel'); }); }
+      var btnHide = document.getElementById('bg-hide');
+      if (btnHide) { btnHide.addEventListener('click', function (e) { e.stopPropagation(); showSettings('reset'); }); }
+
+      document.addEventListener('click', function (e) {
+        if (!isOpen) return;
+        if (rightPanel && e.target === rightPanel) {
+          hideRightPanel();
+          return;
+        }
+        if (rightPanel && rightPanel.contains(e.target)) return;
+        if (settingsDropdown && settingsDropdown.contains(e.target)) return;
+        hideRightPanel();
+      });
+
+      window.addEventListener('resize', function () {
+        if (isOpen && rightPanel && !rightPanel.classList.contains('hidden')) {
+          positionRightPanel();
+        }
+      });
+
+      window.addEventListener('scroll', function () {
+        if (isOpen && rightPanel && !rightPanel.classList.contains('hidden')) {
+          positionRightPanel();
+        }
+      }, { passive: true });
+
+      var savedGlass = localStorage.getItem(GLASS_KEY);
+      if (savedGlass !== null) applyGlassOpacity(savedGlass);
+      if (localStorage.getItem('auto-carousel') === 'true') startAutoCarousel();
+      var savedBg = localStorage.getItem('random-bg-url');
+      if (savedBg && !savedBg.startsWith('data:')) {
+        document.body.style.setProperty('background', savedBg + ' center/cover fixed', 'important');
+      }
+    }
+
+    init();
   })();
 
   /* ============================================================
@@ -638,5 +884,91 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     }
   }
+
+  /* ============================================================
+   * 20. AccountMenu - 账号下拉菜单
+   * ============================================================ */
+  var AccountMenu = (function () {
+    function isLoggedIn() {
+      try {
+        if (sessionStorage.getItem('admin-api-token')) return true;
+        if (sessionStorage.getItem('blog-admin-session')) return true;
+        return false;
+      } catch(e) { return false; }
+    }
+
+    function getStoredUsername() {
+      try {
+        var s = sessionStorage.getItem('admin-username');
+        if (s) return s;
+        var sess = JSON.parse(sessionStorage.getItem('blog-admin-session') || 'null');
+        if (sess && sess.username) return sess.username;
+      } catch(e) {}
+      return '管理员';
+    }
+
+    function updateUI() {
+      var nameEl = document.getElementById('account-name');
+      var statusEl = document.getElementById('account-status');
+      var avatarEl = document.getElementById('account-avatar');
+      var actionText = document.getElementById('account-action-text');
+      var actionBtn = document.getElementById('account-action-btn');
+      var menu = document.getElementById('account-menu');
+
+      if (!nameEl) return;
+
+      if (isLoggedIn()) {
+        var username = getStoredUsername();
+        if (nameEl) nameEl.textContent = username;
+        if (statusEl) statusEl.textContent = '已登录';
+        if (avatarEl) avatarEl.textContent = username.charAt(0).toUpperCase();
+        if (actionText) actionText.textContent = '登出账号';
+        if (actionBtn) {
+          actionBtn.onclick = function (e) {
+            e.preventDefault();
+            try {
+              sessionStorage.removeItem('admin-api-token');
+              sessionStorage.removeItem('admin-username');
+            } catch(e) {}
+            updateUI();
+            if (menu) { var dd = menu.closest('.dropdown'); if (dd) dd.classList.remove('dropdown-open'); }
+          };
+        }
+      } else {
+        if (nameEl) nameEl.textContent = '未登录';
+        if (statusEl) statusEl.textContent = '点击下方按钮登录';
+        if (avatarEl) avatarEl.textContent = 'U';
+        if (actionText) actionText.textContent = '登录账号';
+        if (actionBtn) {
+          actionBtn.onclick = function (e) {
+            e.preventDefault();
+            var path = getAdminPath();
+            window.location.href = path;
+          };
+        }
+      }
+    }
+
+    function getAdminPath() {
+      var pathname = window.location.pathname.replace(/\\/g, '/');
+      var base = pathname.substring(0, pathname.lastIndexOf('/'));
+      if (base.endsWith('/pages') || pathname.indexOf('/pages/') !== -1 || base === '/pages') return 'admin.html';
+      if (base.endsWith('/indextxt') || pathname.indexOf('/indextxt/') !== -1) return '../pages/admin.html';
+      return 'pages/admin.html';
+    }
+
+    function setAdminBtnHref() {
+      var btn = document.getElementById('account-admin-btn');
+      if (btn) btn.href = getAdminPath();
+    }
+
+    function init() {
+      updateUI();
+      setAdminBtnHref();
+    }
+
+    init();
+    return { init: init, updateUI: updateUI };
+  })();
 
 });

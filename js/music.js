@@ -19,6 +19,18 @@
 
   function getSongs() {
     try {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/songs', false);
+      xhr.send();
+      if (xhr.status === 200) {
+        var serverSongs = JSON.parse(xhr.responseText);
+        if (Array.isArray(serverSongs) && serverSongs.length > 0) {
+          localStorage.setItem('admin-songs', JSON.stringify(serverSongs));
+          return serverSongs;
+        }
+      }
+    } catch(e) {}
+    try {
       var adminSongs = JSON.parse(localStorage.getItem('admin-songs') || 'null');
       if (adminSongs && Array.isArray(adminSongs) && adminSongs.length > 0) return adminSongs;
     } catch(e) {}
@@ -36,6 +48,8 @@
   const audio = new Audio();
   let loopMode = 0;
   audio.volume = 0.7;
+  audio.addEventListener('play', function() { isPlaying = true; updateAllUI(); });
+  audio.addEventListener('pause', function() { isPlaying = false; updateAllUI(); });
   let autoplayBlocked = false;
   let uiThrottleTimer = null;
   let playRequested = false;
@@ -140,6 +154,11 @@
       var idx = parseInt(item.getAttribute('data-index'), 10);
       var isActive = idx === currentIndex;
       item.classList.toggle('active', isActive);
+
+    var vinyl = $('vinyl-record');
+    if (vinyl) vinyl.classList.toggle('playing', isPlaying);
+    var miniVinyl = $('mini-vinyl-record');
+    if (miniVinyl) miniVinyl.classList.toggle('playing', isPlaying);
       var nameEl = item.querySelector('.song-name');
       var artistEl = item.querySelector('.song-artist');
       var numEl = item.querySelector('.song-number');
@@ -417,6 +436,14 @@
         loadSong(idx);
         play();
       });
+    }
+
+    // 左下角浮窗播放器封面改为黑胶唱片
+    var miniCover = document.querySelector('#music-panel > div:first-child > div:first-child');
+    if (miniCover) {
+      miniCover.className = 'mini-vinyl-wrapper';
+      miniCover.style.cssText = '';
+      miniCover.innerHTML = '<div class="mini-vinyl-record" id="mini-vinyl-record"><img src="https://picsum.photos/seed/music-cover/200/200" alt="" class="mini-vinyl-cover" id="mini-vinyl-cover"></div>';
     }
 
     var repeatBtn = qs('.card-base.p-6 button .iconify[data-icon="material-symbols:repeat-rounded"]');

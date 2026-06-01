@@ -127,28 +127,26 @@
             <div class="grid grid-cols-2 gap-2 mb-4">
               <button id="bg-banner" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
                 <span class="iconify" data-icon="material-symbols:photo" style="font-size:1rem"></span>
-                <span>Banner</span>
+                <span>毛玻璃透明度</span>
               </button>
               <button id="bg-fullscreen" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
-                <span class="iconify" data-icon="material-symbols:monitor-fullscreen" style="font-size:1rem"></span>
-                <span>全屏</span>
+                <span class="iconify" data-icon="material-symbols:view-carousel" style="font-size:1rem"></span>
+                <span>轮播图控制</span>
               </button>
               <button id="bg-background" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
                 <span class="iconify" data-icon="material-symbols:image" style="font-size:1rem"></span>
-                <span>背景</span>
+                <span>随机背景</span>
               </button>
               <button id="bg-hide" class="bg-btn flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors text-sm">
                 <span class="iconify" data-icon="material-symbols:hide-image" style="font-size:1rem"></span>
-                <span>隐藏</span>
+                <span>恢复默认</span>
               </button>
             </div>
             
             <div class="border-t border-base-200 pt-3 mb-3">
               <h3 class="text-sm font-semibold text-base-content/70 mb-2 flex items-center gap-1"><span class="iconify" data-icon="material-symbols:palette-outline"></span> 颜色主题</h3>
               <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                  <span class="text-xs text-base-content/60">☀️ 白天</span>
-                </div>
+                <div class="flex items-center gap-2"><span class="text-xs text-base-content/60 flex items-center gap-1" id="theme-mode-label"><span class="iconify" data-icon="material-symbols:sunny" style="font-size:0.875rem"></span> <span id="theme-mode-text">白天</span></span></div>
                 <button id="theme-toggle" class="btn btn-ghost btn-sm btn-circle" aria-label="切换白天/夜晚">
                   <span class="iconify text-yellow-400" id="sun-icon" data-icon="material-symbols:sunny" style="font-size:1rem"></span>
                   <span class="iconify text-indigo-400 hidden" id="moon-icon" data-icon="material-symbols:moon-stars" style="font-size:1rem"></span>
@@ -162,7 +160,22 @@
             
           </div>
         </div>
-        <a href="admin.html" id="nav-login-btn" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg"><span class="iconify" data-icon="material-symbols:login" style="font-size:1.25rem"></span> 登录</a>
+        <div class="dropdown dropdown-end" id="nav-account-dropdown">
+          <button id="nav-login-btn" class="flex items-center gap-2 duration-200 font-bold px-4 py-2 rounded-xl transition-all btn btn-ghost dark:text-white hover:bg-white/10 nav-item text-base-content text-lg">
+            <span class="iconify" data-icon="material-symbols:person" style="font-size:1.25rem"></span> 账号
+          </button>
+          <ul tabindex="0" class="dropdown-content menu p-3 z-[1] w-56 glass-dropdown mt-2 rounded-xl" id="account-menu">
+            <li class="account-avatar-row" style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;margin-bottom:0.25rem;border-bottom:1px solid color-mix(in srgb, var(--theme-text-secondary) 12%, transparent);">
+              <div style="width:2.5rem;height:2.5rem;border-radius:50%;background:linear-gradient(135deg,#60a5fa,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.875rem;font-weight:700;" id="account-avatar">U</div>
+              <div style="flex:1;">
+                <div style="font-size:0.8125rem;font-weight:600;color:var(--theme-text);" id="account-name">未登录</div>
+                <div style="font-size:0.6875rem;color:var(--theme-text-secondary);" id="account-status">点击下方按钮登录</div>
+              </div>
+            </li>
+            <li><a id="account-action-btn" class="flex items-center gap-2 font-bold px-3 py-2 rounded-lg transition-all text-sm nav-item" style="color:var(--theme-text);cursor:pointer;"><span class="iconify" data-icon="material-symbols:login" style="font-size:1.1rem"></span> <span id="account-action-text">登录账号</span></a></li>
+            <li><a id="account-admin-btn" class="flex items-center gap-2 font-bold px-3 py-2 rounded-lg transition-all text-sm nav-item" style="color:var(--theme-text);cursor:pointer;"><span class="iconify" data-icon="material-symbols:admin-panel-settings" style="font-size:1.1rem"></span> 进入后台</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

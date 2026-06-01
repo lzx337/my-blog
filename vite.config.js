@@ -129,6 +129,12 @@ export default defineConfig({
   server: {
     port: 3001,
     open: false,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true
+      }
+    },
     watch: {
       ignored: ['**/dist/**', '**/node_modules/**', '**/server/**']
     }

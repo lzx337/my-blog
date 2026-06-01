@@ -361,7 +361,7 @@ body {
   border-radius: var(--radius-sm);
   border: none;
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--text-primary) !important;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
@@ -1428,7 +1428,7 @@ initTheme();
 
 // ====== API 桥接配置层 ======
 // 在全局作用域预先声明，后续在各函数定义处进行包装
-var API_BASE = window.location.origin;
+var API_BASE = (window.location.protocol === 'file:') ? '' : window.location.origin;
 var apiToken = null;
 var apiAvailable = false;
 
@@ -1703,6 +1703,7 @@ function setSession(username, remember) {
     try { localStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch(e) {}
   }
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+  try { sessionStorage.setItem('admin-username', username); } catch(e) {}
 }
 
 function isLoggedIn() {
@@ -1744,6 +1745,57 @@ function syncToLocal() {
     localStorage.setItem('admin-posts', JSON.stringify(allPosts));
     localStorage.setItem('admin-post-contents', JSON.stringify(postContents));
   } catch(e) {}
+}
+
+// 自动同步到服务器 SQLite 数据库
+function tryServerSync() {
+  if (!apiToken) return Promise.resolve(false);
+  if (window.location.protocol === 'file:') return Promise.resolve(false);
+  var data = {
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    posts: JSON.parse(JSON.stringify(allPosts)),
+    contents: Object.assign({}, postContents),
+    songs: JSON.parse(JSON.stringify(allSongs))
+  };
+  return fetch('/api/import', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-token': apiToken },
+    body: JSON.stringify({ data: data })
+  }).then(function(r) {
+    if (r.ok) console.log('[ServerSync] 同步成功');
+    else console.warn('[ServerSync] 同步失败:', r.status);
+    return r.ok;
+  }).catch(function(e) {
+    console.log('[ServerSync] 服务器未运行（可忽略）');
+    return false;
+  });
+}
+function initServerSync() {
+  if (!apiToken || window.location.protocol === 'file:') return;
+  fetch('/api/export', {
+    headers: { 'x-admin-token': apiToken }
+  }).then(function(r) {
+    if (!r.ok) return null;
+    return r.json();
+  }).then(function(result) {
+    if (result && result.success && result.data) {
+      var d = result.data;
+      if (d.posts && Array.isArray(d.posts) && d.posts.length > 0) {
+        allPosts = d.posts;
+        postContents = d.contents || {};
+        if (d.songs) allSongs = d.songs;
+        Promise.all([savePosts(), saveContents(), saveSongs()]).then(function() {
+          syncToLocal();
+          refreshPostList();
+          refreshCatSuggestions();
+          refreshSongList();
+          refreshOverview();
+          console.log('[ServerSync] 已从服务器加载数据，共 ' + d.posts.length + ' 篇文章');
+        });
+      }
+    }
+  }).catch(function() {});
 }
 
 // --- Login Lockout ---
@@ -2106,7 +2158,7 @@ function checkCaptcha() {
 }
 
 function loadCaptchaSetting() {
-  return dbGet('captcha_enabled').then(function(v) { return v === true; });
+  return dbGet('captcha_enabled').then(function(v) { return v !== false; });
 }
 
 function updateCaptchaUI(enabled) {
@@ -2284,11 +2336,19 @@ function refreshPostList() {
       '<td><div class="flex flex-wrap gap-1">' + (p.tags||[]).map(function(t) { return '<span class="glass-badge" style="font-size:0.6rem;padding:0 0.25rem">' + escHtml(t) + '</span>'; }).join('') + '</div></td>' +
       '<td class="text-right"><div class="flex gap-1" style="justify-content:flex-end">' +
       '<button class="glass-btn glass-btn-xs edit-post-btn" data-id="' + escHtml(p.id) + '" title="编辑文章">✏️</button>' +
+      '<button class="glass-btn glass-btn-xs restore-post-btn" data-id="' + escHtml(p.id) + '" style="display:none" title="还原默认">↩️</button>' +
       '<button class="glass-btn glass-btn-xs text-error delete-post-btn" data-id="' + escHtml(p.id) + '" style="color:#ef4444" title="删除文章">🗑️</button>' +
       '</div></td></tr>';
   }).join('') || '<tr><td colspan="7" class="text-center text-muted py-8">暂无文章，请先新建</td></tr>';
   tbody.querySelectorAll('.edit-post-btn').forEach(function(btn) {
     btn.addEventListener('click', function() { editPost(btn.dataset.id); });
+  });
+  tbody.querySelectorAll('.restore-post-btn').forEach(function(btn) {
+    var defaultPost = getDefaultPost(btn.dataset.id);
+    if (defaultPost) {
+      btn.style.display = '';
+      btn.addEventListener('click', function() { restorePost(btn.dataset.id); });
+    }
   });
   tbody.querySelectorAll('.delete-post-btn').forEach(function(btn) {
     btn.addEventListener('click', function() { deletePost(btn.dataset.id); });
@@ -2413,6 +2473,31 @@ function validateUrl(str) {
   return /^(https?:\/\/|\/|\.\/|\.\.\/|[a-zA-Z0-9])/.test(str);
 }
 
+function getDefaultPost(id) {
+  for (var i = 0; i < DEFAULT_POSTS.length; i++) {
+    if (DEFAULT_POSTS[i].id === id) return DEFAULT_POSTS[i];
+  }
+  return null;
+}
+
+function restorePost(id) {
+  var defaultPost = getDefaultPost(id);
+  if (!defaultPost) { toast('该文章没有默认模板', 'warning'); return; }
+  if (!confirm('确定将 "' + defaultPost.title + '" 还原为默认内容？')) return;
+  for (var i = 0; i < allPosts.length; i++) {
+    if (allPosts[i].id === id) {
+      allPosts[i] = JSON.parse(JSON.stringify(defaultPost));
+      break;
+    }
+  }
+  delete postContents[id];
+  Promise.all([savePosts(), saveContents()]).then(function() {
+    syncToLocal(); tryServerSync(); refreshPostList(); refreshCatSuggestions();
+    toast('文章已还原为默认内容！', 'success');
+    addLog('restore_post', '还原文章: ' + defaultPost.title);
+  });
+}
+
 function savePost(formData) {
   var editId = formData.get('edit-id');
   var title = (formData.get('title')||'').trim();
@@ -2452,7 +2537,7 @@ function savePost(formData) {
   }
   postContents[post.id] = formData.get('content-body') || '';
   Promise.all([savePosts(), saveContents()]).then(function() {
-    clearDraft(editId ? 'post-draft-' + editId : 'post-draft-new'); syncToLocal(); resetEditor(); refreshPostList(); refreshCatSuggestions();
+    clearDraft(editId ? 'post-draft-' + editId : 'post-draft-new'); syncToLocal(); tryServerSync(); resetEditor(); refreshPostList(); refreshCatSuggestions();
     switchTab('posts-list');
     toast(editId ? '文章已更新！' : '文章已创建！', 'success');
     if (editId) addLog('update_post', '更新文章: ' + title);
@@ -2468,7 +2553,7 @@ function deletePost(id) {
     }
   }
   Promise.all([savePosts(), saveContents()]).then(function() {
-    syncToLocal(); refreshPostList(); refreshCatSuggestions(); refreshOverview();
+    syncToLocal(); tryServerSync(); refreshPostList(); refreshCatSuggestions(); refreshOverview();
     toast('文章已移入回收站', 'info');
   });
 }
@@ -2527,11 +2612,20 @@ function refreshSongList() {
       '<td style="font-size:0.75rem">' + (s.duration||0) + '</td>' +
       '<td class="text-right"><div class="flex gap-1" style="justify-content:flex-end">' +
       '<button class="glass-btn glass-btn-xs edit-song-btn" data-real-idx="' + realIdx + '" title="编辑歌曲">✏️</button>' +
+      '<button class="glass-btn glass-btn-xs restore-song-btn" data-real-idx="' + realIdx + '" style="display:none" title="还原默认">↩️</button>' +
       '<button class="glass-btn glass-btn-xs text-error delete-song-btn" data-real-idx="' + realIdx + '" style="color:#ef4444" title="删除歌曲">🗑️</button>' +
       '</div></td></tr>';
   }).join('') || '<tr><td colspan="5" class="text-center text-muted py-8">暂无歌曲</td></tr>';
   tbody.querySelectorAll('.edit-song-btn').forEach(function(btn) {
     btn.addEventListener('click', function() { editSong(parseInt(btn.dataset.realIdx)); });
+  });
+  tbody.querySelectorAll('.restore-song-btn').forEach(function(btn) {
+    var idx = parseInt(btn.dataset.realIdx);
+    var song = allSongs[idx];
+    if (song && getDefaultSong(song.title)) {
+      btn.style.display = '';
+      btn.addEventListener('click', function() { restoreSong(idx); });
+    }
   });
   tbody.querySelectorAll('.delete-song-btn').forEach(function(btn) {
     btn.addEventListener('click', function() { deleteSong(parseInt(btn.dataset.realIdx)); });
@@ -2572,7 +2666,7 @@ function deleteSong(idx) {
   if (idx < 0 || idx >= allSongs.length) return;
   if (!confirm('确定删除 "' + allSongs[idx].title + '" 吗？')) return;
   allSongs.splice(idx, 1);
-  saveSongs().then(function() { syncToLocal(); refreshSongList(); toast('歌曲已删除', 'info'); });
+  saveSongs().then(function() { syncToLocal(); tryServerSync(); refreshSongList(); toast('歌曲已删除', 'info'); });
 }
 
 function saveSong(formData) {
@@ -2603,9 +2697,25 @@ function saveSong(formData) {
     else allSongs.push(song);
   }
   saveSongs().then(function() {
-    syncToLocal(); resetSongForm(); refreshSongList();
+    syncToLocal(); tryServerSync(); resetSongForm(); refreshSongList();
     toast(editIdx >= 0 ? '歌曲已更新！' : '歌曲已添加！', 'success');
   });
+}
+
+function getDefaultSong(title) {
+  for (var i = 0; i < DEFAULT_SONGS.length; i++) {
+    if (DEFAULT_SONGS[i].title === title) return DEFAULT_SONGS[i];
+  }
+  return null;
+}
+
+function restoreSong(idx) {
+  if (idx < 0 || idx >= allSongs.length) return;
+  var defaultSong = getDefaultSong(allSongs[idx].title);
+  if (!defaultSong) { toast('该歌曲没有默认模板', 'warning'); return; }
+  if (!confirm('确定将 "' + defaultSong.title + '" 还原为默认内容？')) return;
+  allSongs[idx] = JSON.parse(JSON.stringify(defaultSong));
+  saveSongs().then(function() { syncToLocal(); tryServerSync(); refreshSongList(); toast('歌曲已还原为默认内容！', 'success'); });
 }
 
 // --- Event Listeners ---
@@ -2639,6 +2749,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
           registerDevice();
           addLog('login_success', '管理员 ' + u + ' 登录成功');
           showAdmin();
+          initServerSync();
         } else {
           recordFailedLogin();
           errEl.textContent = '用户名或密码错误（默认 admin/admin）';
@@ -2864,7 +2975,7 @@ document.getElementById('reset-all-btn').addEventListener('click', function() {
   Promise.all([dbDelete('posts'), dbDelete('contents'), dbDelete('songs')]).then(function() {
     allPosts = JSON.parse(JSON.stringify(DEFAULT_POSTS));
     postContents = {}; allSongs = JSON.parse(JSON.stringify(DEFAULT_SONGS));
-    syncToLocal(); postPage = 1; songPage = 1; postSearchTerm = ''; songSearchTerm = '';
+    syncToLocal(); tryServerSync(); postPage = 1; songPage = 1; postSearchTerm = ''; songSearchTerm = '';
     refreshOverview(); refreshPostList(); refreshSongList(); refreshCatSuggestions();
     toast('已恢复默认数据！', 'success');
     addLog('reset_data', '重置所有数据为默认值');
@@ -3228,7 +3339,7 @@ openDB().then(function() {
   applyLoginSettings();
   startLockCountdown();
   loadCaptchaSetting().then(function(on) { if (on) updateCaptchaUI(on); });
-  if (isLoggedIn()) showAdmin();
+  if (isLoggedIn()) { showAdmin(); initServerSync(); }
 }).catch(function(err) {
   console.error('DB init failed:', err);
   var errEl = document.getElementById('login-error');

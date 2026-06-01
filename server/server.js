@@ -17,8 +17,8 @@ const {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY;
-const DASHSCOPE_API_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
+const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY || 'sk-2814efd200044088b1d800b6d1fa13e3';
+const DASHSCOPE_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
@@ -47,7 +47,7 @@ app.post('/api/chat', async (req, res) => {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + DASHSCOPE_API_KEY
       },
-      body: JSON.stringify({ model: 'qwen3.6-flash', messages, temperature: 0.85, max_tokens: 180 })
+      body: JSON.stringify({ model: 'deepseek-v4-flash', messages, temperature: 0.85, max_tokens: 180 })
     });
     if (!response.ok) {
       const errText = await response.text();

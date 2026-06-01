@@ -1,0 +1,1084 @@
+/**
+ * YQLCH Blog - 主 JavaScript（合并版）
+ * 基于 v2 架构，融合 v1 的实用模块
+ * BannerCarousel 使用 v1 的动态 API 随机图片轮播
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  const isPostPage = !!document.getElementById('post-content');
+  const isSearchPage = !!(document.getElementById('search-input') && document.getElementById('search-results'));
+
+  /* ============================================================
+   * 0. DataManager - 数据管理与缓存
+   * ============================================================ */
+  const DataManager = (() => {
+    let cachedPosts = null;
+
+    async function fetchPosts() {
+      if (cachedPosts) return cachedPosts;
+      try {
+        // 优先使用后台管理的覆盖数据
+        const adminPosts = getAdminOverrides();
+        if (adminPosts && adminPosts.length > 0) {
+          cachedPosts = adminPosts;
+          return cachedPosts;
+        }
+        const basePath = (isPostPage || isSearchPage) ? '../' : './';
+        const resp = await fetch(basePath + 'posts.json');
+        if (!resp.ok) throw new Error('posts.json 加载失败');
+        cachedPosts = await resp.json();
+        return cachedPosts;
+      } catch (err) {
+        console.warn('posts.json 加载失败，使用内置数据:', err);
+        cachedPosts = getFallbackPosts();
+        return cachedPosts;
+      }
+    }
+
+    function getAdminOverrides() {
+      try {
+        const data = JSON.parse(localStorage.getItem('admin-posts') || 'null');
+        if (data && Array.isArray(data) && data.length > 0) return data;
+      } catch(e) {}
+      return null;
+    }
+
+    function getFallbackPosts() {
+      return [
+        { id: 'git-install-push', title: 'Git 安装与推送到 GitHub', date: '2026-04-18', readTime: '216 字 · 1 分钟', excerpt: '首次仓库构建初始化与远程推送', category: '教程', tags: ['Git', 'GitHub'], image: 'assets/images/git/b9cb7653e82633e5.png', status: 'published' },
+        { id: 'markdown-style-guide', title: 'Markdown 样式指南', date: '2026-04-17', readTime: '520 字 · 2 分钟', excerpt: '这是一篇Markdown样式指南，展示各种Markdown语法', category: null, tags: ['Markdown', '样式指南'], directUrl: 'indextxt/Markdown 样式指南.html', status: 'published' },
+        { id: 'chainsaw-man', title: '电锯人', date: '2026-04-16', readTime: '180 字 · 1 分钟', excerpt: '关于电锯人动漫的感想与推荐', category: '动漫', tags: ['电锯人'], directUrl: 'indextxt/电锯人.html', status: 'published' },
+        { id: 'math-formula-demo', title: '数学公式示例', date: '2026-04-15', readTime: '350 字 · 2 分钟', excerpt: '展示如何在 Markdown 中使用 LaTeX 语法书写数学公式', category: null, tags: ['数学公式'], directUrl: 'indextxt/数学公式示例.html', status: 'published' },
+        { id: 'add-comment-system', title: '添加评论系统', date: '2026-04-14', readTime: '420 字 · 2 分钟', excerpt: '为博客添加评论功能', category: '教程', tags: ['评论系统'], directUrl: 'indextxt/添加评论系统.html', status: 'published' },
+        { id: 'mdx-component-demo', title: 'MDX 组件演示', date: '2026-04-13', readTime: '600 字 · 3 分钟', excerpt: '演示如何在 MDX 中使用自定义 React 组件', category: '技术', tags: ['MDX'], directUrl: 'indextxt/MDX 组件演示.html', status: 'published' },
+        { id: 'using-mdx', title: '使用 MDX', date: '2026-04-12', readTime: '280 字 · 1 分钟', excerpt: '介绍 MDX 的基本用法', category: '教程', tags: ['MDX', 'Markdown'], directUrl: 'indextxt/使用 MDX.html', status: 'published' }
+      ];
+    }
+
+    function getCategoryStats(posts) {
+      const stats = {};
+      posts.forEach(p => { if (p.category) stats[p.category] = (stats[p.category] || 0) + 1; });
+      return stats;
+    }
+
+    function getTagStats(posts) {
+      const stats = {};
+      posts.forEach(p => { (p.tags || []).forEach(tag => { stats[tag] = (stats[tag] || 0) + 1; }); });
+      return Object.entries(stats).sort((a, b) => b[1] - a[1]);
+    }
+
+    function getPostById(posts, id) { return posts.find(p => p.id === id) || null; }
+
+    return { fetchPosts, getCategoryStats, getTagStats, getPostById };
+  })();
+
+  // 文章页/搜索页预加载数据后不再执行首页渲染
+  if (isPostPage || isSearchPage) {
+    DataManager.fetchPosts();
+    // 文章页仍需执行通用 UI 模块（主题、滚动、音乐等），不执行 PostRenderer 等
+  }
+
+  /* ============================================================
+   * 1. ThemeManager - 主题管理（增强版：支持代码高亮主题切换）
+   * ============================================================ */
+  const ThemeManager = (() => {
+    const THEMES = [
+      { name: 'light', label: '纯净白', color: '#ffffff', isDark: false },
+      { name: 'cupcake', label: '马卡龙', color: '#fbcfe8', isDark: false },
+      { name: 'emerald', label: '翡翠绿', color: '#34d399', isDark: false },
+      { name: 'corporate', label: '商务蓝', color: '#3b82f6', isDark: false },
+      { name: 'lemonade', label: '柠檬黄', color: '#84cc16', isDark: false },
+      { name: 'garden', label: '花园绿', color: '#4ade80', isDark: false },
+      { name: 'valentine', label: '粉红恋', color: '#ec4899', isDark: false },
+      { name: 'retro', label: '复古风', color: '#ea580c', isDark: false },
+      { name: 'dark', label: '深夜蓝', color: '#1e293b', isDark: true },
+      { name: 'dracula', label: '德古拉', color: '#bd93f9', isDark: true },
+      { name: 'synthwave', label: '赛博朋克', color: '#f472b6', isDark: true },
+      { name: 'forest', label: '森林绿', color: '#22c55e', isDark: true },
+      { name: 'night', label: '夜空紫', color: '#8b5cf6', isDark: true },
+      { name: 'coffee', label: '咖啡棕', color: '#92400e', isDark: true },
+      { name: 'sunset', label: '落日橙', color: '#f97316', isDark: true },
+      { name: 'halloween', label: '万圣夜', color: '#fb923c', isDark: true }
+    ];
+
+    const STORAGE_KEY = 'blog-theme';
+    const $html = document.documentElement;
+
+    function applyTheme(themeName) {
+      const theme = THEMES.find(t => t.name === themeName);
+      if (!theme) return;
+      $html.setAttribute('data-theme', themeName);
+      $html.setAttribute('data-theme-type', theme.isDark ? 'dark' : 'light');
+      localStorage.setItem(STORAGE_KEY, themeName);
+      updateModeButtons(theme.isDark);
+      updateHighlightTheme(theme.isDark);
+    }
+
+    function updateModeButtons(isDark) {
+      const sunIcon = document.getElementById('sun-icon');
+      const moonIcon = document.getElementById('moon-icon');
+      if (sunIcon && moonIcon) {
+        sunIcon.classList.toggle('hidden', isDark);
+        moonIcon.classList.toggle('hidden', !isDark);
+      }
+    }
+
+    function updateHighlightTheme(isDark) {
+      const lightTheme = document.getElementById('hljs-light-theme');
+      const darkTheme = document.getElementById('hljs-dark-theme');
+      if (lightTheme && darkTheme) {
+        if (isDark) { lightTheme.disabled = true; darkTheme.disabled = false; }
+        else { lightTheme.disabled = false; darkTheme.disabled = true; }
+      }
+    }
+
+    function toggleMode() {
+      const currentTheme = localStorage.getItem(STORAGE_KEY) || 'light';
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    function initThemeColors() {
+      const lightSection = document.getElementById('theme-light-section');
+      const darkSection = document.getElementById('theme-dark-section');
+      if (!lightSection || !darkSection) return;
+      lightSection.innerHTML = ''; darkSection.innerHTML = '';
+      THEMES.forEach(theme => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-base-200 transition-colors cursor-pointer';
+        wrapper.addEventListener('click', () => applyTheme(theme.name));
+        const color = document.createElement('div');
+        color.className = 'w-10 h-10 rounded-full ring-2 ring-base-300 ring-offset-2 ring-offset-base-100 transition-all hover:scale-110';
+        color.style.background = theme.color;
+        const label = document.createElement('span');
+        label.className = 'text-xs text-base-content/60 truncate max-w-[80px] text-center';
+        label.textContent = theme.label;
+        wrapper.appendChild(color); wrapper.appendChild(label);
+        (theme.isDark ? darkSection : lightSection).appendChild(wrapper);
+      });
+    }
+
+    function initModeButtons() {
+      const toggleBtn = document.getElementById('theme-toggle');
+      if (toggleBtn) toggleBtn.addEventListener('click', toggleMode);
+      const mobileToggle = document.getElementById('theme-toggle-mobile');
+      if (mobileToggle) mobileToggle.addEventListener('click', toggleMode);
+    }
+
+    const saved = localStorage.getItem(STORAGE_KEY);
+    applyTheme(saved && THEMES.find(t => t.name === saved) ? saved : 'light');
+    initThemeColors();
+    initModeButtons();
+  })();
+
+  /* ============================================================
+   * 2. BackgroundManager - 背景模式管理（支持多种背景模式）
+   * ============================================================ */
+  const BackgroundManager = (() => {
+    const STORAGE_KEY = 'banner-mode';
+    const DEFAULT_MODE = 'normal';
+    const BACKGROUND_IMAGE = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80';
+
+    function applyBgMode(mode) {
+      const $html = document.documentElement;
+      const $banner = document.querySelector('.banner');
+      const $waves = document.querySelector('.waves');
+      localStorage.setItem(STORAGE_KEY, mode);
+      $html.setAttribute('data-banner-mode', mode);
+      updateActiveButton(mode);
+
+      switch(mode) {
+        case 'normal':
+          // Banner 模式 - 显示 banner 背景和波浪
+          document.body.style.background = '';
+          if ($banner) $banner.style.height = '';
+          if ($waves) $waves.style.display = 'block';
+          break;
+        case 'fullscreen':
+          // 全屏模式 - banner 全屏，背景固定
+          document.body.style.background = '';
+          if ($banner) {
+            $banner.style.height = '100vh';
+          }
+          if ($waves) $waves.style.display = 'none';
+          break;
+        case 'background':
+          // 背景模式 - 背景设置在 body，banner 变小
+          document.body.style.background = `url(${BACKGROUND_IMAGE}) center/cover fixed`;
+          document.body.style.backgroundSize = 'cover';
+          if ($banner) {
+            $banner.style.height = '20vh';
+          }
+          if ($waves) $waves.style.display = 'none';
+          break;
+        case 'hide':
+          // 隐藏模式 - 使用渐变色，不显示背景图片
+          document.body.style.background = '';
+          if ($banner) {
+            $banner.style.height = '40vh';
+            $banner.style.background = 'linear-gradient(135deg, oklch(var(--p)) 0%, oklch(var(--s)) 100%)';
+          }
+          if ($waves) $waves.style.display = 'block';
+          break;
+      }
+    }
+
+    function updateActiveButton(mode) {
+      ['bg-banner', 'bg-fullscreen', 'bg-background', 'bg-hide'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.classList.toggle('bg-base-200', id === `bg-${mode === 'normal' ? 'banner' : mode}`);
+        }
+      });
+    }
+
+    function initButtons() {
+      document.getElementById('bg-banner')?.addEventListener('click', () => applyBgMode('normal'));
+      document.getElementById('bg-fullscreen')?.addEventListener('click', () => applyBgMode('fullscreen'));
+      document.getElementById('bg-background')?.addEventListener('click', () => applyBgMode('background'));
+      document.getElementById('bg-hide')?.addEventListener('click', () => applyBgMode('hide'));
+    }
+
+    const saved = localStorage.getItem(STORAGE_KEY) || DEFAULT_MODE;
+    applyBgMode(saved);
+    initButtons();
+  })();
+
+  /* ============================================================
+   * 3. NavbarScroll - 导航栏滚动隐藏/显示
+   * ============================================================ */
+  const NavbarScroll = (() => {
+    const $navbar = document.getElementById('navbar-desktop');
+    if (!$navbar) return;
+    let lastScrollY = window.scrollY, ticking = false;
+    const THRESHOLD = 10;
+    function update() {
+      const currentScrollY = window.scrollY;
+      if (Math.abs(currentScrollY - lastScrollY) < THRESHOLD) { ticking = false; return; }
+      if (currentScrollY - lastScrollY > 0 && currentScrollY > 80) {
+        $navbar.classList.add('opacity-0', 'pointer-events-none');
+        $navbar.classList.remove('opacity-100');
+      } else {
+        $navbar.classList.remove('opacity-0', 'pointer-events-none');
+        $navbar.classList.add('opacity-100');
+      }
+      lastScrollY = currentScrollY; ticking = false;
+    }
+    window.addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(update); ticking = true; } }, { passive: true });
+    let touchStartY = 0;
+    document.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+    document.addEventListener('touchmove', e => {
+      const delta = touchStartY - e.touches[0].clientY;
+      if (Math.abs(delta) > THRESHOLD) {
+        if (delta > 0 && window.scrollY > 80) { $navbar.classList.add('opacity-0', 'pointer-events-none'); $navbar.classList.remove('opacity-100'); }
+        else { $navbar.classList.remove('opacity-0', 'pointer-events-none'); $navbar.classList.add('opacity-100'); }
+      }
+    }, { passive: true });
+  })();
+
+  /* ============================================================
+   * 4. NavbarHover - 导航栏鼠标悬停透明度变化（v2新增）
+   * ============================================================ */
+  const NavbarHover = (() => {
+    const $navbar = document.getElementById('navbar-desktop');
+    if (!$navbar) return;
+    let dimTimer = null;
+    $navbar.setAttribute('data-nav-dimmed', 'true');
+    $navbar.addEventListener('mouseenter', () => { clearTimeout(dimTimer); $navbar.setAttribute('data-nav-dimmed', 'false'); });
+    $navbar.addEventListener('mouseleave', () => { dimTimer = setTimeout(() => $navbar.setAttribute('data-nav-dimmed', 'true'), 400); });
+    $navbar.querySelectorAll('.dropdown-content').forEach($dd => {
+      $dd.addEventListener('mouseenter', () => clearTimeout(dimTimer));
+      $dd.addEventListener('mouseleave', () => { dimTimer = setTimeout(() => $navbar.setAttribute('data-nav-dimmed', 'true'), 400); });
+    });
+  })();
+
+  /* ============================================================
+   * 5. Typewriter - 打字机效果（采用v2中文文本）
+   * ============================================================ */
+  const Typewriter = (() => {
+    const $el = document.getElementById('typewriter-text');
+    if (!$el) return;
+    const TEXTS = ['🌸 欲买桂花同载酒，终不似，少年游！', '🌸 花有重开日，人无再少年！', '🌿 记录生活的点滴，分享美好的瞬间！', '📚 纸上得来终觉浅，绝知此事要躬行！'];
+    const TYPE_SPEED = 150, DELETE_SPEED = 50, PAUSE = 2500;
+    let textIndex = 0, charIndex = 0, isDeleting = false, timer = null;
+    function type() {
+      const text = TEXTS[textIndex];
+      if (isDeleting) {
+        charIndex--; $el.textContent = text.substring(0, charIndex);
+        if (charIndex === 0) { isDeleting = false; textIndex = (textIndex + 1) % TEXTS.length; timer = setTimeout(type, 500); return; }
+        timer = setTimeout(type, DELETE_SPEED);
+      } else {
+        charIndex++; $el.textContent = text.substring(0, charIndex);
+        if (charIndex === text.length) { isDeleting = true; timer = setTimeout(type, PAUSE); return; }
+        timer = setTimeout(type, TYPE_SPEED);
+      }
+    }
+    timer = setTimeout(type, 800);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) clearTimeout(timer); else timer = setTimeout(type, 300); });
+  })();
+
+  /* ============================================================
+   * 6. BannerCarousel - 动态API随机图片轮播（修复版）
+   * ============================================================ */
+  const BannerCarousel = (() => {
+    const $banner = document.getElementById('banner');
+    const $bgCurrent = document.getElementById('banner-bg-current');
+    const $bgNext = document.getElementById('banner-bg-next');
+    if (!$banner || !$bgCurrent || !$bgNext) return;
+
+    const API_URL = 'https://t.alcy.cc/ycy';
+    const INTERVAL = 6000;
+    const FADE_DURATION = 800;
+
+    let isCurrentActive = true;
+    let carouselTimer = null;
+    let isPaused = false;
+    let isTransitioning = false;
+
+    function preloadImage(url) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Failed to load: ${url}`));
+        img.src = url;
+      });
+    }
+
+    function getRandomUrl() {
+      return `${API_URL}?t=${Date.now()}`;
+    }
+
+    async function switchBanner() {
+      if (isTransitioning || isPaused) return;
+      isTransitioning = true;
+      try {
+        const url = getRandomUrl();
+        await preloadImage(url);
+
+        const $active = isCurrentActive ? $bgCurrent : $bgNext;
+        const $inactive = isCurrentActive ? $bgNext : $bgCurrent;
+
+        $inactive.style.backgroundImage = `url(${url})`;
+        $inactive.classList.remove('opacity-0');
+        $inactive.classList.add('opacity-100');
+
+        $active.classList.remove('opacity-100');
+        $active.classList.add('opacity-0');
+
+        await new Promise(resolve => setTimeout(resolve, FADE_DURATION));
+
+        isCurrentActive = !isCurrentActive;
+      } catch (err) {
+        console.warn('Banner 图片切换失败，保留当前图片:', err.message);
+      } finally {
+        isTransitioning = false;
+      }
+    }
+
+    async function startCarousel() {
+      try {
+        const url = getRandomUrl();
+        await preloadImage(url);
+        $bgCurrent.style.backgroundImage = `url(${url})`;
+        $bgCurrent.classList.remove('opacity-0');
+        $bgCurrent.classList.add('opacity-100');
+      } catch (err) {
+        console.error('首张 Banner 图片加载失败:', err.message);
+      }
+      carouselTimer = setInterval(switchBanner, INTERVAL);
+    }
+
+    startCarousel();
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isPaused = true;
+        clearInterval(carouselTimer);
+      } else {
+        isPaused = false;
+        switchBanner();
+        carouselTimer = setInterval(switchBanner, INTERVAL);
+      }
+    });
+  })();
+
+  /* ============================================================
+   * 7. Sidebar - 侧边栏分类/标签折叠（仅折叠/展开）
+   * ============================================================ */
+  (() => {
+    document.querySelectorAll('.sidebar-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const $content = targetId ? document.getElementById(targetId) : btn.nextElementSibling;
+        if (!$content) return;
+        const isOpen = $content.style.maxHeight && $content.style.maxHeight !== '0px';
+        if (isOpen) { $content.style.maxHeight = '0px'; $content.style.opacity = '0'; btn.classList.remove('is-open'); }
+        else { $content.style.maxHeight = $content.scrollHeight + 'px'; $content.style.opacity = '1'; btn.classList.add('is-open'); }
+      });
+    });
+    document.querySelectorAll('.sidebar-content').forEach(content => {
+      content.style.maxHeight = '0px'; content.style.opacity = '0'; content.style.overflow = 'hidden'; content.style.transition = 'max-height 0.3s ease, opacity 0.3s ease';
+    });
+  })();
+
+  /* ============================================================
+   * 8. BackToTop - 回到顶部
+   * ============================================================ */
+  const BackToTop = (() => {
+    const $btn = document.getElementById('back-to-top');
+    if (!$btn) return;
+    function toggle() {
+      if (window.scrollY > 300) { $btn.classList.remove('opacity-0', 'pointer-events-none'); $btn.classList.add('opacity-100'); }
+      else { $btn.classList.add('opacity-0', 'pointer-events-none'); $btn.classList.remove('opacity-100'); }
+    }
+    window.addEventListener('scroll', toggle, { passive: true });
+    $btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    toggle();
+  })();
+
+  /* ============================================================
+   * 9. MobileMenu - 移动端菜单
+   * ============================================================ */
+  const MobileMenu = (() => {
+    const $hamburger = document.getElementById('mobile-menu-btn');
+    const $menu = document.getElementById('mobile-menu');
+    if (!$hamburger || !$menu) return;
+    const $toggles = $menu.querySelectorAll('.mobile-dropdown-toggle');
+    const $dropdowns = $menu.querySelectorAll('.mobile-dropdown');
+    let isOpen = false;
+
+    function toggleMenu() {
+      isOpen = !isOpen;
+      if (isOpen) {
+        $menu.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none');
+        $menu.classList.add('translate-x-0', 'opacity-100');
+        $hamburger.classList.add('is-active');
+        document.body.style.overflow = 'hidden';
+      } else {
+        $menu.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none');
+        $menu.classList.remove('translate-x-0', 'opacity-100');
+        $hamburger.classList.remove('is-active');
+        document.body.style.overflow = '';
+        closeAllDropdowns();
+      }
+    }
+
+    function closeAllDropdowns() {
+      $dropdowns.forEach(d => { d.classList.add('hidden'); d.style.maxHeight = '0px'; d.style.opacity = '0'; });
+      $toggles.forEach(t => t.classList.remove('is-open'));
+    }
+
+    function toggleDropdown(toggle) {
+      const dd = toggle.nextElementSibling;
+      if (!dd) return;
+      const toOpen = dd.classList.contains('hidden');
+      closeAllDropdowns();
+      if (toOpen) {
+        dd.classList.remove('hidden'); dd.style.maxHeight = dd.scrollHeight + 'px'; dd.style.opacity = '1';
+        toggle.classList.add('is-open');
+      }
+    }
+
+    $hamburger.addEventListener('click', toggleMenu);
+    $toggles.forEach(t => t.addEventListener('click', e => { e.stopPropagation(); toggleDropdown(t); }));
+    document.addEventListener('click', e => { if (isOpen && !$menu.contains(e.target) && !$hamburger.contains(e.target)) toggleMenu(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen) toggleMenu(); });
+  })();
+
+  /* ============================================================
+   * 10. PageAnimation - 页面滚动动画
+   * ============================================================ */
+  const PageAnimation = (() => {
+    const $els = document.querySelectorAll('.fade-in-up');
+    if ($els.length === 0) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          const delay = entry.target.getAttribute('data-delay') ? parseInt(entry.target.getAttribute('data-delay')) : i * 100;
+          setTimeout(() => { entry.target.classList.add('is-visible'); entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; }, Math.min(delay, 1000));
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    $els.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(30px)'; el.style.transition = 'opacity 0.6s ease, transform 0.6s ease'; observer.observe(el); });
+  })();
+
+  /* ============================================================
+   * 11. AnnouncementBar - 全局公告栏
+   * ============================================================ */
+  const AnnouncementBar = (() => {
+    const $bar = document.getElementById('announcement-bar');
+    const $closeBtn = document.getElementById('announcement-close');
+    const $container = document.getElementById('announcement-container');
+    if (!$bar || !$closeBtn || !$container) return;
+    if (localStorage.getItem('announcement-closed') === 'true') {
+      $container.style.display = 'none';
+      return;
+    }
+    $closeBtn.addEventListener('click', () => {
+      $bar.classList.add('hidden-bar');
+      localStorage.setItem('announcement-closed', 'true');
+      setTimeout(() => { $container.style.display = 'none'; }, 400);
+    });
+  })();
+
+  /* ============================================================
+   * 12. ShareManager - 社交分享
+   * ============================================================ */
+  const ShareManager = (() => {
+    const $btn = document.getElementById('share-btn') || document.getElementById('nav-share-btn');
+    if (!$btn) return;
+    $btn.addEventListener('click', () => {
+      const url = window.location.href;
+      const title = document.title;
+      if (navigator.share) {
+        navigator.share({ title, url }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(url).then(() => {
+          const orig = $btn.querySelector('.iconify').getAttribute('data-icon');
+          $btn.querySelector('.iconify').setAttribute('data-icon', 'material-symbols:check');
+          setTimeout(() => $btn.querySelector('.iconify').setAttribute('data-icon', orig), 1500);
+        }).catch(() => {});
+      }
+    });
+  })();
+
+  /* ============================================================
+   * 13. ReadingProgress - 阅读进度条
+   * ============================================================ */
+  const ReadingProgress = (() => {
+    const $bar = document.getElementById('reading-progress');
+    if (!$bar) return;
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
+      $bar.style.width = progress + '%';
+    }, { passive: true });
+  })();
+
+  /* ============================================================
+   * 14. MiniPlayer - 移动端迷你播放器收缩
+   * ============================================================ */
+  const MiniPlayer = (() => {
+    const $player = document.getElementById('music-player');
+    if (!$player) return;
+    let miniMode = false;
+    window.addEventListener('scroll', () => {
+      const shouldMini = window.scrollY > 600;
+      if (shouldMini !== miniMode) {
+        miniMode = shouldMini;
+        $player.classList.toggle('mini-mode', miniMode);
+      }
+    }, { passive: true });
+  })();
+
+  /* ============================================================
+   * 16. LikeAndViews - 点赞与阅读量（首页初始化）
+   * ============================================================ */
+  (() => {
+    window.__blogUtils = {
+      getLikeCount(id) { return parseInt(localStorage.getItem('like-' + id) || '0'); },
+      setLikeCount(id, count) { localStorage.setItem('like-' + id, count); },
+      isLiked(id) { return localStorage.getItem('liked-' + id) === 'true'; },
+      setLiked(id) { localStorage.setItem('liked-' + id, 'true'); },
+      getViewCount(id) { return parseInt(localStorage.getItem('view-' + id) || '0'); },
+      incrementView(id) { const c = parseInt(localStorage.getItem('view-' + id) || '0') + 1; localStorage.setItem('view-' + id, c); return c; }
+    };
+  })();
+
+  /* ============================================================
+   * 16.5. VisitorStats - 全站访客量与访客数统计
+   * ============================================================ */
+  const VisitorStats = (() => {
+    const VISITOR_ID_KEY = 'visitor-uid';
+    const PAGEVIEWS_KEY = 'total-pageviews';
+    const VISITORS_KEY = 'total-visitors';
+
+    function getVisitorId() {
+      let id = localStorage.getItem(VISITOR_ID_KEY);
+      if (!id) {
+        id = 'v_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem(VISITOR_ID_KEY, id);
+      }
+      return id;
+    }
+
+    function formatNum(n) {
+      if (n >= 10000) return (n / 10000).toFixed(1) + 'w';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+      return n.toString();
+    }
+
+    function init() {
+      const vid = getVisitorId();
+
+      let pageviews = parseInt(localStorage.getItem(PAGEVIEWS_KEY) || '0') + 1;
+      localStorage.setItem(PAGEVIEWS_KEY, pageviews);
+
+      let visitors = parseInt(localStorage.getItem(VISITORS_KEY) || '0');
+      const hasVisited = localStorage.getItem('visitor-seen-' + vid);
+      if (!hasVisited) {
+        visitors += 1;
+        localStorage.setItem(VISITORS_KEY, visitors);
+        localStorage.setItem('visitor-seen-' + vid, '1');
+      }
+
+      updateDisplay(pageviews, visitors);
+    }
+
+    function updateDisplay(pageviews, visitors) {
+      document.querySelectorAll('.text-xs').forEach(el => {
+        const text = el.textContent.trim();
+        if (text === '访问量') {
+          const container = el.closest('.text-center');
+          if (container) {
+            const val = container.querySelector('.font-bold.text-lg');
+            if (val) val.textContent = formatNum(pageviews);
+          }
+        }
+        if (text === '访客数') {
+          const container = el.closest('.text-center');
+          if (container) {
+            const val = container.querySelector('.font-bold.text-lg');
+            if (val) val.textContent = formatNum(visitors);
+          }
+        }
+      });
+    }
+
+    function getStats() {
+      return {
+        pageviews: parseInt(localStorage.getItem(PAGEVIEWS_KEY) || '0'),
+        visitors: parseInt(localStorage.getItem(VISITORS_KEY) || '0')
+      };
+    }
+
+    init();
+    return { getStats, updateDisplay, formatNum };
+  })();
+
+  /* ============================================================
+   * 17. DynamicSEO - 动态页面标题/描述
+   * ============================================================ */
+  (() => {
+    const $desc = document.querySelector('meta[name="description"]');
+    if ($desc && !$desc.getAttribute('content')) {
+      $desc.setAttribute('content', 'YQLCH 的个人博客 - 记录技术、生活与思考');
+    }
+  })();
+
+  /* ============================================================
+   * 18. CodeCopy - 代码块复制按钮（从v1合并）
+   * ============================================================ */
+  const CodeCopy = (() => {
+    function init() {
+      document.querySelectorAll('.btn-copy').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const codeBlock = btn.closest('.ryuchan-code')?.querySelector('code');
+          if (!codeBlock) return;
+          const copyIcon = btn.querySelector('.ryuchan-code-toolbar-copy-icon');
+          const successIcon = btn.querySelector('.ryuchan-code-toolbar-copy-success');
+          try {
+            await navigator.clipboard.writeText(codeBlock.textContent);
+            copyIcon?.classList.add('hidden');
+            successIcon?.classList.remove('hidden');
+            btn.classList.add('copy-success');
+            setTimeout(() => {
+              copyIcon?.classList.remove('hidden');
+              successIcon?.classList.add('hidden');
+              btn.classList.remove('copy-success');
+            }, 2000);
+          } catch (err) {
+            console.error('复制失败:', err);
+          }
+        });
+      });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+
+  /* ============================================================
+   * 19. EntertainmentDropdown - 娱乐菜单下拉（从v1合并）
+   * ============================================================ */
+  const EntertainmentDropdown = (() => {
+    const $trigger = document.getElementById('entertainment-trigger');
+    const $dropdown = document.getElementById('entertainment-dropdown');
+    if (!$trigger || !$dropdown) return;
+    let isOpen = false;
+    let hoverTimer = null;
+    function open() { isOpen = true; $dropdown.classList.remove('hidden', 'opacity-0', 'scale-95'); $dropdown.classList.add('opacity-100', 'scale-100'); $trigger.classList.add('is-active'); }
+    function close() { isOpen = false; $dropdown.classList.add('hidden', 'opacity-0', 'scale-95'); $dropdown.classList.remove('opacity-100', 'scale-100'); $trigger.classList.remove('is-active'); }
+    $trigger.addEventListener('mouseenter', () => { clearTimeout(hoverTimer); hoverTimer = setTimeout(open, 150); });
+    $trigger.addEventListener('mouseleave', () => { clearTimeout(hoverTimer); hoverTimer = setTimeout(close, 300); });
+    $dropdown.addEventListener('mouseenter', () => { clearTimeout(hoverTimer); });
+    $dropdown.addEventListener('mouseleave', () => { hoverTimer = setTimeout(close, 300); });
+    $trigger.addEventListener('click', (e) => { e.stopPropagation(); if (isOpen) close(); else open(); });
+    document.addEventListener('click', (e) => { if (isOpen && !$trigger.contains(e.target) && !$dropdown.contains(e.target)) close(); });
+  })();
+
+  /* ============================================================
+   * 20. 以下模块仅在首页执行（文章页/搜索页已跳过）
+   * ============================================================ */
+  if (!isPostPage && !isSearchPage) {
+    /* ===== PostRenderer - 动态文章卡片渲染 ===== */
+    const PostRenderer = (() => {
+      const $container = document.getElementById('posts-container');
+      const $skeleton = document.getElementById('skeleton-container');
+      if (!$container) return { init() {} };
+
+      let allPosts = [], filteredPosts = [];
+
+      function renderPost(post) {
+        const hasImage = post.image;
+        const postUrl = post.directUrl ? './' + post.directUrl : './pages/post.html?id=' + encodeURIComponent(post.id);
+        return `
+          <article class="card-base overflow-hidden transition-all duration-300 hover:-translate-y-1 cursor-pointer" data-url="${postUrl}" data-category="${post.category || ''}" data-tags="${(post.tags || []).join(',')}" onclick="if(!event.target.closest('.category-filter-btn,.tag-filter-btn,a,button')){window.location.href=this.dataset.url}">
+            ${hasImage ? `
+              <div class="hidden lg:flex w-full">
+                <a href="${postUrl}" class="relative w-1/3 aspect-video overflow-hidden group">
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/60 z-10 transition-all duration-300 flex items-center justify-center">
+                    <span class="iconify w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-2" data-icon="lucide:arrow-right"></span>
+                  </div>
+                  <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                </a>
+                <div class="flex-1 p-4 overflow-hidden flex flex-col">
+                  <div class="mb-3"><a href="${postUrl}" class="ryuchan-heading">${post.title}</a></div>
+                  <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-sm text-base-content/70 mb-3 opacity-75">
+                    <span class="flex items-center gap-1"><span class="iconify h-4 w-4 flex-shrink-0" data-icon="lucide:calendar"></span><span class="truncate">${post.date}</span></span>
+                    <div class="flex items-center gap-1"><span class="iconify h-4 w-4 flex-shrink-0" data-icon="lucide:book-open"></span><span class="truncate">${post.readTime}</span></div>
+                  </div>
+                  <p class="text-sm text-base-content/70 mb-3 line-clamp-2">${post.excerpt}</p>
+                  <div class="flex flex-wrap gap-2 mt-auto">
+                    ${post.category ? `<button class="btn btn-xs btn-category rounded-lg category-filter-btn" data-category="${post.category}">${post.category}</button>` : ''}
+                    ${(post.tags || []).map(tag => `<button class="btn btn-xs btn-tag rounded-lg tag-filter-btn" data-tag="${tag}">${tag}</button>`).join('')}
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col w-full lg:hidden">
+                <a href="${postUrl}" class="relative w-full aspect-video overflow-hidden group">
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/60 z-10 transition-all duration-300 flex items-center justify-center">
+                    <span class="iconify w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-2" data-icon="lucide:arrow-right"></span>
+                  </div>
+                  <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                </a>
+                <div class="p-4 overflow-hidden flex flex-col">
+                  <div class="mb-3"><a href="${postUrl}" class="ryuchan-heading">${post.title}</a></div>
+                  <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-sm text-base-content/70 mb-3 opacity-75">
+                    <span class="flex items-center gap-1"><span class="iconify h-4 w-4 flex-shrink-0" data-icon="lucide:calendar"></span><span class="truncate">${post.date}</span></span>
+                    <div class="flex items-center gap-1"><span class="iconify h-4 w-4 flex-shrink-0" data-icon="lucide:book-open"></span><span class="truncate">${post.readTime}</span></div>
+                  </div>
+                  <p class="text-sm text-base-content/70 mb-3 line-clamp-2">${post.excerpt}</p>
+                  <div class="flex flex-wrap gap-2 mt-auto">
+                    ${post.category ? `<button class="btn btn-xs btn-category rounded-lg category-filter-btn" data-category="${post.category}">${post.category}</button>` : ''}
+                    ${(post.tags || []).map(tag => `<button class="btn btn-xs btn-tag rounded-lg tag-filter-btn" data-tag="${tag}">${tag}</button>`).join('')}
+                  </div>
+                </div>
+              </div>
+            ` : `
+              <div class="p-4 overflow-hidden flex flex-col">
+                <div class="mb-3"><a href="${postUrl}" class="ryuchan-heading">${post.title}</a></div>
+                <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-sm text-base-content/70 mb-3 opacity-75">
+                  <span class="flex items-center gap-1"><span class="iconify h-4 w-4 flex-shrink-0" data-icon="lucide:calendar"></span><span class="truncate">${post.date}</span></span>
+                  <div class="flex items-center gap-1"><span class="iconify h-4 w-4 flex-shrink-0" data-icon="lucide:book-open"></span><span class="truncate">${post.readTime}</span></div>
+                </div>
+                <p class="text-sm text-base-content/70 mb-3 line-clamp-2">${post.excerpt}</p>
+                <div class="flex flex-wrap gap-2 mt-auto">
+                  ${post.category ? `<button class="btn btn-xs btn-category rounded-lg category-filter-btn" data-category="${post.category}">${post.category}</button>` : ''}
+                  ${(post.tags || []).map(tag => `<button class="btn btn-xs btn-tag rounded-lg tag-filter-btn" data-tag="${tag}">${tag}</button>`).join('')}
+                </div>
+              </div>
+            `}
+          </article>
+        `;
+      }
+
+      function renderAll(posts) {
+        filteredPosts = posts;
+        if ($skeleton) $skeleton.style.display = 'none';
+        $container.innerHTML = posts.length > 0
+          ? posts.map(renderPost).join('')
+          : '<div class="text-center py-20 text-base-content/50"><span class="iconify text-5xl mb-3" data-icon="material-symbols:search-off-outline"></span><p class="text-lg">没有找到匹配的文章</p></div>';
+        bindFilterButtons();
+        if (window.iconify) { setTimeout(() => { try { window.iconify.scan(); } catch(e) {} }, 100); }
+      }
+
+      function bindFilterButtons() {
+        $container.querySelectorAll('.category-filter-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const cat = btn.dataset.category;
+            document.getElementById('search-input').value = '';
+            SearchFilter.filterByCategory(cat);
+          });
+        });
+        $container.querySelectorAll('.tag-filter-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const tag = btn.dataset.tag;
+            document.getElementById('search-input').value = '';
+            SearchFilter.filterByTag(tag);
+          });
+        });
+      }
+
+      async function init() {
+        allPosts = await DataManager.fetchPosts();
+        filteredPosts = allPosts.filter(function(p) { return (p.status || 'published') !== 'draft'; });
+        renderAll(filteredPosts);
+        SidebarRenderer.init(filteredPosts);
+        SearchFilter.init(filteredPosts);
+        RSSGenerator.generate(filteredPosts);
+      }
+
+      return { init, renderAll };
+    })();
+
+    /* ===== SidebarRenderer - 动态侧边栏分类与标签 ===== */
+    const SidebarRenderer = (() => {
+      function init(posts) {
+        renderCategories(posts);
+        renderTags(posts);
+      }
+      function renderCategories(posts) {
+        const $list = document.getElementById('category-list');
+        if (!$list) return;
+        const stats = DataManager.getCategoryStats(posts);
+        const sorted = Object.entries(stats).sort((a, b) => b[1] - a[1]);
+        if (sorted.length === 0) { $list.innerHTML = '<div class="text-sm text-base-content/50 text-center py-2">暂无分类</div>'; return; }
+        $list.innerHTML = sorted.map(([cat, count]) => `
+          <button class="w-full h-10 rounded-lg bg-none hover:bg-base-200 active:bg-base-300 transition-all pl-2 hover:pl-3 text-base-content hover:text-primary category-sidebar-btn" data-category="${cat}">
+            <div class="flex items-center justify-between relative mr-2">
+              <div class="overflow-hidden text-left whitespace-nowrap overflow-ellipsis">${cat}</div>
+              <div class="transition px-2 h-7 ml-4 min-w-[2rem] rounded-lg text-sm font-bold text-base-content bg-base-200 flex items-center justify-center">${count}</div>
+            </div>
+          </button>
+        `).join('');
+        $list.querySelectorAll('.category-sidebar-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('search-input').value = '';
+            SearchFilter.filterByCategory(btn.dataset.category);
+          });
+        });
+      }
+      function renderTags(posts) {
+        const $list = document.getElementById('tag-list');
+        if (!$list) return;
+        const tags = DataManager.getTagStats(posts);
+        if (tags.length === 0) { $list.innerHTML = '<div class="text-sm text-base-content/50 text-center py-2">暂无标签</div>'; return; }
+        $list.innerHTML = tags.map(([tag, count]) => `
+          <button class="h-6 text-xs px-2 rounded-md border border-secondary text-base-content hover:bg-secondary hover:text-secondary-content hover:scale-110 transition-all inline-flex items-center justify-center tag-sidebar-btn" data-tag="${tag}">${tag} <span class="ml-1 opacity-60">${count}</span></button>
+        `).join('');
+        $list.querySelectorAll('.tag-sidebar-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('search-input').value = '';
+            SearchFilter.filterByTag(btn.dataset.tag);
+          });
+        });
+      }
+      return { init };
+    })();
+
+    /* ===== SearchFilter - 搜索与筛选 ===== */
+    const SearchFilter = (() => {
+      const $input = document.getElementById('search-input');
+      if (!$input) return { init() {}, filterByCategory() {}, filterByTag() {} };
+      let allPosts = [];
+      let activeFilter = { type: null, value: null };
+      function init(posts) {
+        allPosts = posts;
+        $input.addEventListener('input', () => {
+          activeFilter = { type: null, value: null };
+          performSearch($input.value);
+        });
+      }
+      function performSearch(query) {
+        const q = query.toLowerCase().trim();
+        let results = [...allPosts];
+        if (activeFilter.type === 'category') results = results.filter(p => p.category === activeFilter.value);
+        else if (activeFilter.type === 'tag') results = results.filter(p => (p.tags || []).includes(activeFilter.value));
+        if (q) {
+          results = results.filter(p =>
+            p.title.toLowerCase().includes(q) || (p.excerpt || '').toLowerCase().includes(q) ||
+            (p.tags || []).some(t => t.toLowerCase().includes(q)) || (p.category || '').toLowerCase().includes(q)
+          );
+        }
+        PostRenderer.renderAll(results);
+      }
+      function filterByCategory(cat) { activeFilter = { type: 'category', value: cat }; $input.value = ''; performSearch(''); }
+      function filterByTag(tag) { activeFilter = { type: 'tag', value: tag }; $input.value = ''; performSearch(''); }
+      return { init, filterByCategory, filterByTag };
+    })();
+
+    /* ===== RSSGenerator - 生成 RSS 订阅 ===== */
+    const RSSGenerator = (() => {
+      function generate(posts) {
+        const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n<channel>\n';
+        xml += `<title>YQLCH's Blog</title>\n<link>${baseUrl}/</link>\n<description>YQLCH 的个人博客</description>\n<language>zh-cn</language>\n`;
+        xml += `<atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml"/>\n`;
+        posts.forEach(p => {
+          const postUrl = `${baseUrl}/pages/post.html?id=${encodeURIComponent(p.id)}`;
+          xml += '<item>\n';
+          xml += `<title>${escapeXml(p.title)}</title>\n<link>${postUrl}</link>\n`;
+          xml += `<description>${escapeXml(p.excerpt || '')}</description>\n`;
+          xml += `<pubDate>${new Date(p.date).toUTCString()}</pubDate>\n<guid>${postUrl}</guid>\n`;
+          if (p.category) xml += `<category>${escapeXml(p.category)}</category>\n`;
+          xml += '</item>\n';
+        });
+        xml += '</channel>\n</rss>';
+        const rssLink = document.getElementById('rss-link');
+        if (rssLink) {
+          const blob = new Blob([xml], { type: 'application/rss+xml' });
+          const url = URL.createObjectURL(blob);
+          rssLink.href = url;
+          rssLink.download = 'rss.xml';
+        }
+      }
+      function escapeXml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;'); }
+      return { generate };
+    })();
+
+    /* ===== SitemapGenerator - 生成 sitemap.xml ===== */
+    const SitemapGenerator = (() => {
+      async function generate(posts) {
+        const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        xml += `  <url>\n    <loc>${baseUrl}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
+        xml += `  <url>\n    <loc>${baseUrl}/pages/about.html</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+        xml += `  <url>\n    <loc>${baseUrl}/pages/friend.html</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+        xml += `  <url>\n    <loc>${baseUrl}/pages/navigation.html</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+        xml += `  <url>\n    <loc>${baseUrl}/pages/project.html</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+        posts.forEach(p => {
+          const postUrl = `${baseUrl}/pages/post.html?id=${encodeURIComponent(p.id)}`;
+          xml += `  <url>\n    <loc>${postUrl}</loc>\n    <lastmod>${p.date}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+        });
+        xml += '</urlset>';
+        const blob = new Blob([xml], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'sitemap.xml'; a.style.display = 'none';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        console.log('[Sitemap] 已生成并下载 sitemap.xml，共 ' + (posts.length + 5) + ' 个页面');
+      }
+      const sitemapBtn = document.getElementById('sitemap-btn');
+      if (sitemapBtn) {
+        sitemapBtn.addEventListener('click', () => { DataManager.fetchPosts().then(generate); });
+      }
+      return { generate };
+    })();
+
+    // 启动首页渲染
+    PostRenderer.init();
+  }
+
+  /* ============================================================
+   * 21. 搜索页渲染（仅在搜索页执行）
+   * ============================================================ */
+  if (isSearchPage) {
+    (async () => {
+      const $input = document.getElementById('search-input');
+      const $results = document.getElementById('search-results');
+      const $clear = document.getElementById('search-clear');
+      const $count = document.getElementById('search-count');
+      const allPosts = (await DataManager.fetchPosts()).filter(function(p) { return (p.status || 'published') !== 'draft'; });
+
+      function renderSearchResults(posts) {
+        if ($count) $count.textContent = '共找到 ' + posts.length + ' 篇相关文章';
+        const existingItems = $results.querySelectorAll('.search-result-item');
+        existingItems.forEach(el => el.remove());
+        const emptyMsg = $results.querySelector('.search-empty');
+        if (emptyMsg) emptyMsg.remove();
+
+        if (posts.length === 0) {
+          $results.insertAdjacentHTML('beforeend',
+            '<div class="search-empty text-center py-16 text-base-content/50">' +
+            '<span class="iconify text-5xl mb-3" data-icon="material-symbols:search-off-outline"></span>' +
+            '<p class="text-lg">没有找到匹配的文章</p></div>');
+          if (window.iconify) { setTimeout(() => { try { window.iconify.scan(); } catch(e) {} }, 100); }
+          return;
+        }
+
+        const html = posts.map(renderSearchItem).join('');
+        $results.insertAdjacentHTML('beforeend', html);
+        if (window.iconify) { setTimeout(() => { try { window.iconify.scan(); } catch(e) {} }, 100); }
+      }
+
+      function renderSearchItem(post) {
+        const postUrl = post.directUrl
+          ? '../' + post.directUrl
+          : 'post.html?id=' + encodeURIComponent(post.id);
+        const icon = getCategoryIcon(post.category);
+        const iconColors = getIconColors(post.category);
+        return '<a href="' + postUrl + '" class="search-result-item card-base p-5 block">' +
+          '<div class="flex items-start gap-4">' +
+          '<div class="hidden sm:flex w-28 h-20 rounded-xl ' + iconColors + ' items-center justify-center flex-shrink-0">' +
+          '<span class="iconify text-3xl" data-icon="' + icon + '"></span></div>' +
+          '<div class="flex-1 min-w-0">' +
+          '<div class="flex items-center gap-2 mb-2">' +
+          (post.category ? '<span class="badge badge-primary badge-sm">' + escHtml(post.category) + '</span>' : '') +
+          '<span class="text-xs text-base-content/40">' + escHtml(post.date) + '</span></div>' +
+          '<h3 class="text-lg font-bold text-base-content mb-1.5 hover:text-primary transition-colors">' + escHtml(post.title) + '</h3>' +
+          '<p class="text-sm text-base-content/60 line-clamp-2">' + escHtml(post.excerpt || '') + '</p>' +
+          '<div class="flex items-center gap-2 mt-3">' +
+          (post.tags || []).map(function(t) { return '<span class="btn btn-xs btn-tag rounded-lg">' + escHtml(t) + '</span>'; }).join('') +
+          '</div></div></div></a>';
+      }
+
+      function getCategoryIcon(cat) {
+        var icons = { '教程': 'material-symbols:school-outline', '动漫': 'material-symbols:movie-outline', '技术': 'material-symbols:code-blocks-outline', '生活': 'material-symbols:emoji-nature-outline' };
+        return icons[cat] || 'material-symbols:article-outline';
+      }
+
+      function getIconColors(cat) {
+        var colors = { '教程': 'bg-gradient-to-br from-primary/20 to-secondary/20 text-primary', '动漫': 'bg-gradient-to-br from-error/20 to-warning/20 text-error', '技术': 'bg-gradient-to-br from-info/20 to-success/20 text-info', '生活': 'bg-gradient-to-br from-accent/20 to-warning/20 text-accent' };
+        return colors[cat] || 'bg-gradient-to-br from-primary/20 to-secondary/20 text-primary';
+      }
+
+      function escHtml(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+      }
+
+      function performSearch(query) {
+        var q = query.toLowerCase().trim();
+        var results = allPosts.slice();
+        if (q) {
+          results = results.filter(function(p) {
+            return p.title.toLowerCase().indexOf(q) !== -1 ||
+              (p.excerpt || '').toLowerCase().indexOf(q) !== -1 ||
+              (p.tags || []).some(function(t) { return t.toLowerCase().indexOf(q) !== -1; }) ||
+              (p.category || '').toLowerCase().indexOf(q) !== -1;
+          });
+        }
+        renderSearchResults(results);
+      }
+
+      renderSearchResults(allPosts);
+
+      if ($input) {
+        $input.addEventListener('input', function() {
+          performSearch($input.value);
+          if ($clear) {
+            $clear.style.display = $input.value ? '' : 'none';
+            if ($input.value) { $clear.classList.add('opacity-100'); $clear.classList.remove('opacity-0'); }
+            else { $clear.classList.remove('opacity-100'); $clear.classList.add('opacity-0'); }
+          }
+        });
+      }
+
+      if ($clear) {
+        $clear.addEventListener('click', function() {
+          $input.value = '';
+          $clear.style.display = 'none';
+          $clear.classList.remove('opacity-100');
+          $clear.classList.add('opacity-0');
+          performSearch('');
+          $input.focus();
+        });
+      }
+    })();
+  }
+});

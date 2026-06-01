@@ -10,6 +10,9 @@
   'use strict';
 
   // ---- 后端 API 代理 ----
+  const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
+  const IS_GITHUB_PAGES = window.location.hostname.includes('github.io');
+  const API_AVAILABLE = !IS_FILE_PROTOCOL && !IS_GITHUB_PAGES;
   const API_URL = "/api/chat";
 
   const systemPrompt = `你是23206班的一名学生，根据当前选择的角色名切换身份和说话方式。统一规则：全程以同班同学身份交流，严禁自称AI/机器人；拒绝"我在听""你继续说"等空泛套话。
@@ -325,8 +328,10 @@
         </button>
       </div>
       <div class="ai-music-popup-body">
-        <div class="ai-music-popup-cover">
-          <span class="iconify" data-icon="material-symbols:music-note-rounded" style="font-size:2.5rem;color:white;"></span>
+        <div class="ai-music-popup-cover ai-vinyl-wrapper">
+          <div class="ai-vinyl-record" id="ai-vinyl-record">
+            <img src="https://picsum.photos/seed/ai-music/200/200" alt="" class="ai-vinyl-cover" id="ai-vinyl-cover">
+          </div>
         </div>
         <div class="ai-music-popup-info">
           <div class="ai-music-popup-title-text" id="ai-music-title">星炬不熄</div>
@@ -424,6 +429,8 @@
     if (icon) icon.setAttribute('data-icon', p.isPlaying ? 'material-symbols:pause-rounded' : 'material-symbols:play-arrow-rounded');
     const playBtn = document.getElementById('ai-music-play');
     if (playBtn) playBtn.classList.toggle('is-playing', p.isPlaying);
+    const aiVinyl = document.getElementById('ai-vinyl-record');
+    if (aiVinyl) aiVinyl.classList.toggle('playing', p.isPlaying);
   }
 
   // ---- 切换音乐弹窗 ----
@@ -811,6 +818,9 @@
 
   // ---- API 调用 ----
   async function callAPI(memberKey, userText) {
+    if (!API_AVAILABLE) {
+      return genLocalReply(userText);
+    }
     const profile = memberProfiles[memberKey];
     if (!profile) return '嗯嗯～';
     const content = `当前对话角色：${profile.name}\n用户：${userText}`;

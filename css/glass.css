@@ -173,6 +173,35 @@ h1,h2,h3,h4,h5,h6 {
   box-shadow: var(--glass-shadow);
 }
 
+/* ---- 7b. Navbar Zoom Protection ---- */
+#navbar-desktop .glass-nav-inner > div {
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+}
+
+/* Override Tailwind space-x-2 margins, use gap instead */
+#navbar-desktop .glass-nav-inner .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-left: 0;
+}
+
+#navbar-desktop .nav-item,
+#navbar-desktop .btn.btn-ghost {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* 中屏（1024px 以下）缩小字号和间距 */
+@media (max-width: 1024px) {
+  #navbar-desktop .btn.btn-ghost {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.85rem;
+  }
+  #navbar-desktop .glass-nav-inner > div > a:first-child .text-3xl {
+    font-size: 1.25rem;
+  }
+}
+
 /* ---- 8. Glass Footer ---- */
 .glass-footer {
   background: var(--glass-bg-card);
@@ -254,6 +283,41 @@ h1,h2,h3,h4,h5,h6 {
 }
 .glass-btn-sm { font-size: 0.75rem; padding: 0.25rem 0.75rem; }
 .glass-btn-xs { font-size: 0.65rem; padding: 0.125rem 0.5rem; }
+
+/* 设置按钮统一样式 */
+.bg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-height: 2.375rem;
+  background: color-mix(in srgb, var(--theme-bg) 88%, var(--theme-primary) 12%);
+  border: 1px solid color-mix(in srgb, var(--theme-text-secondary) 15%, transparent);
+  color: var(--theme-text);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.bg-btn:hover {
+  background: color-mix(in srgb, var(--theme-primary) 20%, transparent);
+  border-color: color-mix(in srgb, var(--theme-primary) 30%, transparent);
+  color: var(--theme-primary);
+}
+.bg-btn > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.bg-btn .iconify svg {
+  vertical-align: middle !important;
+}
 
 /* ---- 11. Glass Table ---- */
 .glass-table {
@@ -387,7 +451,7 @@ h1,h2,h3,h4,h5,h6 {
 
 /* ---- 16. Gradient Heading ---- */
 .ryuchan-heading {
-  background: linear-gradient(135deg, #1f2937, #374151);
+  background: linear-gradient(135deg, #1F2937, #1F2937);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -704,6 +768,179 @@ h1,h2,h3,h4,h5,h6 {
 @media (min-width: 1024px) {
   .banner .title { font-size: 6rem; }
   .banner .subtitle { font-size: 2.25rem; }
+}
+
+/* ============================================================
+   ---- 36. Custom Theme Overrides ----
+   ============================================================ */
+
+/* DaisyUI theme variables are driven by data-theme (light/dark).
+   These overrides apply the 14 custom hex colors on top via data-theme-name. */
+:root {
+  --theme-primary: #E8EEF8;
+  --theme-bg: #FDFEFE;
+  --theme-text: #2C313F;
+  --theme-text-secondary: #6E7485;
+  --theme-primary-rgb: 232, 238, 248;
+}
+
+/* 1. Body & page background */
+body {
+  background: var(--theme-bg);
+  color: var(--theme-text) !important;
+}
+
+/* 2. DaisyUI base-content text override */
+.text-base-content,
+.text-base-content\/70,
+.text-base-content\/60,
+.text-base-content\/50,
+.text-base-content\/40,
+.text-base-content\/30 {
+  color: var(--theme-text) !important;
+}
+.menu .text-base-content {
+  color: var(--theme-text) !important;
+}
+
+/* 3. Secondary / muted text */
+.text-base-content\/50,
+.text-base-content\/40,
+.text-base-content\/30,
+.text-base-content\/20,
+.text-base-content\/10 {
+  color: var(--theme-text-secondary) !important;
+}
+.opacity-50.text-base-content,
+.opacity-40.text-base-content,
+.opacity-30.text-base-content {
+  color: var(--theme-text-secondary) !important;
+}
+
+/* 4. Primary color for links, accents, gradients */
+.gradient-link,
+:where(a):not(.btn):not(.no-underline) {
+  color: var(--theme-primary) !important;
+}
+.ryuchan-heading {
+  background: linear-gradient(135deg, var(--theme-text), var(--theme-text));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.btn-category {
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+.btn-category:hover {
+  background: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+}
+
+/* 5. Nav bar glass background tinted with primary */
+.glass-nav-inner,
+#navbar-bg {
+  background: color-mix(in srgb, var(--theme-primary) 65%, var(--theme-bg)) !important;
+}
+#navbar-desktop[data-nav-dimmed="true"] #navbar-bg {
+  background: color-mix(in srgb, var(--theme-primary) 25%, transparent) !important;
+}
+
+/* 6. Glass cards, panels, footer */
+.glass-card {
+  background: color-mix(in srgb, var(--theme-bg) 85%, var(--theme-primary) 15%) !important;
+}
+.card-base {
+  background: color-mix(in srgb, var(--theme-bg) 92%, var(--theme-primary) 8%) !important;
+}
+.glass-panel {
+  background: color-mix(in srgb, var(--theme-bg) 78%, var(--theme-primary) 22%) !important;
+}
+.glass-footer {
+  background: color-mix(in srgb, var(--theme-bg) 90%, var(--theme-primary) 10%) !important;
+}
+footer.glass-footer aside p {
+  color: var(--theme-text) !important;
+}
+footer.glass-footer aside a,
+footer.glass-footer aside a.gradient-link {
+  -webkit-text-fill-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+footer.glass-footer aside a:hover {
+  color: var(--theme-text-secondary) !important;
+}
+
+/* 7. DaisyUI buttons with primary */
+.btn-primary {
+  --btn-bg: var(--theme-primary) !important;
+  --btn-border: var(--theme-primary) !important;
+}
+
+/* 8. Nav item hover underline uses primary */
+.nav-item::before {
+  background: linear-gradient(90deg, var(--theme-primary), var(--theme-primary)) !important;
+}
+
+/* 9. Dropdown glass */
+.glass-dropdown {
+  background: color-mix(in srgb, var(--theme-bg) 88%, var(--theme-primary) 12%) !important;
+}
+
+/* 娱乐下拉菜单文字颜色修复 */
+.glass-dropdown.menu li a {
+  color: var(--theme-text) !important;
+  font-weight: 600;
+}
+.glass-dropdown.menu li a:hover {
+  background: color-mix(in srgb, var(--theme-primary) 20%, transparent) !important;
+  color: var(--theme-primary) !important;
+}
+
+/* 10. Stats card tint */
+.glass-stat-card {
+  background: color-mix(in srgb, var(--theme-bg) 85%, var(--theme-primary) 15%) !important;
+}
+
+/* 11. Member, project, anime cards */
+.glass-member-card,
+.glass-project-card,
+.glass-album-cover {
+  background: color-mix(in srgb, var(--theme-bg) 85%, var(--theme-primary) 15%) !important;
+}
+
+/* 12. DaisyUI menu items */
+.menu li a {
+  color: var(--theme-text) !important;
+}
+.menu li a:hover {
+  background: color-mix(in srgb, var(--theme-primary) 15%, transparent) !important;
+}
+
+/* 13. Input fields */
+.glass-input,
+.glass-textarea {
+  background: color-mix(in srgb, var(--theme-bg) 92%, var(--theme-primary) 8%) !important;
+  color: var(--theme-text) !important;
+}
+
+/* 14. Table */
+.glass-table {
+  background: color-mix(in srgb, var(--theme-bg) 85%, var(--theme-primary) 15%) !important;
+}
+
+/* 15. Tags */
+.tag-link {
+  color: var(--theme-text-secondary) !important;
+  border-color: color-mix(in srgb, var(--theme-text-secondary) 25%, transparent) !important;
+}
+.tag-link:hover {
+  color: var(--theme-primary) !important;
+  border-color: color-mix(in srgb, var(--theme-primary) 40%, transparent) !important;
+}
+
+/* 16. Sidebar border */
+.border-base-content\/20 {
+  border-color: color-mix(in srgb, var(--theme-text-secondary) 20%, transparent) !important;
 }
 
 /* ============================================================
@@ -1411,6 +1648,60 @@ body:has(#ai-music-popup.open) .ai-dlg-bottom-music {
   background: #ececec;
 }
 
+/* ============================================================
+   ---- 37. Glassmorphism Fallback & Theme Rules ----
+   ============================================================ */
+
+/* Half-transparent backgrounds for glass panels (OKLCH fallback + theme safety) */
+[data-theme-type="light"] {
+  --glass-bg-rgb: 255, 255, 255;
+}
+[data-theme-type="dark"] {
+  --glass-bg-rgb: 0, 0, 0;
+}
+
+/* @supports fallback: browsers without backdrop-filter get solid opaque backgrounds */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-card, .glass-panel, .glass-nav, .glass-nav-inner,
+  .glass-footer, .glass-dropdown, .glass-dialog,
+  .glass-stat-card, .glass-member-card, .glass-project-card,
+  .glass-album-cover, .glass-table, .glass-input, .glass-textarea,
+  .ai-dialog-box {
+    background: rgba(var(--glass-bg-rgb), 0.92) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* ============================================================
+   ---- 38. Settings Right Panel ----
+   ============================================================ */
+#settings-right-panel {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18) !important;
+  border-radius: 0.75rem !important;
+  animation: scaleIn 0.2s ease-out;
+}
+#settings-right-panel::-webkit-scrollbar { width: 4px; }
+#settings-right-panel::-webkit-scrollbar-track { background: transparent; }
+#settings-right-panel::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--theme-text-secondary) 20%, transparent); border-radius: 2px; }
+
+/* Button hover: use custom theme primary with brightness adjustment */
+.btn-primary:hover,
+.glass-btn:hover,
+.btn-category:hover {
+  filter: brightness(0.9);
+}
+
+/* Override the AI dialog suggestions light-bg colors with theme-aware values */
+[data-theme-type="dark"] .ai-dlg-suggestions button {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+}
+[data-theme-type="dark"] .ai-dlg-suggestions button:hover {
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.14);
+}
+
 /* ---- 聊天图片 ---- */
 .ai-dlg-chat-img {
   max-width: 100%;
@@ -1588,4 +1879,114 @@ footer.glass-footer .footer-title {
   .footer-meta-links {
     justify-content: center;
   }
+}
+
+/* ============================================================
+   ---- 39. Mini Vinyl Record (左下角浮窗播放器) ----
+   ============================================================ */
+.mini-vinyl-wrapper {
+  width: 3rem !important;
+  height: 3rem !important;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem !important;
+  overflow: hidden;
+}
+
+.mini-vinyl-record {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle at center, #888 0, #1a1a1a 10%, #2a2a2a 30%, #111 55%, #333 70%, #111 100%);
+  animation: mini-vinyl-spin 8s linear infinite;
+  animation-play-state: paused;
+  flex-shrink: 0;
+}
+
+.mini-vinyl-record.playing {
+  animation-play-state: running;
+}
+
+.mini-vinyl-record::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #666, #222);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.mini-vinyl-cover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 55%;
+  height: 55%;
+  border-radius: 50%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+@keyframes mini-vinyl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* AI 音乐弹窗黑胶唱片 */
+.ai-music-popup-cover.ai-vinyl-wrapper {
+  width: 5rem !important;
+  height: 5rem !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  margin-bottom: 0.6rem;
+  overflow: visible;
+}
+
+.ai-vinyl-record {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  position: relative;
+  background: radial-gradient(circle at center, #888 0, #1a1a1a 10%, #2a2a2a 30%, #111 55%, #333 70%, #111 100%);
+  animation: mini-vinyl-spin 8s linear infinite;
+  animation-play-state: paused;
+  flex-shrink: 0;
+}
+
+.ai-vinyl-record.playing {
+  animation-play-state: running;
+}
+
+.ai-vinyl-record::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #666, #222);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.ai-vinyl-cover {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
