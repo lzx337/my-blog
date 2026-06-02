@@ -4,8 +4,12 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
-const DB_PATH = path.join(__dirname, '..', 'data', 'cgbb.db');
+// 云函数环境只有 /tmp 可写；本地开发用项目下的 data/ 目录
+const DB_PATH = fs.existsSync('/tmp')
+  ? '/tmp/data/cgbb.db'
+  : path.join(__dirname, '..', 'data', 'cgbb.db');
 let db = null;
 
 async function initSQL() {
@@ -69,7 +73,7 @@ function initSchema() {
 function checkDefaultAdmin() {
   const row = db.exec('SELECT id FROM credentials WHERE username = ?', ['admin']);
   if (row.length === 0 || row[0].values.length === 0) {
-    const hash = crypto.createHash('sha256').update('admin').digest('hex');
+    const hash = bcrypt.hashSync('admin', 12);
     db.run('INSERT INTO credentials (username, password) VALUES (?, ?)', ['admin', hash]);
     saveDB();
   }
@@ -229,11 +233,10 @@ const authQueries = {
   verify: (username, password) => {
     const rows = db.exec('SELECT password FROM credentials WHERE username = ?', [username]);
     if (!rows.length || !rows[0].values.length) return false;
-    const hash = crypto.createHash('sha256').update(password).digest('hex');
-    return rows[0].values[0][0] === hash;
+    return bcrypt.compareSync(password, rows[0].values[0][0]);
   },
   changePassword: (username, newPassword) => {
-    const hash = crypto.createHash('sha256').update(newPassword).digest('hex');
+    const hash = bcrypt.hashSync(newPassword, 12);
     db.run('UPDATE credentials SET password = ? WHERE username = ?', [hash, username]);
     saveDB();
   }

@@ -8,7 +8,7 @@
 <link href="../css/glass.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-theme">
 <style>
 :root {
@@ -571,6 +571,7 @@ label[style*="oklch"] { color: var(--text-secondary) !important; }
 
 /* === Animations === */
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 /* === Toast === */
 .toast-container {
@@ -1065,6 +1066,29 @@ select.glass-input {
   </div>
 </div>
 
+<!-- 邮箱验证浮层 -->
+<div id="verify-overlay" class="hidden" style="position:fixed;inset:0;z-index:51;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px)">
+  <div class="glass-login-card" style="padding:2.5rem;width:100%;max-width:28rem;margin:0 1rem">
+    <div class="text-center mb-6">
+      <div class="text-2xl font-bold mb-1" style="color:#fff">邮箱验证</div>
+      <div class="text-sm" style="color:rgba(255,255,255,0.7)">提高账号安全性，验证码将发送到管理员邮箱</div>
+    </div>
+    <div id="verify-error" class="alert alert-error hidden"></div>
+    <div id="verify-success" class="alert alert-success hidden"></div>
+    <div class="space-y-4">
+      <div id="verify-code-area" class="hidden">
+        <label class="text-sm font-semibold mb-1" style="display:block;color:rgba(255,255,255,0.85)">验证码</label>
+        <input id="verify-code" type="text" class="glass-input" placeholder="请输入 6 位验证码" maxlength="6" style="text-align:center;font-size:1.5rem;letter-spacing:8px;font-family:monospace">
+      </div>
+      <button type="button" class="glass-btn-primary w-full" id="verify-send-btn" style="padding:0.85rem;font-weight:600">📧 发送验证码到邮箱</button>
+      <button type="button" class="glass-btn w-full hidden" id="verify-confirm-btn" style="padding:0.85rem;font-weight:600">✅ 验证并进入后台</button>
+      <div class="text-center">
+        <button type="button" class="ghost-btn" id="verify-skip-btn" style="opacity:0.6;font-size:0.8rem">跳过验证，直接进入后台</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="admin-app" class="layout hidden" style="position:relative;z-index:10">
   <aside class="sidebar glass-sidebar">
     <div class="sidebar-header">
@@ -1428,7 +1452,7 @@ initTheme();
 
 // ====== API 桥接配置层 ======
 // 在全局作用域预先声明，后续在各函数定义处进行包装
-var API_BASE = (window.location.protocol === 'file:') ? '' : window.location.origin;
+var API_BASE = (window.location.protocol === 'file:') ? '' : 'https://YOUR_RAILWAY_APP.up.railway.app';
 var apiToken = null;
 var apiAvailable = false;
 
@@ -1649,10 +1673,19 @@ function dbDelete(key) {
 })();
 
 // --- Auth ---
-// 预设管理员密码（SHA-256 of "admin"），作为 IndexedDB 不可用时的回退验证
-var PRESET_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
 
 function hashPassword(str) {
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode('salted_blog_2024_' + str)).then(function(buf) {
+    var hex = '';
+    var bytes = new Uint8Array(buf);
+    for (var i = 0; i < bytes.length; i++) {
+      hex += bytes[i].toString(16).padStart(2, '0');
+    }
+    return hex;
+  });
+}
+
+function hashPasswordLegacy(str) {
   return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function(buf) {
     var hex = '';
     var bytes = new Uint8Array(buf);
@@ -1668,31 +1701,24 @@ function initCredentials() {
     if (!creds) return hashPassword('admin').then(function(hash) {
       return dbPut('credentials', {username:'admin', password:hash});
     });
-    if (creds.password.length < 64) {
-      return hashPassword(creds.password).then(function(hash) {
-        creds.password = hash;
-        return dbPut('credentials', creds);
-      });
-    }
   });
 }
 
 function checkLogin(u, p) {
   return dbGet('credentials').then(function(creds) {
-    if (creds && creds.username === u) {
-      return hashPassword(p).then(function(hash) {
-        return creds.password === hash;
+    if (!creds || creds.username !== u) return Promise.resolve(false);
+    return hashPassword(p).then(function(saltedHash) {
+      if (creds.password === saltedHash) return true;
+      return hashPasswordLegacy(p).then(function(legacyHash) {
+        if (creds.password === legacyHash) {
+          creds.password = saltedHash;
+          return dbPut('credentials', creds).then(function() { return true; });
+        }
+        return false;
       });
-    }
-    // IndexedDB 不可用时的回退：比对预设哈希
-    return hashPassword(p).then(function(hash) {
-      return hash === PRESET_PASSWORD_HASH;
     });
   }).catch(function() {
-    // IndexedDB 异常时的回退验证
-    return hashPassword(p).then(function(hash) {
-      return hash === PRESET_PASSWORD_HASH;
-    });
+    return Promise.resolve(false);
   });
 }
 
@@ -1703,7 +1729,6 @@ function setSession(username, remember) {
     try { localStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch(e) {}
   }
   sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
-  try { sessionStorage.setItem('admin-username', username); } catch(e) {}
 }
 
 function isLoggedIn() {
@@ -1758,7 +1783,7 @@ function tryServerSync() {
     contents: Object.assign({}, postContents),
     songs: JSON.parse(JSON.stringify(allSongs))
   };
-  return fetch('/api/import', {
+  return fetch(API_BASE + '/api/import', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-admin-token': apiToken },
     body: JSON.stringify({ data: data })
@@ -1773,7 +1798,7 @@ function tryServerSync() {
 }
 function initServerSync() {
   if (!apiToken || window.location.protocol === 'file:') return;
-  fetch('/api/export', {
+  fetch(API_BASE + '/api/export', {
     headers: { 'x-admin-token': apiToken }
   }).then(function(r) {
     if (!r.ok) return null;
@@ -1821,7 +1846,7 @@ function updateLockDisplay() {
       var min = Math.floor(remaining / 60);
       var sec = remaining % 60;
       timerEl.textContent = '账号已锁定，请等待 ' + min + ' 分 ' + sec + ' 秒后重试';
-      timerEl.innerHTML = '账号已锁定，请等待 ' + min + ' 分 ' + sec + ' 秒后重试<br><span style="font-weight:400;font-size:0.7rem;color:rgba(255,255,255,0.45)">（清除网站数据可解除锁定）</span>';
+      timerEl.innerHTML = '账号已锁定，请等待 ' + min + ' 分 ' + sec + ' 秒后重试';
       timerEl.classList.add('show');
       btn.disabled = true;
       btn.style.opacity = '0.5';
@@ -2725,10 +2750,15 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
   var p = document.getElementById('login-pass').value.trim() || 'admin';
   var errEl = document.getElementById('login-error');
   var remember = document.getElementById('remember-me') ? document.getElementById('remember-me').checked : false;
+  var btn = document.getElementById('login-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-block;width:1rem;height:1rem;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:0.5rem;vertical-align:middle"></span> 登录中...';
   dbGetLockout().then(function(lock) {
     if (lock.until && Date.now() < lock.until) {
       errEl.textContent = '账号已被锁定，请等待 ' + Math.ceil((lock.until - Date.now()) / 60000) + ' 分钟后重试';
       errEl.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = '登 录';
       return;
     }
     loadCaptchaSetting().then(function(captchaOn) {
@@ -2739,24 +2769,31 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
         generateCaptcha();
         document.getElementById('login-captcha').value = '';
         if (document.getElementById('login-captcha')) document.getElementById('login-captcha').focus();
+        btn.disabled = false;
+        btn.textContent = '登 录';
         return;
       }
       apiLogin(u, p).then(function(ok) {
         if (ok) {
           errEl.classList.add('hidden');
           resetLockout();
-          setSession(u, remember);
-          registerDevice();
-          addLog('login_success', '管理员 ' + u + ' 登录成功');
-          showAdmin();
-          initServerSync();
+          if (apiAvailable && apiToken) {
+            showVerifyOverlay(u, remember);
+          } else {
+            completeLogin(u, remember);
+          }
         } else {
           recordFailedLogin();
-          errEl.textContent = '用户名或密码错误（默认 admin/admin）';
+          errEl.textContent = '用户名或密码错误';
           errEl.classList.remove('hidden');
           addLog('login_fail', '登录失败 - 用户名: ' + u);
           if (captchaOn) { generateCaptcha(); if (document.getElementById('login-captcha')) document.getElementById('login-captcha').value = ''; }
+          btn.disabled = false;
+          btn.textContent = '登 录';
         }
+      }).catch(function() {
+        btn.disabled = false;
+        btn.textContent = '登 录';
       });
     });
   });
@@ -2765,6 +2802,105 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
 document.getElementById('add-post-btn').addEventListener('click', function() { switchTab('post-editor'); });
 document.getElementById('cancel-edit-btn').addEventListener('click', function() { resetEditor(); switchTab('posts-list'); });
 document.getElementById('post-form').addEventListener('submit', function(e) { e.preventDefault(); savePost(new FormData(e.target)); });
+
+// --- 邮箱验证逻辑 ---
+function completeLogin(u, remember) {
+  setSession(u, remember);
+  registerDevice();
+  addLog('login_success', '管理员 ' + u + ' 登录成功');
+  showAdmin();
+  initServerSync();
+}
+
+function showVerifyOverlay(u, remember) {
+  document.getElementById('login-overlay').classList.add('hidden');
+  var overlay = document.getElementById('verify-overlay');
+  overlay.classList.remove('hidden');
+  var errEl = document.getElementById('verify-error');
+  var successEl = document.getElementById('verify-success');
+  errEl.classList.add('hidden');
+  successEl.classList.add('hidden');
+  document.getElementById('verify-code-area').classList.add('hidden');
+  document.getElementById('verify-confirm-btn').classList.add('hidden');
+  document.getElementById('verify-send-btn').textContent = '📧 发送验证码到邮箱';
+  document.getElementById('verify-send-btn').disabled = false;
+  var verifyUser = u;
+  var verifyRemember = remember;
+
+  document.getElementById('verify-send-btn').onclick = function() {
+    var btn = document.getElementById('verify-send-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:inline-block;width:1rem;height:1rem;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite;margin-right:0.5rem;vertical-align:middle"></span> 发送中...';
+    errEl.classList.add('hidden');
+    successEl.classList.add('hidden');
+    apiFetch('/api/auth/send-code', { method: 'POST' }).then(function(r) {
+      return r.json();
+    }).then(function(data) {
+      if (data.success) {
+        btn.classList.add('hidden');
+        document.getElementById('verify-code-area').classList.remove('hidden');
+        document.getElementById('verify-confirm-btn').classList.remove('hidden');
+        successEl.textContent = '验证码已发送到管理员邮箱，请在 5 分钟内输入';
+        successEl.classList.remove('hidden');
+        document.getElementById('verify-code').value = '';
+        document.getElementById('verify-code').focus();
+      } else {
+        btn.disabled = false;
+        btn.textContent = '📧 发送验证码到邮箱';
+        errEl.textContent = data.error || '发送失败';
+        errEl.classList.remove('hidden');
+        if (data.error && data.error.indexOf('SMTP') !== -1) {
+          completeLogin(verifyUser, verifyRemember);
+        }
+      }
+    }).catch(function() {
+      btn.disabled = false;
+      btn.textContent = '📧 发送验证码到邮箱';
+      errEl.textContent = '网络错误，请重试';
+      errEl.classList.remove('hidden');
+    });
+  };
+
+  document.getElementById('verify-confirm-btn').onclick = function() {
+    var code = document.getElementById('verify-code').value.trim();
+    if (!code || code.length !== 6) {
+      errEl.textContent = '请输入 6 位验证码';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    var btn = document.getElementById('verify-confirm-btn');
+    btn.disabled = true;
+    btn.textContent = '验证中...';
+    errEl.classList.add('hidden');
+    apiFetch('/api/auth/verify-code', {
+      method: 'POST',
+      body: JSON.stringify({ code: code })
+    }).then(function(r) {
+      return r.json();
+    }).then(function(data) {
+      if (data.success) {
+        setApiToken(data.token);
+        overlay.classList.add('hidden');
+        completeLogin(verifyUser, verifyRemember);
+      } else {
+        btn.disabled = false;
+        btn.textContent = '✅ 验证并进入后台';
+        errEl.textContent = data.error || '验证失败';
+        errEl.classList.remove('hidden');
+      }
+    }).catch(function() {
+      btn.disabled = false;
+      btn.textContent = '✅ 验证并进入后台';
+      errEl.textContent = '网络错误，请重试';
+      errEl.classList.remove('hidden');
+    });
+  };
+
+  document.getElementById('verify-skip-btn').onclick = function() {
+    overlay.classList.add('hidden');
+    completeLogin(verifyUser, verifyRemember);
+  };
+}
 
 function updateBatchBar() {
   var checked = document.querySelectorAll('#posts-tbody .post-check:checked').length;
@@ -3174,7 +3310,7 @@ function renderMarkdown(text) {
   var html = marked.parse(text, { breaks: true, gfm: true });
   // DOMPurify 清理 XSS
   if (typeof DOMPurify !== 'undefined') {
-    html = DOMPurify.sanitize(html, { ALLOWED_TAGS: ['h1','h2','h3','h4','h5','h6','p','br','hr','ul','ol','li','blockquote','pre','code','em','strong','del','ins','a','img','table','thead','tbody','tr','th','td','span','div','input'], ALLOWED_ATTR: ['href','src','alt','title','class','id','style','target','rel','type','checked','disabled'] });
+    html = DOMPurify.sanitize(html, { ALLOWED_TAGS: ['h1','h2','h3','h4','h5','h6','p','br','hr','ul','ol','li','blockquote','pre','code','em','strong','del','ins','a','img','table','thead','tbody','tr','th','td','span','div','input'], ALLOWED_ATTR: ['href','src','alt','title','class','id','style','target','rel','type','checked','disabled'], ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i });
   }
   var container = document.createElement('div');
   container.innerHTML = html;
@@ -3333,12 +3469,25 @@ function clearDraft(draftKey) {
 }
 
 // Init
+function checkSessionExpiry() {
+  if (!isLoggedIn()) {
+    var adminEl = document.getElementById('admin-panel');
+    var loginEl = document.getElementById('login-panel');
+    if (adminEl && !adminEl.classList.contains('hidden')) {
+      showLogin();
+      var errEl = document.getElementById('login-error');
+      if (errEl) { errEl.textContent = '会话已过期，请重新登录'; errEl.classList.remove('hidden'); }
+    }
+  }
+}
+
 openDB().then(function() {
   return initCredentials();
 }).then(function() {
   applyLoginSettings();
   startLockCountdown();
   loadCaptchaSetting().then(function(on) { if (on) updateCaptchaUI(on); });
+  checkSessionExpiry();
   if (isLoggedIn()) { showAdmin(); initServerSync(); }
 }).catch(function(err) {
   console.error('DB init failed:', err);

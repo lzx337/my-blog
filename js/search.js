@@ -17,6 +17,11 @@
       var $clear = document.getElementById('search-clear');
       var $count = document.getElementById('search-count');
       var allPosts = await window.DataManager.fetchPosts();
+      var allContents = {};
+      try {
+        var stored = localStorage.getItem('admin-post-contents');
+        if (stored) allContents = JSON.parse(stored);
+      } catch(e) {}
 
       function renderSearchResults(posts) {
         if ($count) $count.textContent = '共找到 ' + posts.length + ' 篇相关文章';
@@ -75,10 +80,12 @@
         var results = allPosts.slice();
         if (q) {
           results = results.filter(function (p) {
-            return p.title.toLowerCase().indexOf(q) !== -1 ||
-              (p.excerpt || '').toLowerCase().indexOf(q) !== -1 ||
-              (p.tags || []).some(function (t) { return t.toLowerCase().indexOf(q) !== -1; }) ||
-              (p.category || '').toLowerCase().indexOf(q) !== -1;
+            var matchesTitle = p.title.toLowerCase().indexOf(q) !== -1;
+            var matchesExcerpt = (p.excerpt || '').toLowerCase().indexOf(q) !== -1;
+            var matchesTags = (p.tags || []).some(function (t) { return t.toLowerCase().indexOf(q) !== -1; });
+            var matchesCategory = (p.category || '').toLowerCase().indexOf(q) !== -1;
+            var matchesBody = (allContents[p.id] || '').toLowerCase().indexOf(q) !== -1;
+            return matchesTitle || matchesExcerpt || matchesTags || matchesCategory || matchesBody;
           });
         }
         renderSearchResults(results);

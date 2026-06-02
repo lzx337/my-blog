@@ -53,7 +53,8 @@
     if (typeof DOMPurify !== 'undefined') {
       el.innerHTML = DOMPurify.sanitize(html, {
         ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'em', 'strong', 'del', 'ins', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'span', 'div', 'button', 'input', 'label', 'article', 'aside', 'nav', 'section', 'header', 'footer', 'main', 'svg', 'path', 'use', 'g', 'defs'],
-        ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'style', 'target', 'rel', 'type', 'checked', 'disabled', 'data-icon', 'data-url', 'data-category', 'data-tags', 'data-pg', 'data-id', 'data-real-idx', 'data-tab', 'data-sub', 'data-tip', 'onclick', 'role', 'tabindex', 'aria-label', 'viewBox', 'preserveAspectRatio', 'fill', 'd', 'x', 'y', 'width', 'height', 'xmlns', 'xlink:href', 'loading']
+        ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'style', 'target', 'rel', 'type', 'checked', 'disabled', 'data-icon', 'data-url', 'data-category', 'data-tags', 'data-pg', 'data-id', 'data-real-idx', 'data-tab', 'data-sub', 'data-tip', 'role', 'tabindex', 'aria-label', 'viewBox', 'preserveAspectRatio', 'fill', 'd', 'x', 'y', 'width', 'height', 'xmlns', 'xlink:href', 'loading'],
+        ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i
       });
     } else {
       el.innerHTML = html;

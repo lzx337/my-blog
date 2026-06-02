@@ -800,6 +800,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
+      var searchContents = {};
+      try {
+        var storedSearchContents = localStorage.getItem('admin-post-contents');
+        if (storedSearchContents) searchContents = JSON.parse(storedSearchContents);
+      } catch(e) {}
+
       var SearchFilter = (function () {
         var $input = document.getElementById('post-search-input');
         if (!$input) return;
@@ -808,8 +814,12 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!q) { activeCategory = null; activeTag = null; filteredPosts = posts.slice(); }
           else {
             filteredPosts = posts.filter(function (p) {
-              return p.title.toLowerCase().indexOf(q) !== -1 || (p.excerpt || '').toLowerCase().indexOf(q) !== -1 ||
-                (p.tags || []).some(function (t) { return t.toLowerCase().indexOf(q) !== -1; }) || (p.category || '').toLowerCase().indexOf(q) !== -1;
+              var matchesTitle = p.title.toLowerCase().indexOf(q) !== -1;
+              var matchesExcerpt = (p.excerpt || '').toLowerCase().indexOf(q) !== -1;
+              var matchesTag = (p.tags || []).some(function (t) { return t.toLowerCase().indexOf(q) !== -1; });
+              var matchesCategory = (p.category || '').toLowerCase().indexOf(q) !== -1;
+              var matchesBody = (searchContents[p.id] || '').toLowerCase().indexOf(q) !== -1;
+              return matchesTitle || matchesExcerpt || matchesTag || matchesCategory || matchesBody;
             });
           }
           renderAll();

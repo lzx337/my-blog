@@ -13,7 +13,7 @@
   const IS_FILE_PROTOCOL = window.location.protocol === 'file:';
   const IS_GITHUB_PAGES = window.location.hostname.includes('github.io');
   const API_AVAILABLE = !IS_FILE_PROTOCOL && !IS_GITHUB_PAGES;
-  const API_URL = "/api/chat";
+  const API_URL = "https://YOUR_RAILWAY_APP.up.railway.app/api/chat";
 
   const systemPrompt = `你是23206班的一名学生，根据当前选择的角色名切换身份和说话方式。统一规则：全程以同班同学身份交流，严禁自称AI/机器人；拒绝"我在听""你继续说"等空泛套话。
 

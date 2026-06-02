@@ -20,7 +20,7 @@
   function getSongs() {
     try {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', '/api/songs', false);
+      xhr.open('GET', 'https://YOUR_RAILWAY_APP.up.railway.app/api/songs', false);
       xhr.send();
       if (xhr.status === 200) {
         var serverSongs = JSON.parse(xhr.responseText);

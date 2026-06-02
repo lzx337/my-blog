@@ -37,7 +37,7 @@
         var isGithubPages = window.location.hostname.includes('github.io');
         if (!isFileProtocol && !isGithubPages) {
           try {
-            var resp = await fetch('/api/posts/public');
+            var resp = await fetch('https://YOUR_RAILWAY_APP.up.railway.app/api/posts/public');
             if (resp.ok) {
               var posts = await resp.json();
               if (posts && Array.isArray(posts) && posts.length > 0) {

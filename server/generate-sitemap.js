@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const SITEMAP_PATH = path.join(__dirname, '..', 'sitemap.xml');
-const SITE_URL = process.env.SITE_URL || 'https://yqlch-blog.vercel.app';
+const SITE_URL = process.env.SITE_URL || 'https://YOUR_GITHUB_USERNAME.github.io';
 const CHANGEFREQ_POST = 'monthly';
 const CHANGEFREQ_PAGE = 'weekly';
 const PRIORITY_HOME = '1.0';
