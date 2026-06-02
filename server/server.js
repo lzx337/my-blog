@@ -68,6 +68,10 @@ function authMiddleware(req, res, next) {
 }
 
 // ---------- 系统 ----------
+app.get('/', (req, res) => {
+  res.send('ok');
+});
+
 app.get('/api/status', (req, res) => {
   try {
     const db = getDB();
